@@ -1,0 +1,58 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn
+
+PATH: 
+  /home/lucas/.local/share/umake/bin:/home/lucas/bin:/home/lucas/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin
+
+Yarn version: 
+  1.3.2
+
+Node version: 
+  8.1.4
+
+Platform: 
+  linux x64
+
+npm manifest: 
+  {
+    "name": "type-dynamo",
+  //   "version": "1.0.0",
+    "description": "",
+    "bin": {
+      "type-dynamo": "dist/cli.js"
+    },
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+      "prepare": "npm run build",
+      "build": "tsc",
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "cli": "npm run build && node dist/cli.js"
+    },
+    "author": "lucasmafra",
+    "license": "ISC",
+    "dependencies": {
+      "aws-sdk": "^2.145.0",
+      "commander": "^2.11.0",
+      "reflect-metadata": "^0.1.10"
+    },
+    "devDependencies": {
+      "@types/node": "^8.0.47",
+      "typescript": "^2.6.1"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  SyntaxError: /home/lucas/type-dynamo/package.json: Unexpected token / in JSON at position 27
+      at JSON.parse (<anonymous>)
+      at /usr/local/lib/node_modules/yarn/lib/cli.js:770:59
+      at Generator.next (<anonymous>)
+      at step (/usr/local/lib/node_modules/yarn/lib/cli.js:92:30)
+      at /usr/local/lib/node_modules/yarn/lib/cli.js:103:13
+      at <anonymous>

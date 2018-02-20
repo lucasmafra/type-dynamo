@@ -1,0 +1,26 @@
+{
+  "name": "type-dynamo",
+  "description": "",
+  "bin": {
+    "type-dynamo": "dist/cli.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cli": "npm run build && node dist/cli.js"
+  },
+  "author": "lucasmafra",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.145.0",
+    "commander": "^2.11.0",
+    "reflect-metadata": "^0.1.10"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.47",
+    "typescript": "^2.6.1"
+  }
+}
