@@ -9,17 +9,21 @@
   "scripts": {
     "prepare": "npm run build",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run build && node dist/",
     "cli": "npm run build && node dist/cli.js"
   },
   "author": "lucasmafra",
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.145.0",
+    "chai": "^4.1.2",
     "commander": "^2.11.0",
+    "mocha": "^5.0.1",
     "reflect-metadata": "^0.1.10"
   },
   "devDependencies": {
+    "@types/chai": "^4.1.2",
+    "@types/mocha": "^2.2.48",
     "@types/node": "^8.0.47",
     "typescript": "^2.6.1"
   }
