@@ -1,12 +1,12 @@
 import DynamoIndex from './DynamoIndex'
 
-export function globalIndexes<
+export function withGlobalIndexes<
     GlobalIndex1
 >(
     globalIndex1: GlobalIndex1,
 ): GlobalIndex1
 
-export function globalIndexes<
+export function withGlobalIndexes<
     GlobalIndex1,
     GlobalIndex2
 >(
@@ -14,7 +14,7 @@ export function globalIndexes<
     globalIndex2: GlobalIndex2,
 ): GlobalIndex1 & GlobalIndex2
 
-export function globalIndexes<
+export function withGlobalIndexes<
     GlobalIndex1,
     GlobalIndex2,
     GlobalIndex3
@@ -24,7 +24,7 @@ export function globalIndexes<
     globalIndex3: GlobalIndex3,
 ): GlobalIndex1 & GlobalIndex2 & GlobalIndex3
 
-export function globalIndexes<
+export function withGlobalIndexes<
     GlobalIndex1,
     GlobalIndex2,
     GlobalIndex3,
@@ -36,7 +36,7 @@ export function globalIndexes<
     globalIndex4: GlobalIndex4,
     ): GlobalIndex1 & GlobalIndex2 & GlobalIndex3 & GlobalIndex4
 
-export function globalIndexes<
+export function withGlobalIndexes<
     GlobalIndex1,
     GlobalIndex2,
     GlobalIndex3,
@@ -50,7 +50,7 @@ export function globalIndexes<
     globalIndex5: GlobalIndex5,
     ): GlobalIndex1 & GlobalIndex2 & GlobalIndex3 & GlobalIndex4 & GlobalIndex5
 
-export function globalIndexes(...indexes: any[]) {
+export function withGlobalIndexes(...indexes: any[]) {
     const obj = indexes.reduce((acc, cur, i) => {
         acc[i] = cur;
         return acc;

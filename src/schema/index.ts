@@ -44,6 +44,6 @@ export interface TableSchema {
 export { defineTable } from './defineTable'
 export { keySchema } from './keySchema'
 export { globalIndex } from './globalIndex'
-export { globalIndexes } from './globalIndexes'
+export { withGlobalIndexes } from './withGlobalIndexes'
 export { localIndex } from './localIndex'
-export { localIndexes } from './localIndexes'
+export { withLocalIndexes } from './withLocalIndexes'
