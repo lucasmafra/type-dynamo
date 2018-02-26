@@ -1,7 +1,0 @@
-export { hiddenProperty } from './constants'
-export { default as GlobalIndex } from './globalIndex'
-export { default as LocalIndex} from './localIndex'
-export { default as Table} from './table'
-export { default as PartitionKey} from './partitionKey'
-export { default as SortKey } from './sortKey'
-export { default as Attribute } from './attribute'
