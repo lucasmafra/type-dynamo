@@ -29,16 +29,6 @@ export interface TableSchema {
     keySchema: KeySchema
     readCapacity: number
     writeCapacity: number
-    globalIndex1?: IndexSchema
-    globalIndex2?: IndexSchema
-    globalIndex3?: IndexSchema
-    globalIndex4?: IndexSchema
-    globalIndex5?: IndexSchema
-    localIndex1?: IndexSchema
-    localIndex2?: IndexSchema
-    localIndex3?: IndexSchema
-    localIndex4?: IndexSchema
-    localIndex5?: IndexSchema
 }
 
 export { defineTable } from './defineTable'

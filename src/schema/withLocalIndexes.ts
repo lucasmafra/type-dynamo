@@ -51,8 +51,8 @@ export function withLocalIndexes<
     ): LocalIndex1 & LocalIndex2 & LocalIndex3 & LocalIndex4 & LocalIndex5
 
 export function withLocalIndexes(...indexes: any[]) {
-    const obj = indexes.reduce((acc, cur, i) => {
-        acc[i] = cur;
+    return indexes.reduce((acc, cur) => {
+        Object.assign(acc, cur)
         return acc;
-      }, {})
+    }, {})
 }

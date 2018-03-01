@@ -16,5 +16,3 @@ class DynamoIndex<Index, KeySchema> extends DynamoEntity<Index, KeySchema> {
 }
 
 export default DynamoIndex
-
-// declarar os gllobal indexes (index name, projection type e algumas options)

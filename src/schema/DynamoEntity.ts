@@ -1,5 +1,6 @@
 import { scan as Scan, ScanResult } from '../databaseOperations/scan'
 import { EntitySchema } from './'
+import DynamoScan from './chaining/scan/Scan'
 
 export class DynamoEntity<
     Entity,
@@ -15,11 +16,11 @@ export class DynamoEntity<
     }
 
     public scan() {
-        return Scan<Entity, KeySchema>(this._entitySchema)
+        return new DynamoScan<Entity, KeySchema>(this._entitySchema)
     }
 
     public query() {
-        return Scan<Entity, KeySchema>(this._entitySchema)
+        return new DynamoScan<Entity, KeySchema>(this._entitySchema)
     }
 
 }

@@ -28,9 +28,9 @@ assertion-error@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.1.0.tgz#e60b6b0e8f301bd97e5375215bda406c85118c0b"
 
-aws-sdk@^2.145.0:
-  version "2.198.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.198.0.tgz#2245311337ddc844cc34c13f3fcf3b7ea843f434"
+aws-sdk@^2.204.0:
+  version "2.204.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.204.0.tgz#72d8331e90e7792b04dcca3278a7b31c49a46aeb"
   dependencies:
     buffer "4.9.1"
     events "^1.1.1"

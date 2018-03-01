@@ -51,8 +51,8 @@ export function withGlobalIndexes<
     ): GlobalIndex1 & GlobalIndex2 & GlobalIndex3 & GlobalIndex4 & GlobalIndex5
 
 export function withGlobalIndexes(...indexes: any[]) {
-    const obj = indexes.reduce((acc, cur, i) => {
-        acc[i] = cur;
+    return indexes.reduce((acc, cur) => {
+        Object.assign(acc, cur)
         return acc;
       }, {})
 }

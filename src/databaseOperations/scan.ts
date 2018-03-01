@@ -1,5 +1,4 @@
 import { DynamoDB } from 'aws-sdk'
-import { EntitySchema } from '../schema'
 import { DynamoEntity } from '../schema/DynamoEntity'
 import DynamoToPromise from './dynamoToPromise'
 
@@ -13,20 +12,9 @@ export interface ScanResult<TableModel, KeySchema> {
     lastKey?: KeySchema
 }
 
-function buildScanInput(entitySchema: EntitySchema): DynamoDB.ScanInput {
-    const input: DynamoDB.ScanInput = {
-        TableName: entitySchema.tableName,
-    }
-    if (entitySchema.indexSchema) {
-        input.IndexName = entitySchema.indexSchema.indexName
-    }
-    return input
-}
-
 export async function scan<
     Entity, KeySchema
->(entitySchema: EntitySchema): Promise<ScanResult<Entity, KeySchema>> {
-    const scanInput = buildScanInput(entitySchema)
+>(scanInput: DynamoDB.ScanInput): Promise<ScanResult<Entity, KeySchema>> {
     const scanOutput = await dynamoPromise.scan(scanInput)
     const result: ScanResult<Entity, KeySchema> = {
         data: scanOutput.Items as any,

@@ -21,5 +21,14 @@ export default class DynamoORM<
         this.globalIndexes = globalIndexes
         this.localIndexes = localIndexes
         this.onIndex = Object.assign({}, this.globalIndexes, this.localIndexes)
+        this.injectTableNameOnIndexes()
+    }
+
+    private injectTableNameOnIndexes() {
+        for (const index in this.onIndex as any) {
+            if (this.onIndex.hasOwnProperty(index)) {
+                this.onIndex[index]._entitySchema.tableName = this._entitySchema.tableName
+            }
+        }
     }
 }

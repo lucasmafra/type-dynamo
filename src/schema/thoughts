@@ -1,0 +1,123 @@
+QUERY METHODS
+
+scan => 
+        Users.onIndex.emailIndex
+        .scan({
+            parallelBatches: 10
+        })
+        .filter('email', startsWith('lucas'))
+        .withAttributes(['id', 'email'])
+        .paginate({
+            lastKey: {
+                email: 'lucas.mafra95@gmail.com'
+            },
+            limit: 50
+        })
+        .execute()
+
+// ORM + onIndex (optional) + method + filter (optional) + withAttributes (optional) + paginate/allResults + execute
+
+get =>  
+        Users
+        .get({
+            key: {
+                id: '123'
+            }
+        })
+        .withAttributes(['id', 'email'])
+        .execute()
+
+// ORM + method + withAttributes (optional) + execute
+
+batchGet =>
+        Users
+        .batchGet({
+            keys: [{
+                id: '123',
+            }, {
+                id: '456'
+            }],
+        })
+        .withAttributes(['id', 'email'])
+        .execute()
+
+// ORM + method + withAttributes (optional) + execute
+
+query =>
+        UsersOrders.
+        .query({
+            partitionKey: '1'
+        })
+        .withSortKeyCondition(isGreatherThan(10))
+        .filter('email', startsWith('lucas'))
+        .withAttributes(['id', 'email'])
+        .paginate({
+            lastKey: {
+                email: 'lucas.mafra95@gmail.com'
+            },
+            limit: 50
+        })
+        .execute()
+
+// ORM + onIndex (optional) + method + withSortKeyCondition (optional) + filter (optional) + withAttributes (optional) + paginate/allResults + execute
+
+====================
+
+WRITE METHODS
+
+put =>
+    Users
+    .put({
+        item: {
+            id: '1',
+            email: 'lucasmafra@hotmail.com
+        }
+    })
+    .withCondition(attributeNotExists('id'))
+    .execute()
+
+// ORM + method + withCondition (optional) + execute
+
+batchWrite =>
+    Users
+    .batchWrite({
+        items: [{
+            ----
+        }]
+    })
+    .execute()
+
+// ORM + method + execute
+
+batchDelete =>
+    Users
+    .batchDelete({
+        keys: [{
+            ----
+        }]
+    })
+    .execute()
+
+// ORM + method + execute
+
+delete =>
+    Users
+    .delete({
+        key: {
+            ----
+        }
+    })
+    .withCondition(id.isGreatherThan('1'))
+    .execute()
+
+// ORM + method + withCondition (optional) + execute
+
+update =>
+    Users
+    .update({
+        item
+    })
+    .withCondition(----)
+    .execute()
+
+// ORM + method + withCondition (optional) + execute

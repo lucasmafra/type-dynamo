@@ -4,9 +4,13 @@ import DynamoORM from './DynamoORM'
 import DynamoTable from './DynamoTable'
 
 function buildTableSchema(schema: any): TableSchema {
-    return {
-
-    } as any
+    const tableSchema: TableSchema = {
+        tableName: schema.tableName,
+        keySchema: schema.keySchema,
+        writeCapacity: schema.writeCapacity || 1,
+        readCapacity: schema.readCapacity || 1,
+    }
+    return tableSchema
 }
 
 export function defineTable<

@@ -18,19 +18,17 @@ class DynamoTable<Table, KeySchema> extends DynamoEntity<Table, KeySchema> {
     }
 
     public getItem() {
-        return Scan<Table, KeySchema>(this._entitySchema)
+        return Scan<Table, KeySchema>(this._entitySchema) // TODO GET ITEM
     }
 
     public batchGet() {
-        return Scan<Table, KeySchema>(this._entitySchema)
+        return Scan<Table, KeySchema>(this._entitySchema) // TODO BATCH GET
     }
 
     public batchWrite() {
-        return Scan<Table, KeySchema>(this._entitySchema)
+        return Scan<Table, KeySchema>(this._entitySchema) // // TODO BATCH WRITE
     }
 
 }
 
 export default DynamoTable
-
-// declarar os gllobal indexes (index name, projection type e algumas options)
