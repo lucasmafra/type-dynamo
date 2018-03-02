@@ -42,7 +42,7 @@ class ConditionExpression extends Expression {
     public and: AndExpression
     public or: OrExpression
     public conditionStack: Expression[]
-    constructor(expression: Expression, currentStack?: Expression[]) {
+    constructor(expression: ConditionExpression | MatchExpression, currentStack?: Expression[]) {
         super('condition', currentStack)
         this.conditionStack = expression.stack.slice()
         this.stack.push(this)
@@ -66,7 +66,7 @@ class MatchExpression extends Expression {
     }
 }
 
-export function condition(expression: MatchExpression): ConditionExpression {
+export function condition(expression: ConditionExpression | MatchExpression): ConditionExpression {
     return new ConditionExpression(expression)
 }
 
@@ -89,8 +89,6 @@ function isEqualTo(a: number | string) {
 // const x = condition(match('id', isGreatherThan(5)).and.match('age', isLessThan(20)))
 
 const y =
-        match('color', isEqualTo('yellow'))
-        .and.
         condition(
             match('id', isGreatherThan(5))
             .or.
@@ -118,7 +116,7 @@ export function resolveExpression(expressionStack: Expression[]): string {
                 return acc + '(' + resolveExpression((expression as ConditionExpression).conditionStack) + ')'
             }
             case 'match': {
-                return acc + ' ' + (expression as MatchExpression).operand + ' ' +
+                return acc + (expression as MatchExpression).operand + ' ' +
                 (expression as MatchExpression).operator
             }
             case 'and': {
