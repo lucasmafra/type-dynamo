@@ -3,9 +3,19 @@ QUERY METHODS
 scan => 
         Users.onIndex.emailIndex
         .scan({
-            parallelBatches: 10
+            parallelBatches?
+            consistentRead?
+            consumedCapacity?
         })
-        .filter('email', startsWith('lucas'))
+        .filter(
+            match('id', isGreatherThan(5))
+            .and.
+            if(
+                match('age', isLessThan('20'))
+                .or.
+                match('color', isEqualTo('yellow'))
+            )
+        )
         .withAttributes(['id', 'email'])
         .paginate({
             lastKey: {
@@ -13,9 +23,7 @@ scan =>
             },
             limit: 50
         })
-        .execute()
-
-// ORM + onIndex (optional) + method + filter (optional) + withAttributes (optional) + paginate/allResults + execute
+// ORM + onIndex (optional) + method + filter (optional) + withAttributes (optional) + paginate/allResults
 
 get =>  
         Users
@@ -25,9 +33,9 @@ get =>
             }
         })
         .withAttributes(['id', 'email'])
-        .execute()
+()
 
-// ORM + method + withAttributes (optional) + execute
+// ORM + method + withAttributes (optional)
 
 batchGet =>
         Users
@@ -39,9 +47,9 @@ batchGet =>
             }],
         })
         .withAttributes(['id', 'email'])
-        .execute()
+()
 
-// ORM + method + withAttributes (optional) + execute
+// ORM + method + withAttributes (optional)
 
 query =>
         UsersOrders.
@@ -57,9 +65,9 @@ query =>
             },
             limit: 50
         })
-        .execute()
+()
 
-// ORM + onIndex (optional) + method + withSortKeyCondition (optional) + filter (optional) + withAttributes (optional) + paginate/allResults + execute
+// ORM + onIndex (optional) + method + withSortKeyCondition (optional) + filter (optional) + withAttributes (optional) + paginate/allResults
 
 ====================
 
@@ -73,10 +81,9 @@ put =>
             email: 'lucasmafra@hotmail.com
         }
     })
-    .withCondition(attributeNotExists('id'))
-    .execute()
+    .withCondition(attributeNotExists('id'))()
 
-// ORM + method + withCondition (optional) + execute
+// ORM + method + withCondition (optional)
 
 batchWrite =>
     Users
@@ -84,10 +91,9 @@ batchWrite =>
         items: [{
             ----
         }]
-    })
-    .execute()
+    })()
 
-// ORM + method + execute
+// ORM + method
 
 batchDelete =>
     Users
@@ -95,10 +101,9 @@ batchDelete =>
         keys: [{
             ----
         }]
-    })
-    .execute()
+    })()
 
-// ORM + method + execute
+// ORM + method
 
 delete =>
     Users
@@ -107,17 +112,15 @@ delete =>
             ----
         }
     })
-    .withCondition(id.isGreatherThan('1'))
-    .execute()
+    .withCondition(id.isGreatherThan('1'))()
 
-// ORM + method + withCondition (optional) + execute
+// ORM + method + withCondition (optional)
 
 update =>
     Users
     .update({
         item
     })
-    .withCondition(----)
-    .execute()
+    .withCondition(----)()
 
-// ORM + method + withCondition (optional) + execute
+// ORM + method + withCondition (optional)
