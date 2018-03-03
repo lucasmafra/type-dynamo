@@ -22,7 +22,7 @@ function buildScanInput<KeySchema>(
         input.IndexName = entitySchema.indexSchema.indexName
     }
     if (filterExpression) {
-        const resolvedExpression = resolveExpression(filterExpression.stack)
+        const resolvedExpression = resolveExpression((filterExpression as any).stack)
         input.FilterExpression = resolvedExpression.resolvedExpression
         input.ExpressionAttributeNames = resolvedExpression.expressionAttributeNames
         input.ExpressionAttributeValues = resolvedExpression.expressionAttributeValues as any

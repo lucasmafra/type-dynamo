@@ -6,11 +6,11 @@ import OrExpression from './OrExpression'
 export default class MatchExpression extends Expression {
     public and: AndExpression
     public or: OrExpression
-    public matchValue: string
-    public expressionAttributeNames?: {
+    protected matchValue: string
+    protected expressionAttributeNames?: {
         [key: string]: string,
     }
-    public expressionAttributeValues?: ExpressionAttributeValues
+    protected expressionAttributeValues?: ExpressionAttributeValues
 
     constructor(
     matchValue: string,

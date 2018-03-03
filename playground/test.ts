@@ -1,13 +1,11 @@
-import { isIn, isLessOrEqualTo, match } from '../src/schema/chaining/filter'
+import { isLessOrEqualTo, match, size } from '../src/schema/chaining/filter'
 import User from './User'
 
 async function test() {
     const users = await User
     .scan()
     .filter(
-        match('companyName', isIn(['Nubank', 'QuintoAndar']))
-        .or.
-        match('age', isLessOrEqualTo(25)),
+        size('name', isLessOrEqualTo(6)),
     )
     .withAttributes(['id', 'name', 'age'])
     .paginate()

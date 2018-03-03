@@ -11,15 +11,15 @@ interface ResolvedExpression {
 
 export function resolveExpression(expressionStack: Expression[]): ResolvedExpression {
     return expressionStack.reduce((acc, expression) => {
-        switch (expression.kind) {
+        switch ((expression as any).kind) {
             case 'condition': {
                 acc.resolvedExpression +=
-                '(' + resolveExpression((expression as ConditionExpression).conditionStack) + ')'
+                '(' + resolveExpression((expression as any).conditionStack) + ')'
                 return acc
             }
             case 'not': {
                 acc.resolvedExpression +=
-                'NOT (' + resolveExpression((expression as NotExpression).notStack) + ')'
+                'NOT (' + resolveExpression((expression as any).notStack) + ')'
                 return acc
             }
             case 'and': {
@@ -31,15 +31,15 @@ export function resolveExpression(expressionStack: Expression[]): ResolvedExpres
                 return acc
             }
             case 'match': {
-                acc.resolvedExpression += (expression as MatchExpression).matchValue
+                acc.resolvedExpression += (expression as any).matchValue
                 acc.expressionAttributeValues = Object.assign(
                     {},
                     acc.expressionAttributeValues,
-                    (expression as MatchExpression).expressionAttributeValues)
+                    (expression as any).expressionAttributeValues)
                 acc.expressionAttributeNames = Object.assign(
                     {},
                     acc.expressionAttributeNames,
-                    (expression as MatchExpression).expressionAttributeNames,
+                    (expression as any).expressionAttributeNames,
                 )
                 return acc
             }

@@ -28,7 +28,7 @@ function buildScanInput<KeySchema>(
         input.ExclusiveStartKey = lastKey as any
     }
     if (filterExpression) {
-        const resolvedExpression = resolveExpression(filterExpression.stack)
+        const resolvedExpression = resolveExpression((filterExpression as any).stack)
         input.FilterExpression = resolvedExpression.resolvedExpression
         input.ExpressionAttributeNames = resolvedExpression.expressionAttributeNames
         input.ExpressionAttributeValues = resolvedExpression.expressionAttributeValues as any
