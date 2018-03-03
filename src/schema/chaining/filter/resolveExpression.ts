@@ -5,6 +5,7 @@ import NotExpression from './NotExpression'
 
 interface ResolvedExpression {
     resolvedExpression: string,
+    expressionAttributeNames: { [key: string]: string}
     expressionAttributeValues: { [key: string]: string}
 }
 
@@ -35,6 +36,11 @@ export function resolveExpression(expressionStack: Expression[]): ResolvedExpres
                     {},
                     acc.expressionAttributeValues,
                     (expression as MatchExpression).expressionAttributeValues)
+                acc.expressionAttributeNames = Object.assign(
+                    {},
+                    acc.expressionAttributeNames,
+                    (expression as MatchExpression).expressionAttributeNames,
+                )
                 return acc
             }
         }
@@ -42,5 +48,6 @@ export function resolveExpression(expressionStack: Expression[]): ResolvedExpres
     }, {
         resolvedExpression: '',
         expressionAttributeValues: {},
+        expressionAttributeNames: {},
     })
 }

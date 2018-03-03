@@ -2,9 +2,8 @@ import ConditionExpression from './ConditionExpression'
 import MatchExpression from './MatchExpression'
 import NotExpression from './NotExpression'
 import { ComparisonOperator, FunctionOperator, Operator } from './Operator'
+import { randomGenerator } from './randomGenerator'
 import { resolveExpression } from './resolveExpression'
-
-const randomGenerator = () => Math.random().toString(36).slice(2)
 
 export function condition(expression: ConditionExpression | MatchExpression | NotExpression): ConditionExpression {
     return new ConditionExpression(expression)
@@ -15,34 +14,55 @@ export function not(expression: ConditionExpression | MatchExpression | NotExpre
 }
 
 export function match(operand: string, operator: Operator): MatchExpression {
+    const randomId = '#' + randomGenerator()
+    const expressionAttributeNames = {
+        [randomId]: operand,
+    }
     if (operator.type === 'function') {
         return new MatchExpression(
-            operator.value + `(${operand},${operator.functionOperand})`,
+            operator.value + `(${randomId},${operator.functionOperand})`,
+            expressionAttributeNames,
             operator.expressionAttributeValues,
         )
     } else {
         return new MatchExpression(
-            operand + ' ' + operator.value,
+            randomId + ' ' + operator.value,
+            expressionAttributeNames,
             operator.expressionAttributeValues,
         )
     }
 }
 
 export function attributeExists(attribute: string): MatchExpression {
+    const randomId = '#' + randomGenerator()
+    const expressionAttributeNames = {
+        [randomId]: attribute,
+    }
     return new MatchExpression(
-        `attribute_exists(${attribute})`,
+        `attribute_exists(${randomId})`,
+        expressionAttributeNames,
     )
 }
 
 export function attributeNotExists(attribute: string): MatchExpression {
+    const randomId = '#' + randomGenerator()
+    const expressionAttributeNames = {
+        [randomId]: attribute,
+    }
     return new MatchExpression(
-        `attribute_not_exists(${attribute})`,
+        `attribute_not_exists(${randomId})`,
+        expressionAttributeNames,
     )
 }
 
 export function size(attribute: string, operator: ComparisonOperator): MatchExpression {
+    const randomId = '#' + randomGenerator()
+    const expressionAttributeNames = {
+        [randomId]: attribute,
+    }
     return new MatchExpression(
-        `size(${attribute}) ${operator.value}`,
+        `size(${randomId}) ${operator.value}`,
+        expressionAttributeNames,
         operator.expressionAttributeValues,
     )
 }

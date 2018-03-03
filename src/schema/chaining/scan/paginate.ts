@@ -10,7 +10,12 @@ function buildScanInput<KeySchema>(
     limit: number,
     lastKey?: KeySchema,
     filterExpression?: Expression,
-    withAttributes?: string[],
+    withAttributes?: {
+        attributes: string[],
+        expressionAttributeNames: {
+            [key: string]: string,
+        },
+    },
 ): DynamoDB.ScanInput {
     const input: DynamoDB.ScanInput = {
         TableName: entitySchema.tableName,
@@ -25,10 +30,16 @@ function buildScanInput<KeySchema>(
     if (filterExpression) {
         const resolvedExpression = resolveExpression(filterExpression.stack)
         input.FilterExpression = resolvedExpression.resolvedExpression
+        input.ExpressionAttributeNames = resolvedExpression.expressionAttributeNames
         input.ExpressionAttributeValues = resolvedExpression.expressionAttributeValues as any
     }
     if (withAttributes) {
-        input.ProjectionExpression = projectionExpression(withAttributes)
+        input.ProjectionExpression = projectionExpression(withAttributes.attributes)
+        input.ExpressionAttributeNames = Object.assign(
+            {},
+            input.ExpressionAttributeNames,
+            withAttributes.expressionAttributeNames,
+        )
     }
     return input
 }
@@ -38,7 +49,12 @@ export function paginate<Entity, KeySchema>(
     limit: number = 100,
     lastKey?: KeySchema,
     expression?: Expression,
-    withAttributes?: string[],
+    withAttributes?: {
+        attributes: string[],
+        expressionAttributeNames: {
+            [key: string]: string,
+        },
+    },
 ) {
     const scanInput = buildScanInput(entitySchema, limit, lastKey, expression, withAttributes)
     return Scan<Entity, KeySchema>(scanInput)

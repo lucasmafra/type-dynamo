@@ -8,7 +8,12 @@ import { projectionExpression } from '../projectionExpression'
 function buildScanInput<KeySchema>(
     entitySchema: EntitySchema,
     filterExpression?: Expression,
-    withAttributes?: string[],
+    withAttributes?: {
+        attributes: string[],
+        expressionAttributeNames: {
+            [key: string]: string,
+        },
+    },
 ): DynamoDB.ScanInput {
     const input: DynamoDB.ScanInput = {
         TableName: entitySchema.tableName,
@@ -19,10 +24,16 @@ function buildScanInput<KeySchema>(
     if (filterExpression) {
         const resolvedExpression = resolveExpression(filterExpression.stack)
         input.FilterExpression = resolvedExpression.resolvedExpression
+        input.ExpressionAttributeNames = resolvedExpression.expressionAttributeNames
         input.ExpressionAttributeValues = resolvedExpression.expressionAttributeValues as any
     }
     if (withAttributes) {
-        input.ProjectionExpression = projectionExpression(withAttributes)
+        input.ProjectionExpression = projectionExpression(withAttributes.attributes)
+        input.ExpressionAttributeNames = Object.assign(
+            {},
+            input.ExpressionAttributeNames,
+            withAttributes.expressionAttributeNames,
+        )
     }
     return input
 }
@@ -30,7 +41,10 @@ function buildScanInput<KeySchema>(
 export function allResults<Entity, KeySchema>(
     entitySchema: EntitySchema,
     expression?: Expression,
-    withAttributes?: string[],
+    withAttributes?: {
+        attributes: string[],
+        expressionAttributeNames: { [key: string]: string },
+    },
 ) {
     const scanInput = buildScanInput(entitySchema, expression, withAttributes)
     return Scan<Entity, KeySchema>(scanInput)

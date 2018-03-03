@@ -1,8 +1,8 @@
 import { EntitySchema } from '../../'
 import Expression from '../filter/Expression'
+import { randomGenerator } from '../filter/randomGenerator'
 import { allResults } from './allResults'
 import { paginate } from './paginate'
-
 export default class DynamoScanWithAttributes<
     Entity,
     KeySchema
@@ -11,6 +11,9 @@ export default class DynamoScanWithAttributes<
     private _entitySchema: EntitySchema
     private _attributes: string[]
     private _expression?: Expression
+    private _expressionAttributeNames: {
+        [key: string]: string,
+    }
 
     constructor(
         entitySchema: EntitySchema,
@@ -18,16 +21,37 @@ export default class DynamoScanWithAttributes<
         expression?: Expression,
     ) {
         this._entitySchema = entitySchema
-        this._attributes = attributes
+        this.generateExpressionAttributeNames(attributes)
         this._expression = expression
+
     }
 
     public paginate(limit?: number, lastKey?: KeySchema) {
-        return paginate<Entity, KeySchema>(this._entitySchema, limit, lastKey, this._expression, this._attributes)
+        return paginate<Entity, KeySchema>(
+            this._entitySchema, limit, lastKey, this._expression, {
+                attributes: this._attributes,
+                expressionAttributeNames: this._expressionAttributeNames,
+            },
+        )
     }
 
     public allResults() {
-        return allResults<Entity, KeySchema>(this._entitySchema, this._expression, this._attributes)
+        return allResults<Entity, KeySchema>(
+            this._entitySchema, this._expression, {
+                attributes: this._attributes,
+                expressionAttributeNames: this._expressionAttributeNames,
+            },
+        )
+    }
+
+    private generateExpressionAttributeNames(attributes: string[]) {
+        this._attributes = new Array<string>()
+        this._expressionAttributeNames = attributes.reduce((acc, value) => {
+            const randomId = '#' + randomGenerator()
+            acc[randomId] = value
+            this._attributes.push(randomId)
+            return acc
+        }, {})
     }
 
 }

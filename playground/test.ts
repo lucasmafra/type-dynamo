@@ -5,12 +5,12 @@ async function test() {
     const users = await User
     .scan()
     .filter(
-        // match('companyName', isIn(['Appsimples', 'QuintoAndar'])),
-        // // .and.
-        match('age', isLessOrEqualTo(23)),
+        match('companyName', isIn(['Nubank', 'QuintoAndar']))
+        .or.
+        match('age', isLessOrEqualTo(25)),
     )
-    // .withAttributes(['id'])
-    .allResults()
+    .withAttributes(['id', 'name', 'age'])
+    .paginate()
 
     console.log(users.data)
 }

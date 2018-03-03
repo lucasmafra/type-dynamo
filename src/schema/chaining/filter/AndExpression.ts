@@ -3,6 +3,7 @@ import Expression from './Expression'
 import MatchExpression from './MatchExpression'
 import NotExpression from './NotExpression'
 import { ComparisonOperator, Operator } from './Operator'
+import { randomGenerator } from './randomGenerator'
 
 export default class AndExpression extends Expression {
 
@@ -20,15 +21,21 @@ export default class AndExpression extends Expression {
         }
 
         public match(operand: string, operator: Operator): MatchExpression {
+            const randomId = '#' + randomGenerator()
+            const expressionAttributeNames = {
+                [randomId]: operand,
+            }
             if (operator.type === 'function') {
                 return new MatchExpression(
-                    operator.value + `(${operand},${operator.functionOperand})`,
+                    operator.value + `(${randomId},${operator.functionOperand})`,
+                    expressionAttributeNames,
                     operator.expressionAttributeValues,
                     this.stack,
                 )
             } else {
                 return new MatchExpression(
-                    operand + ' ' + operator.value,
+                    randomId + ' ' + operator.value,
+                    expressionAttributeNames,
                     operator.expressionAttributeValues,
                     this.stack,
                 )
@@ -36,24 +43,39 @@ export default class AndExpression extends Expression {
         }
 
         public attributeExists(attribute: string): MatchExpression {
+            const randomId = '#' + randomGenerator()
+            const expressionAttributeNames = {
+                [randomId]: attribute,
+            }
             return new MatchExpression(
-                `attribute_exists(${attribute})`,
+                `attribute_exists(${randomId})`,
+                expressionAttributeNames,
                 undefined,
                 this.stack,
             )
         }
 
         public attributeNotExists(attribute: string): MatchExpression {
+            const randomId = '#' + randomGenerator()
+            const expressionAttributeNames = {
+                [randomId]: attribute,
+            }
             return new MatchExpression(
-                `attribute_not_exists(${attribute})`,
+                `attribute_not_exists(${randomId})`,
+                expressionAttributeNames,
                 undefined,
                 this.stack,
             )
         }
 
         public size(attribute: string, operator: ComparisonOperator): MatchExpression {
+            const randomId = '#' + randomGenerator()
+            const expressionAttributeNames = {
+                [randomId]: randomId,
+            }
             return new MatchExpression(
-                `size(${attribute}) ${operator.value}`,
+                `size(${randomId}) ${operator.value}`,
+                expressionAttributeNames,
                 operator.expressionAttributeValues,
                 this.stack,
             )
