@@ -4,6 +4,7 @@ class User {
     public id: string
     public email: string
     public name: string
+    public companyName: string
     public age: number
 }
 
@@ -15,16 +16,9 @@ export default defineTable(User, {
     globalIndexes: withGlobalIndexes(
         globalIndex(User, {
             indexName: 'emailIndex',
-            projectionType: 'ALL',
-            keySchema: keySchema(User, {
-                partitionKey: 'email',
-            }),
-        }),
-        globalIndex(User, {
-            indexName: 'otherIndex',
             projectionType: 'KEYS_ONLY',
             keySchema: keySchema(User, {
-                partitionKey: 'name',
+                partitionKey: 'email',
             }),
         }),
     ),

@@ -15,9 +15,8 @@
   "author": "lucasmafra",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.204.0",
-    "commander": "^2.11.0",
-    "reflect-metadata": "^0.1.10"
+    "aws-sdk": "^2.205.0",
+    "commander": "^2.11.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",

@@ -1,5 +1,7 @@
 import { EntitySchema } from '../../'
+import Expression from '../filter/Expression'
 import { allResults } from './allResults'
+import { filter } from './filter'
 import { paginate } from './paginate'
 import { withAttributes } from './withAttributes'
 
@@ -16,8 +18,8 @@ export default class DynamoScan<
         this._entitySchema = entitySchema
     }
 
-    public filter() {
-        // return Scan<Entity, KeySchema>(this._entitySchema)
+    public filter(expression: Expression) {
+        return filter<Entity, KeySchema>(this._entitySchema, expression)
     }
 
     public withAttributes<K extends keyof Entity>(attributes: K[]) {
@@ -25,7 +27,7 @@ export default class DynamoScan<
     }
 
     public paginate(limit?: number, lastKey?: KeySchema) {
-        return paginate(this._entitySchema, limit, lastKey)
+        return paginate<Entity, KeySchema>(this._entitySchema, limit, lastKey)
     }
 
     public allResults() {

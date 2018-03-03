@@ -12,7 +12,8 @@
       "no-empty-interface": false,
       "max-classes-per-file": false,
       "no-console": false,
-      "variable-name": false
+      "variable-name": false,
+      "unified-signatures": false
     },
     "rulesDirectory": []
 }

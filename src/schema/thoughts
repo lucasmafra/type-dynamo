@@ -53,10 +53,8 @@ batchGet =>
 
 query =>
         UsersOrders.
-        .query({
-            partitionKey: '1'
-        })
-        .withSortKeyCondition(isGreatherThan(10))
+        .query()
+        .withCondition(isGreatherThan(10))
         .filter('email', startsWith('lucas'))
         .withAttributes(['id', 'email'])
         .paginate({
