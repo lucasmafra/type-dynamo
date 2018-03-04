@@ -1,6 +1,6 @@
 import { EntitySchema } from '../../'
-import Expression from '../filter/Expression'
-import { randomGenerator } from '../filter/randomGenerator'
+import Expression from '../expressions/Expression'
+import { randomGenerator } from '../expressions/randomGenerator'
 import { allResults } from './allResults'
 import { paginate } from './paginate'
 export default class DynamoScanWithAttributes<

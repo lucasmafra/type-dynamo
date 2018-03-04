@@ -172,5 +172,9 @@ export function defineTable< // partitionKey and sortKey; globalIndex and localI
 
 export function defineTable(constructor: any, schema: any) {
     const tableSchema = buildTableSchema(schema)
-    return new DynamoORM(tableSchema, schema.globalIndexes, schema.localIndexes)
+    if (schema.globalIndexes || schema.localIndexes) {
+        return new DynamoORM(tableSchema, schema.globalIndexes, schema.localIndexes)
+    } else {
+        return new DynamoTable(tableSchema)
+    }
 }

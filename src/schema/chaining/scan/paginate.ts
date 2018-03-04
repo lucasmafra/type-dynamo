@@ -1,8 +1,8 @@
 import { DynamoDB } from 'aws-sdk'
 import { EntitySchema } from '../../'
 import { scan as Scan, ScanResult } from '../../../databaseOperations/scan'
-import Expression from '../filter/Expression'
-import { resolveExpression } from '../filter/resolveExpression'
+import Expression from '../expressions/Expression'
+import { resolveExpression } from '../expressions/resolveExpression'
 import { projectionExpression } from '../projectionExpression'
 
 function buildScanInput<KeySchema>(
