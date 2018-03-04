@@ -1,6 +1,6 @@
 QUERY METHODS
 
-scan => 
+scan => CHECK
         Users.onIndex.emailIndex
         .scan({
             parallelBatches?
@@ -53,9 +53,9 @@ batchGet =>
 
 query =>
         UsersOrders.
-        .query()
+        .query({ id: 'jsljdkla'})
         .withCondition(isGreatherThan(10))
-        .filter('email', startsWith('lucas'))
+        .filter(match('email', contains('lucas'))
         .withAttributes(['id', 'email'])
         .paginate({
             lastKey: {

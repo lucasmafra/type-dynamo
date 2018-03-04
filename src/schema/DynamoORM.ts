@@ -11,7 +11,6 @@ export default class DynamoORM<
     public onIndex: GlobalIndexes & LocalIndexes
     private globalIndexes: GlobalIndexes
     private localIndexes: LocalIndexes
-
     constructor(
         tableSchema: TableSchema,
         globalIndexes: GlobalIndexes,

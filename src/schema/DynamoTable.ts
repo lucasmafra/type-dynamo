@@ -14,19 +14,19 @@ class DynamoTable<Table, KeySchema> extends DynamoEntity<Table, KeySchema> {
     }
 
     public putItem() {
-        return Scan<Table, KeySchema>(this._entitySchema)
+        return Scan<Table, KeySchema>((this as any)._entitySchema)
     }
 
     public getItem() {
-        return Scan<Table, KeySchema>(this._entitySchema) // TODO GET ITEM
+        return Scan<Table, KeySchema>((this as any)._entitySchema) // TODO GET ITEM
     }
 
     public batchGet() {
-        return Scan<Table, KeySchema>(this._entitySchema) // TODO BATCH GET
+        return Scan<Table, KeySchema>((this as any)._entitySchema) // TODO BATCH GET
     }
 
     public batchWrite() {
-        return Scan<Table, KeySchema>(this._entitySchema) // // TODO BATCH WRITE
+        return Scan<Table, KeySchema>((this as any)._entitySchema) // // TODO BATCH WRITE
     }
 
 }

@@ -7,7 +7,7 @@ export class DynamoEntity<
     KeySchema
 > {
 
-    public _entitySchema: EntitySchema
+    protected _entitySchema: EntitySchema
 
     constructor(
         entitySchema: EntitySchema,
