@@ -11,11 +11,12 @@ class User {
 export default defineTable(User, {
     tableName: 'User',
     partitionKey: 'id',
-    // globalIndexes: withGlobalIndexes(
-    //     globalIndex(User, {
-    //         indexName: 'emailIndex',
-    //         projectionType: 'KEYS_ONLY',
-    //         partitionKey: 'email',
-    //     }),
-    // ),
+    sortKey: 'age',
+    globalIndexes: withGlobalIndexes(
+        globalIndex(User, {
+            indexName: 'emailIndex',
+            projectionType: 'KEYS_ONLY',
+            partitionKey: 'email',
+        }),
+    ),
 })

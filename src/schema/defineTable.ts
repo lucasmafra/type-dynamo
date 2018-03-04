@@ -26,7 +26,7 @@ export function defineTable< // partitionKey; no index
 ): DynamoTable<
     Table,
     Pick<Table, PartitionKey>,
-    undefined
+    {}
 >
 
 export function defineTable< // partitionKey and sortKey; no index
@@ -60,7 +60,7 @@ export function defineTable< // partitionKey; globalIndexes
 ): DynamoORM<
     Table,
     Pick<Table, PartitionKey>,
-    undefined,
+    {},
     GlobalIndexes,
     undefined
 >
@@ -100,7 +100,7 @@ export function defineTable< // partitionKey; localIndexes
 ): DynamoORM<
     Table,
     Pick<Table, PartitionKey>,
-    undefined,
+    {},
     undefined,
     LocalIndexes
 >
@@ -142,7 +142,7 @@ export function defineTable< // partitionKey; globalIndex and localIndex
     ): DynamoORM<
     Table,
     Pick<Table, PartitionKey>,
-    undefined,
+    {},
     GlobalIndexes,
     LocalIndexes
 >
