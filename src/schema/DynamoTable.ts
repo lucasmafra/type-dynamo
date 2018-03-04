@@ -2,7 +2,9 @@ import { scan as Scan, ScanResult } from '../databaseOperations/scan'
 import { TableSchema } from './'
 import { DynamoEntity } from './DynamoEntity'
 
-class DynamoTable<Table, KeySchema> extends DynamoEntity<Table, KeySchema> {
+class DynamoTable<Table, PartitionKey, SortKey> extends DynamoEntity<
+    Table, PartitionKey, SortKey
+> {
 
     constructor(
         tableSchema: TableSchema,
@@ -14,19 +16,19 @@ class DynamoTable<Table, KeySchema> extends DynamoEntity<Table, KeySchema> {
     }
 
     public putItem() {
-        return Scan<Table, KeySchema>((this as any)._entitySchema)
+        // return Scan<Table, KeySchema>((this as any)._entitySchema)
     }
 
     public getItem() {
-        return Scan<Table, KeySchema>((this as any)._entitySchema) // TODO GET ITEM
+        // return Scan<Table, KeySchema>((this as any)._entitySchema) // TODO GET ITEM
     }
 
     public batchGet() {
-        return Scan<Table, KeySchema>((this as any)._entitySchema) // TODO BATCH GET
+        // return Scan<Table, KeySchema>((this as any)._entitySchema) // TODO BATCH GET
     }
 
     public batchWrite() {
-        return Scan<Table, KeySchema>((this as any)._entitySchema) // // TODO BATCH WRITE
+        // return Scan<Table, KeySchema>((this as any)._entitySchema) // // TODO BATCH WRITE
     }
 
 }

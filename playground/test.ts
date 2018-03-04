@@ -7,7 +7,7 @@ async function test() {
     .filter(
         size('name', isLessOrEqualTo(6)),
     )
-    .withAttributes(['id', 'name', 'age'])
+    .withAttributes(['id', 'email'])
     .paginate()
 
     console.log(users.data)

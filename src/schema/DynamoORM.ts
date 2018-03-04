@@ -4,10 +4,11 @@ import DynamoTable from './DynamoTable'
 
 export default class DynamoORM<
     Table,
-    TableKeySchema,
+    PartitionKey,
+    SortKey,
     GlobalIndexes,
     LocalIndexes
-> extends DynamoTable<Table, TableKeySchema> {
+> extends DynamoTable<Table, PartitionKey, SortKey> {
     public onIndex: GlobalIndexes & LocalIndexes
     private globalIndexes: GlobalIndexes
     private localIndexes: LocalIndexes
@@ -26,7 +27,7 @@ export default class DynamoORM<
     private injectTableNameOnIndexes() {
         for (const index in this.onIndex as any) {
             if (this.onIndex.hasOwnProperty(index)) {
-                this.onIndex[index]._entitySchema.tableName = this._entitySchema.tableName
+                this.onIndex[index]._entitySchema.tableName = (this as any)._entitySchema.tableName
             }
         }
     }
