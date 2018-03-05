@@ -7,6 +7,20 @@ import { resolveExpression } from '../expressions/resolveExpression'
 import { projectionExpression } from '../projectionExpression'
 import { SortKeyCondition } from './withSortKeyCondition'
 
+function buildExclusiveStartKey<KeySchema>(lastKey: KeySchema) {
+    let result = {}
+    for (const propertyKey in lastKey) {
+        if (lastKey.hasOwnProperty(propertyKey)) {
+            result = Object.assign({}, result, {
+                [propertyKey]: {
+                    [typeof lastKey[propertyKey] === 'string' ? 'S' : 'N']: lastKey[propertyKey],
+                },
+            })
+        }
+    }
+    return result
+}
+
 function buildKeyConditionExpression<PartitionKey>(
     partitionKey: PartitionKey,
     sortKeyConditionExpression?: SortKeyCondition,
@@ -65,7 +79,7 @@ function buildQueryInput<PartitionKey, SortKey>(
         input.IndexName = entitySchema.indexSchema.indexName
     }
     if (lastKey) {
-        input.ExclusiveStartKey = lastKey as any
+        input.ExclusiveStartKey = buildExclusiveStartKey(lastKey) as any
     }
     if (filterExpression) {
         const resolvedExpression = resolveExpression((filterExpression as any).stack)
