@@ -78,6 +78,7 @@ export function beginsWith(subString: string): FunctionOperator {
                 ['S']: subString,
             },
         },
+        kind: 'beginsWith',
     }
 }
 
@@ -92,6 +93,7 @@ export function contains(operand: string): FunctionOperator {
                 ['S']: operand,
             },
         },
+        kind: 'contains',
     }
 }
 
@@ -106,6 +108,7 @@ export function isEqualTo(a: number | string): ComparisonOperator {
                 [type]: a.toString(),
             },
         },
+        kind: 'isEqualto',
     }
 }
 
@@ -120,6 +123,7 @@ export function isNotEqualTo(a: number | string): ComparisonOperator {
                 [type]: a.toString(),
             },
         },
+        kind: 'isNotEqualTo',
     }
 }
 
@@ -134,6 +138,7 @@ export function isGreatherThan(a: number | string): ComparisonOperator {
                 [type]: a.toString(),
             },
         },
+        kind: 'isGreatherThan',
     }
 }
 
@@ -148,6 +153,7 @@ export function isLessThan(a: number | string): ComparisonOperator {
                 [type]: a.toString(),
             },
         },
+        kind: 'isLessThan',
     }
 }
 
@@ -162,6 +168,7 @@ export function isLessOrEqualTo(a: number | string): ComparisonOperator {
                 [type]: a.toString(),
             },
         },
+        kind: 'isLessOrEqualTo',
     }
 }
 
@@ -176,6 +183,7 @@ export function isGreaterOrEqualTo(a: number | string): ComparisonOperator {
                 [type]: a.toString(),
             },
         },
+        kind: 'isGreatherOrEqualTo',
     }
 }
 
@@ -193,6 +201,7 @@ export function isBetween(b: number, c: number): ComparisonOperator {
                 ['N']: c.toString(),
             },
         },
+        kind: 'isBetween',
     }
 }
 
@@ -213,5 +222,6 @@ export function isIn(values: string[]): ComparisonOperator {
         value: result.slice(0, result.length - 2) + ')',
         type: 'comparison',
         expressionAttributeValues,
+        kind: 'isIn',
     }
 }

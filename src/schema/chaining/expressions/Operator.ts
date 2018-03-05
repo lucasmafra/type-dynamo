@@ -8,6 +8,7 @@ export interface Operator {
     functionOperand?: string
     type: 'function' | 'comparison',
     expressionAttributeValues: ExpressionAttributeValues
+    kind: string
 }
 
 export interface ComparisonOperator extends Operator {

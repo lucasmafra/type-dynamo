@@ -11,7 +11,6 @@ class User {
 export default defineTable(User, {
     tableName: 'User',
     partitionKey: 'id',
-    sortKey: 'age',
     globalIndexes: withGlobalIndexes(
         globalIndex(User, {
             indexName: 'emailIndex',
