@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk'
 import { EntitySchema } from '../../'
-import { query as Query, QueryResult } from '../../../databaseOperations/query'
+import { query as Query, queryAllResults, QueryResult } from '../../../databaseOperations/query'
 import Expression from '../expressions/Expression'
 import { randomGenerator } from '../expressions/randomGenerator'
 import { resolveExpression } from '../expressions/resolveExpression'
@@ -103,5 +103,5 @@ export function allResults<Entity, PartitionKey, SortKey>(
     const queryInput = buildQueryInput(
         entitySchema, partitionKey, sortKeyConditionExpression, expression, withAttributes,
     )
-    return Query<Entity, PartitionKey & SortKey>(queryInput)
+    return queryAllResults<Entity, PartitionKey & SortKey>(queryInput)
 }

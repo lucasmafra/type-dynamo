@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk'
 import { EntitySchema } from '../../'
-import { scan as Scan, ScanResult } from '../../../databaseOperations/scan'
+import { scan as Scan, scanAllResults, ScanResult } from '../../../databaseOperations/scan'
 import Expression from '../expressions/Expression'
 import { resolveExpression } from '../expressions/resolveExpression'
 import { projectionExpression } from '../projectionExpression'
@@ -50,5 +50,5 @@ export function allResults<Entity, KeySchema>(
     },
 ): Promise<Omit<ScanResult<Entity, KeySchema>, 'lastKey'>> {
     const scanInput = buildScanInput(entitySchema, expression, withAttributes)
-    return Scan<Entity, KeySchema>(scanInput)
+    return scanAllResults<Entity, KeySchema>(scanInput)
 }

@@ -7,7 +7,7 @@ import { resolveExpression } from '../expressions/resolveExpression'
 import { projectionExpression } from '../projectionExpression'
 import { SortKeyCondition } from './withSortKeyCondition'
 
-function buildExclusiveStartKey<KeySchema>(lastKey: KeySchema) {
+export function buildExclusiveStartKey<KeySchema>(lastKey: KeySchema) {
     let result = {}
     for (const propertyKey in lastKey) {
         if (lastKey.hasOwnProperty(propertyKey)) {
