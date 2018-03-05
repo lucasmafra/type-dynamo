@@ -1,10 +1,5 @@
 export type ProjectionType = 'ALL' | 'INCLUDE' | 'KEYS_ONLY'
 
-export interface KeySchema {
-    partitionKey: string,
-    sortKey?: string
-}
-
 export interface EntitySchema {
     tableName: string
     tableSchema?: TableSchema,
@@ -18,21 +13,19 @@ export interface IndexSchema {
     attributes?: string[]
     readCapacity: number
     writeCapacity: number
-    keySchema: {
-        partitionKey: string,
-        sortKey?: string,
-    },
+    partitionKey: string,
+    sortKey?: string,
 }
 
 export interface TableSchema {
     tableName: string
-    keySchema: KeySchema
+    partitionKey: string,
+    sortKey?: string
     readCapacity: number
     writeCapacity: number
 }
 
 export { defineTable } from './defineTable'
-export { keySchema } from './keySchema'
 export { globalIndex } from './globalIndex'
 export { withGlobalIndexes } from './withGlobalIndexes'
 export { localIndex } from './localIndex'

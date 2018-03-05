@@ -59,6 +59,17 @@ class DynamoToPromise {
             })
         })
     }
+
+    public async query(params: DynamoDB.QueryInput): Promise<DynamoDB.QueryOutput> {
+        return new Promise((resolve, reject) => {
+            this.dynamo.query(params, (err: AWS.AWSError, data: DynamoDB.DocumentClient.QueryOutput) => {
+                if (err) {
+                    return reject(err)
+                }
+                return resolve(data)
+            })
+        })
+    }
 }
 
 export default DynamoToPromise

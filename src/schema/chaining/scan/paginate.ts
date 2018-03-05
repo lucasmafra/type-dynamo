@@ -1,9 +1,23 @@
 import { DynamoDB } from 'aws-sdk'
 import { EntitySchema } from '../../'
 import { scan as Scan, ScanResult } from '../../../databaseOperations/scan'
-import Expression from '../filter/Expression'
-import { resolveExpression } from '../filter/resolveExpression'
+import Expression from '../expressions/Expression'
+import { resolveExpression } from '../expressions/resolveExpression'
 import { projectionExpression } from '../projectionExpression'
+
+export function buildExclusiveStartKey<KeySchema>(lastKey: KeySchema) {
+    let result = {}
+    for (const propertyKey in lastKey) {
+        if (lastKey.hasOwnProperty(propertyKey)) {
+            result = Object.assign({}, result, {
+                [propertyKey]: {
+                    [typeof lastKey[propertyKey] === 'string' ? 'S' : 'N']: lastKey[propertyKey],
+                },
+            })
+        }
+    }
+    return result
+}
 
 function buildScanInput<KeySchema>(
     entitySchema: EntitySchema,
@@ -25,7 +39,7 @@ function buildScanInput<KeySchema>(
         input.IndexName = entitySchema.indexSchema.indexName
     }
     if (lastKey) {
-        input.ExclusiveStartKey = lastKey as any
+        input.ExclusiveStartKey = buildExclusiveStartKey(lastKey) as any
     }
     if (filterExpression) {
         const resolvedExpression = resolveExpression((filterExpression as any).stack)

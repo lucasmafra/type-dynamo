@@ -2,7 +2,8 @@ import { scan as Scan, ScanResult } from '../databaseOperations/scan'
 import { IndexSchema } from './'
 import { DynamoEntity } from './DynamoEntity'
 
-class DynamoIndex<Index, KeySchema> extends DynamoEntity<Index, KeySchema> {
+class DynamoIndex<Index, PartitionKey, SortKey>
+    extends DynamoEntity<Index, PartitionKey, SortKey> {
 
     constructor(
         indexSchema: IndexSchema,

@@ -1,10 +1,12 @@
 import { scan as Scan, ScanResult } from '../databaseOperations/scan'
 import { EntitySchema } from './'
+import DynamoQuery from './chaining/query/Query'
 import DynamoScan from './chaining/scan/Scan'
 
 export class DynamoEntity<
     Entity,
-    KeySchema
+    PartitionKey,
+    SortKey
 > {
 
     protected _entitySchema: EntitySchema
@@ -16,11 +18,11 @@ export class DynamoEntity<
     }
 
     public scan() {
-        return new DynamoScan<Entity, KeySchema>(this._entitySchema)
+        return new DynamoScan<Entity, PartitionKey & SortKey>(this._entitySchema)
     }
 
-    public query() {
-        return new DynamoScan<Entity, KeySchema>(this._entitySchema)
+    public query(partitionKey: PartitionKey) {
+        return new DynamoQuery<Entity, PartitionKey, SortKey>(this._entitySchema, partitionKey)
     }
 
 }

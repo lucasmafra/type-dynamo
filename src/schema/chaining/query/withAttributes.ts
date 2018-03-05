@@ -3,9 +3,12 @@ import Expression from '../expressions/Expression'
 import { randomGenerator } from '../expressions/randomGenerator'
 import { allResults } from './allResults'
 import { paginate } from './paginate'
-export default class DynamoScanWithAttributes<
+import { SortKeyCondition } from './withSortKeyCondition'
+
+export default class DynamoQueryWithAttributes<
     Entity,
-    KeySchema
+    PartitionKey,
+    SortKey
 > {
 
     private _entitySchema: EntitySchema
@@ -14,21 +17,26 @@ export default class DynamoScanWithAttributes<
     private _expressionAttributeNames: {
         [key: string]: string,
     }
+    private _partitionKey: PartitionKey
+    private _sortKeyCondition?: SortKeyCondition
 
     constructor(
         entitySchema: EntitySchema,
         attributes: string[],
+        partitionKey: PartitionKey,
         expression?: Expression,
+        sortKeyCondition?: SortKeyCondition,
     ) {
         this._entitySchema = entitySchema
         this.generateExpressionAttributeNames(attributes)
         this._expression = expression
-
+        this._sortKeyCondition = sortKeyCondition
+        this._partitionKey = partitionKey
     }
 
-    public paginate(limit?: number, lastKey?: KeySchema) {
-        return paginate<Entity, KeySchema>(
-            this._entitySchema, limit, lastKey, this._expression, {
+    public paginate(limit?: number, lastKey?: PartitionKey & SortKey) {
+        return paginate<Entity, PartitionKey, SortKey>(
+            this._entitySchema, limit, this._partitionKey, lastKey, this._expression, this._sortKeyCondition, {
                 attributes: this._attributes,
                 expressionAttributeNames: this._expressionAttributeNames,
             },
@@ -36,8 +44,8 @@ export default class DynamoScanWithAttributes<
     }
 
     public allResults() {
-        return allResults<Entity, KeySchema>(
-            this._entitySchema, this._expression, {
+        return allResults<Entity, PartitionKey, SortKey>(
+            this._entitySchema, this._partitionKey, this._expression, this._sortKeyCondition, {
                 attributes: this._attributes,
                 expressionAttributeNames: this._expressionAttributeNames,
             },
@@ -56,8 +64,11 @@ export default class DynamoScanWithAttributes<
 
 }
 
-export function withAttributes<Entity, KeySchema, Attributes extends keyof Entity>(
-    entitySchema: EntitySchema, attributes: Attributes[], expression?: Expression,
-): DynamoScanWithAttributes<Pick<Entity, Attributes>, KeySchema> {
-    return new DynamoScanWithAttributes<Pick<Entity, Attributes>, KeySchema>(entitySchema, attributes, expression)
+export function withAttributes<Entity, PartitionKey, SortKey, Attributes extends keyof Entity>(
+    entitySchema: EntitySchema, attributes: Attributes[], partitionKey: PartitionKey,
+    expression?: Expression, sortKeyCondition?: SortKeyCondition,
+): DynamoQueryWithAttributes<Pick<Entity, Attributes>, PartitionKey, SortKey> {
+    return new DynamoQueryWithAttributes<Pick<Entity, Attributes>, PartitionKey, SortKey>(
+        entitySchema, attributes, partitionKey, expression, sortKeyCondition,
+    )
 }

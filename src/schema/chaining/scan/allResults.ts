@@ -1,9 +1,12 @@
 import { DynamoDB } from 'aws-sdk'
 import { EntitySchema } from '../../'
-import { scan as Scan, ScanResult } from '../../../databaseOperations/scan'
-import Expression from '../filter/Expression'
-import { resolveExpression } from '../filter/resolveExpression'
+import { scan as Scan, scanAllResults, ScanResult } from '../../../databaseOperations/scan'
+import Expression from '../expressions/Expression'
+import { resolveExpression } from '../expressions/resolveExpression'
 import { projectionExpression } from '../projectionExpression'
+
+type Diff<T extends string, U extends string> = ({[P in T]: P } & {[P in U]: never } & { [x: string]: never })[T];
+type Omit<T, K extends keyof T> = Pick<T, Diff<keyof T, K>>;
 
 function buildScanInput<KeySchema>(
     entitySchema: EntitySchema,
@@ -45,7 +48,7 @@ export function allResults<Entity, KeySchema>(
         attributes: string[],
         expressionAttributeNames: { [key: string]: string },
     },
-) {
+): Promise<Omit<ScanResult<Entity, KeySchema>, 'lastKey'>> {
     const scanInput = buildScanInput(entitySchema, expression, withAttributes)
-    return Scan<Entity, KeySchema>(scanInput)
+    return scanAllResults<Entity, KeySchema>(scanInput)
 }

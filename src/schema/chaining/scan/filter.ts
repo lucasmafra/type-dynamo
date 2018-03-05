@@ -1,5 +1,5 @@
 import { EntitySchema } from '../../'
-import Expression from '../filter/Expression'
+import Expression from '../expressions/Expression'
 import { allResults } from './allResults'
 import { paginate } from './paginate'
 import { withAttributes } from './withAttributes'
