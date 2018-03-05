@@ -1,7 +1,10 @@
 import ConditionExpression from './ConditionExpression'
 import MatchExpression from './MatchExpression'
 import NotExpression from './NotExpression'
-import { ComparisonOperator, FunctionOperator, Operator } from './Operator'
+import {
+    BeginsWith, ComparisonOperator, Contains, FunctionOperator, IsBetween, IsEqualTo,
+    IsGreaterOrEqualTo, IsGreaterThan, IsIn, IsLessOrEqualTo, IsLessThan, IsNotEqualTo, Operator,
+ } from './Operator'
 import { randomGenerator } from './randomGenerator'
 import { resolveExpression } from './resolveExpression'
 
@@ -67,7 +70,7 @@ export function size(attribute: string, operator: ComparisonOperator): MatchExpr
     )
 }
 
-export function beginsWith(subString: string): FunctionOperator {
+export function beginsWith(subString: string): BeginsWith {
     const randomId = ':' + randomGenerator()
     return {
         value: 'beginsWith',
@@ -82,7 +85,7 @@ export function beginsWith(subString: string): FunctionOperator {
     }
 }
 
-export function contains(operand: string): FunctionOperator {
+export function contains(operand: string): Contains {
     const randomId = ':' + randomGenerator()
     return {
         value: 'contains',
@@ -97,7 +100,7 @@ export function contains(operand: string): FunctionOperator {
     }
 }
 
-export function isEqualTo(a: number | string): ComparisonOperator {
+export function isEqualTo(a: number | string): IsEqualTo {
     const randomId = ':' + randomGenerator()
     const type = typeof a === 'string' ? 'S' : 'N'
     return {
@@ -108,11 +111,11 @@ export function isEqualTo(a: number | string): ComparisonOperator {
                 [type]: a.toString(),
             },
         },
-        kind: 'isEqualto',
+        kind: 'isEqualTo',
     }
 }
 
-export function isNotEqualTo(a: number | string): ComparisonOperator {
+export function isNotEqualTo(a: number | string): IsNotEqualTo {
     const randomId = ':' + randomGenerator()
     const type = typeof a === 'string' ? 'S' : 'N'
     return {
@@ -127,7 +130,7 @@ export function isNotEqualTo(a: number | string): ComparisonOperator {
     }
 }
 
-export function isGreatherThan(a: number | string): ComparisonOperator {
+export function isGreaterThan(a: number | string): IsGreaterThan {
     const randomId = ':' + randomGenerator()
     const type = typeof a === 'string' ? 'S' : 'N'
     return {
@@ -138,11 +141,11 @@ export function isGreatherThan(a: number | string): ComparisonOperator {
                 [type]: a.toString(),
             },
         },
-        kind: 'isGreatherThan',
+        kind: 'isGreaterThan',
     }
 }
 
-export function isLessThan(a: number | string): ComparisonOperator {
+export function isLessThan(a: number | string): IsLessThan {
     const randomId = ':' + randomGenerator()
     const type = typeof a === 'string' ? 'S' : 'N'
     return {
@@ -157,7 +160,7 @@ export function isLessThan(a: number | string): ComparisonOperator {
     }
 }
 
-export function isLessOrEqualTo(a: number | string): ComparisonOperator {
+export function isLessOrEqualTo(a: number | string): IsLessOrEqualTo {
     const randomId = ':' + randomGenerator()
     const type = typeof a === 'string' ? 'S' : 'N'
     return {
@@ -172,7 +175,7 @@ export function isLessOrEqualTo(a: number | string): ComparisonOperator {
     }
 }
 
-export function isGreaterOrEqualTo(a: number | string): ComparisonOperator {
+export function isGreaterOrEqualTo(a: number | string): IsGreaterOrEqualTo {
     const randomId = ':' + randomGenerator()
     const type = typeof a === 'string' ? 'S' : 'N'
     return {
@@ -183,11 +186,11 @@ export function isGreaterOrEqualTo(a: number | string): ComparisonOperator {
                 [type]: a.toString(),
             },
         },
-        kind: 'isGreatherOrEqualTo',
+        kind: 'isGreaterOrEqualTo',
     }
 }
 
-export function isBetween(b: number, c: number): ComparisonOperator {
+export function isBetween(b: number, c: number): IsBetween {
     const randomId1 = ':' + randomGenerator()
     const randomId2 = ':' + randomGenerator()
     return {
@@ -205,7 +208,7 @@ export function isBetween(b: number, c: number): ComparisonOperator {
     }
 }
 
-export function isIn(values: string[]): ComparisonOperator {
+export function isIn(values: string[]): IsIn {
     const randomIds = new Array<string>()
     const expressionAttributeValues = values.reduce((acc, value) => {
         const randomId = ':' + randomGenerator()

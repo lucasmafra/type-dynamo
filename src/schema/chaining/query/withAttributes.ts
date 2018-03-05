@@ -3,6 +3,7 @@ import Expression from '../expressions/Expression'
 import { randomGenerator } from '../expressions/randomGenerator'
 import { allResults } from './allResults'
 import { paginate } from './paginate'
+import { SortKeyCondition } from './withSortKeyCondition'
 
 export default class DynamoQueryWithAttributes<
     Entity,
@@ -17,30 +18,14 @@ export default class DynamoQueryWithAttributes<
         [key: string]: string,
     }
     private _partitionKey: PartitionKey
-    private _sortKeyCondition?: {
-        expression: string,
-        expressionAttributeNames: {
-            [key: string]: string,
-        },
-        expressionAttributeValues: {
-            [key: string]: string,
-        },
-    }
+    private _sortKeyCondition?: SortKeyCondition
 
     constructor(
         entitySchema: EntitySchema,
         attributes: string[],
         partitionKey: PartitionKey,
         expression?: Expression,
-        sortKeyCondition?: {
-            expression: string,
-            expressionAttributeNames: {
-                [key: string]: string,
-            },
-            expressionAttributeValues: {
-                [key: string]: string,
-            },
-        },
+        sortKeyCondition?: SortKeyCondition,
     ) {
         this._entitySchema = entitySchema
         this.generateExpressionAttributeNames(attributes)
@@ -81,15 +66,7 @@ export default class DynamoQueryWithAttributes<
 
 export function withAttributes<Entity, PartitionKey, SortKey, Attributes extends keyof Entity>(
     entitySchema: EntitySchema, attributes: Attributes[], partitionKey: PartitionKey,
-    expression?: Expression, sortKeyCondition?: {
-        expression: string,
-        expressionAttributeNames: {
-            [key: string]: string,
-        },
-        expressionAttributeValues: {
-            [key: string]: string,
-        },
-    },
+    expression?: Expression, sortKeyCondition?: SortKeyCondition,
 ): DynamoQueryWithAttributes<Pick<Entity, Attributes>, PartitionKey, SortKey> {
     return new DynamoQueryWithAttributes<Pick<Entity, Attributes>, PartitionKey, SortKey>(
         entitySchema, attributes, partitionKey, expression, sortKeyCondition,

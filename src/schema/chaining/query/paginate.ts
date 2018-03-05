@@ -5,18 +5,11 @@ import Expression from '../expressions/Expression'
 import { randomGenerator } from '../expressions/randomGenerator'
 import { resolveExpression } from '../expressions/resolveExpression'
 import { projectionExpression } from '../projectionExpression'
+import { SortKeyCondition } from './withSortKeyCondition'
 
 function buildKeyConditionExpression<PartitionKey>(
     partitionKey: PartitionKey,
-    sortKeyConditionExpression?: {
-        expression: string
-        expressionAttributeNames: {
-            [key: string]: string,
-        },
-        expressionAttributeValues: {
-            [key: string]: string,
-        },
-    },
+    sortKeyConditionExpression?: SortKeyCondition,
 ) {
     let keyConditionExpression: string = ''
     let expressionAttributeNames = {}
@@ -28,7 +21,7 @@ function buildKeyConditionExpression<PartitionKey>(
             keyConditionExpression += `${randomIdName} = ${randomIdValue}`
             expressionAttributeNames[randomIdName] = partitionKeyName
             expressionAttributeValues[randomIdValue] = {
-                [typeof partitionKey[partitionKeyName] === 'string' ? 'S' : 'N']: randomIdValue,
+                [typeof partitionKey[partitionKeyName] === 'string' ? 'S' : 'N']: partitionKey[partitionKeyName],
             }
         }
     }
@@ -52,15 +45,7 @@ function buildQueryInput<PartitionKey, SortKey>(
     entitySchema: EntitySchema,
     partitionKey: PartitionKey,
     limit: number,
-    sortKeyConditionExpression?: {
-        expression: string,
-        expressionAttributeNames: {
-            [key: string]: string,
-        },
-        expressionAttributeValues: {
-            [key: string]: string,
-        },
-    },
+    sortKeyConditionExpression?: SortKeyCondition,
     lastKey?: PartitionKey & SortKey,
     filterExpression?: Expression,
     withAttributes?: {
@@ -115,15 +100,7 @@ export function paginate<Entity, PartitionKey, SortKey>(
     partitionKey: PartitionKey,
     lastKey?: PartitionKey & SortKey,
     expression?: Expression,
-    sortKeyConditionExpression?: {
-        expression: string,
-        expressionAttributeNames: {
-            [key: string]: string,
-        },
-        expressionAttributeValues: {
-            [key: string]: string,
-        },
-    },
+    sortKeyConditionExpression?: SortKeyCondition,
     withAttributes?: {
         attributes: string[],
         expressionAttributeNames: {

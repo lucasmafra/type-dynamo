@@ -1,8 +1,16 @@
-import { isLessOrEqualTo, match, size } from '../src/schema/chaining/expressions'
+import { contains, isLessOrEqualTo, match, size } from '../src/schema/chaining/expressions'
 import User from './User'
 
-async function test() {
+async function scanTest() {
     const users = await User.scan().allResults()
 }
 
-test()
+async function queryTest() {
+    const users = await User
+    .query({ companyName: 'Appsimples'})
+    .withSortKeyCondition(isLessOrEqualTo(792245501000))
+    .allResults()
+}
+
+scanTest()
+queryTest()

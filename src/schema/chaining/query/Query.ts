@@ -5,11 +5,7 @@ import { allResults } from './allResults'
 import { filter } from './filter'
 import { paginate } from './paginate'
 import { withAttributes } from './withAttributes'
-
-interface SortKeyConditionOperator extends Operator {
-    kind: 'beginsWith' | 'isEqualTo' | 'isGreatherThan' | 'isLessThan' | 'isLessOrEqualTo'
-    | 'isGreatherOrEqualTo' | 'isBetween'
-}
+import { SortKeyConditionOperator, withSortKeyCondition } from './withSortKeyCondition'
 
 export default class DynamoQuery<
     Entity,
@@ -29,7 +25,9 @@ export default class DynamoQuery<
     }
 
     public withSortKeyCondition(sortKeyConditionOperator: SortKeyConditionOperator) {
-        // return allResults<Entity, PartitionKey & SortKey>(this._entitySchema)
+        return withSortKeyCondition<Entity, PartitionKey, SortKey>(
+            this._entitySchema, this._partitionKey, sortKeyConditionOperator,
+        )
     }
 
     public filter(expression: Expression) {
