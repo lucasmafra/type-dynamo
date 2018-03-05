@@ -8,7 +8,7 @@ async function scanTest() {
 async function queryTest() {
     const users = await User
     .query({ companyName: 'Appsimples'})
-    .withSortKeyCondition(isLessOrEqualTo(792245501000))
+    .withSortKeyCondition(isLessOrEqualTo((new Date(1998, 1, 1).getTime())))
     .allResults()
 }
 
