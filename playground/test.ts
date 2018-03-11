@@ -35,6 +35,18 @@ async function getTest() {
     console.log('GET', user.data)
 }
 
+async function batchGetTest() {
+    const users = await User
+                        .find([
+                            { companyName: 'QuintoAndar', hiringDate: 1457665937000 },
+                            { companyName: 'AppSimples', hiringDate: 1520737937000 },
+                        ])
+                        .withAttributes(['name'])
+                        .execute()
+    console.log('BATCHGET', users.data)
+}
+
 scanTest()
 queryTest()
 getTest()
+batchGetTest()

@@ -1,5 +1,5 @@
 import { TableSchema } from '../'
-import { DynamoGet, DynamoScan } from '../../chaining/find'
+import { DynamoBatchGet, DynamoGet, DynamoScan } from '../../chaining/find'
 import { DynamoEntityWithSimpleKey } from '../dynamo-entity'
 
 export class DynamoTableWithSimpleKey<Table, PartitionKey> extends DynamoEntityWithSimpleKey<
@@ -28,7 +28,9 @@ export class DynamoTableWithSimpleKey<Table, PartitionKey> extends DynamoEntityW
             return new DynamoScan<Table, PartitionKey>(this._entitySchema)
         }
         if (args.length) {
-            return new DynamoBatchGet<Table, PartitionKey>(this._entitySchema, args)
+            return new DynamoBatchGet<Table, PartitionKey>({
+                schema: this._entitySchema, keys: args,
+            })
         }
         return new DynamoGet<Table, PartitionKey>(
             { schema: this._entitySchema, key: args },

@@ -16,6 +16,17 @@ class DynamoToPromise {
         })
     }
 
+    public async batchGet(params: DynamoDB.BatchGetItemInput): Promise<DynamoDB.BatchGetItemOutput> {
+        return new Promise((resolve, reject) => {
+            this.dynamo.batchGet(params, (err: AWS.AWSError, data: DynamoDB.BatchGetItemOutput) => {
+                if (err) {
+                    return reject(err)
+                }
+                return resolve(data)
+            })
+        })
+    }
+
     public async getItem(params: DynamoDB.GetItemInput): Promise<DynamoDB.GetItemOutput> {
         return new Promise((resolve, reject) => {
             this.dynamo.get( params, (err: AWS.AWSError, data: DynamoDB.DocumentClient.GetItemOutput) => {
