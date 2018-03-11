@@ -32,7 +32,7 @@ export class DynamoQuery<
     }
 
     public withSortKeyCondition(operator: SortKeyConditionOperator) {
-        return new DynamoWithSortKeyCondition<Entity, PartitionKey, SortKey>(this._query.schema, operator, this._stack)
+        return new DynamoWithSortKeyCondition<Entity, PartitionKey & SortKey>(this._query.schema, operator, this._stack)
     }
 
     public filter(filterExpression: Expression) {

@@ -10,7 +10,9 @@ export function globalIndex< // partitionKey; keysOnly
         projectionType: 'KEYS_ONLY',
         partitionKey: PartitionKey,
     },
-): { [P in IndexName]: DynamoIndexWithSimpleKey<Pick<Table, PartitionKey>, Pick<Table, PartitionKey>> }
+): { [P in IndexName]: DynamoIndexWithSimpleKey<
+    Pick<Table, PartitionKey>,
+    Pick<Table, PartitionKey>> }
 
 export function globalIndex< // partitionKey and sortKey; keysOnly
     Table,

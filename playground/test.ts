@@ -46,7 +46,30 @@ async function batchGetTest() {
     console.log('BATCHGET', users.data)
 }
 
+async function scanOnIndexTest() {
+    const users = await User.onIndex.emailIndex
+                        .find()
+                        .filter(
+                            match('companyName', isIn(['Nubank', 'QuintoAndar']))
+                            .and.
+                            match('age', isLessOrEqualTo(25)),
+                        )
+                        .allResults()
+                        .execute()
+    console.log('SCAN ON INDEX', users.data)
+}
+
+async function queryOnIndexTest() {
+    const users = await User.onIndex.emailIndex
+                        .find({email: 'lucas.mafra95@gmail.com'})
+                        .allResults()
+                        .execute()
+    console.log('QUERY ON INDEX', users.data)
+}
+
 scanTest()
 queryTest()
 getTest()
 batchGetTest()
+scanOnIndexTest()
+queryOnIndexTest()

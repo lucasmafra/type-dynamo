@@ -31,8 +31,7 @@ export type SortKeyConditionOperator =
 
 export class DynamoWithSortKeyCondition<
     Entity,
-    PartitionKey,
-    SortKey
+    KeySchema
 > extends Chaining<QueryChainingKind> {
 
     private _withSortKeyCondition: WithSortKeyCondition
@@ -48,21 +47,21 @@ export class DynamoWithSortKeyCondition<
     }
 
     public filter(filterExpression: Expression) {
-        return new DynamoQueryFilter<Entity, PartitionKey & SortKey>(filterExpression, this._stack)
+        return new DynamoQueryFilter<Entity, KeySchema>(filterExpression, this._stack)
     }
 
     public withAttributes<K extends keyof Entity>(attributes: K[]) {
-        return new DynamoQueryWithAttributes<Pick<Entity, K>, PartitionKey & SortKey>(
+        return new DynamoQueryWithAttributes<Pick<Entity, K>, KeySchema>(
             attributes, this._stack,
         )
     }
 
-    public paginate(limit?: number, lastKey?: PartitionKey & SortKey) {
-        return new DynamoQueryPaginate<Entity, PartitionKey & SortKey>(this._stack, { limit, lastKey})
+    public paginate(limit?: number, lastKey?: KeySchema) {
+        return new DynamoQueryPaginate<Entity, KeySchema>(this._stack, { limit, lastKey})
     }
 
     public allResults() {
-        return new DynamoQueryAllResults<Entity, PartitionKey & SortKey>(this._stack)
+        return new DynamoQueryAllResults<Entity, KeySchema>(this._stack)
     }
 
     private buildSortKeyCondition(schema: EntitySchema, sortKeyConditionOperator: SortKeyConditionOperator) {
