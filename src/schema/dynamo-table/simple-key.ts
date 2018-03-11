@@ -6,6 +6,8 @@ export class DynamoTableWithSimpleKey<Table, PartitionKey> extends DynamoEntityW
     Table, PartitionKey
 > {
 
+    private mockData: Table[]
+
     constructor(
         tableSchema: TableSchema,
     ) {
@@ -43,6 +45,10 @@ export class DynamoTableWithSimpleKey<Table, PartitionKey> extends DynamoEntityW
 
     public delete() {
         // TODO
+    }
+
+    public mock(data: Table[]) {
+        this.mockData = data
     }
 
 }

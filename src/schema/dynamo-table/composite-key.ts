@@ -6,6 +6,8 @@ export class DynamoTableWithCompositeKey<Table, PartitionKey, SortKey> extends D
     Table, PartitionKey, SortKey
 > {
 
+    private mockData: Table[]
+
     constructor(
         tableSchema: TableSchema,
     ) {
@@ -51,6 +53,10 @@ export class DynamoTableWithCompositeKey<Table, PartitionKey, SortKey> extends D
 
     public delete() {
         // TODO
+    }
+
+    public mock(data: Table[]) {
+        this.mockData = data
     }
 
 }

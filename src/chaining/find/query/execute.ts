@@ -29,7 +29,7 @@ function extractFromStack<KeySchema>(stack: Array<Chaining<QueryChainingKind>>):
             case 'paginate': paginate = (current as any)._paginate
         }
     }
-    return { query, filter, withAttributes, paginate }
+    return { query, filter, withAttributes, paginate, withSortKeyCondition }
 }
 
 export function executeAllResults<Entity, KeySchema>(
