@@ -1,12 +1,7 @@
 QUERY METHODS
 
 scan => CHECK
-        Users.onIndex.emailIndex
-        .scan({
-            parallelBatches?
-            consistentRead?
-            consumedCapacity?
-        })
+        Users.scan()
         .filter(
             match('id', isGreatherThan(5))
             .and.
@@ -69,7 +64,7 @@ query =>
 
 ====================
 
-WRITE METHODS
+WRITE METHODS_partitionKey
 
 put =>
     Users
