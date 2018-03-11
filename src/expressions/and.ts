@@ -1,14 +1,14 @@
-import ConditionExpression from './ConditionExpression'
-import Expression from './Expression'
-import MatchExpression from './MatchExpression'
-import NotExpression from './NotExpression'
-import { ComparisonOperator, Operator } from './Operator'
-import { randomGenerator } from './randomGenerator'
+import ConditionExpression from './condition'
+import Expression from './expression'
+import MatchExpression from './match'
+import NotExpression from './not'
+import { ComparisonOperator, Operator } from './operator'
+import { randomGenerator } from './random-generator'
 
-export default class OrExpression extends Expression {
+export default class AndExpression extends Expression {
 
         constructor(currentStack: Expression[]) {
-            super('or', currentStack)
+            super('and', currentStack)
             this.stack.push(this)
         }
 

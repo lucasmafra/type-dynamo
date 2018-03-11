@@ -1,6 +1,6 @@
+import Expression from '../../../expressions/expression'
 import { EntitySchema } from '../../../schema'
 import { Chaining, CommonAllResults } from '../../common'
-import Expression from '../../expressions/Expression'
 import { ScanChainingKind } from './'
 import { executeAllResults } from './execute'
 

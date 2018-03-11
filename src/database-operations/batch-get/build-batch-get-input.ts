@@ -1,8 +1,7 @@
 import { DynamoDB } from 'aws-sdk'
 import { WithAttributes } from '../../chaining/common'
 import { BatchGet } from '../../chaining/find/batch-get/batch-get'
-import { projectionExpression } from '../../chaining/projectionExpression'
-import { buildKey } from '../helpers'
+import { buildKey, projectionExpression  } from '../helpers'
 
 export function buildBatchGetInput<KeySchema>(
     batchGet: BatchGet<KeySchema>,

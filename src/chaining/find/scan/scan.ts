@@ -1,6 +1,6 @@
+import Expression from '../../../expressions/expression'
 import { EntitySchema } from '../../../schema'
 import { Chaining } from '../../common'
-import Expression from '../../expressions/Expression'
 import { ScanChainingKind } from './'
 import { DynamoScanAllResults } from './all-results'
 import { DynamoScanFilter } from './filter'
@@ -25,7 +25,7 @@ export class DynamoScan<
     }
 
     public filter(filterExpression: Expression) {
-        return new DynamoScanFilter<Entity, KeySchema>(filterExpression, this._stack)
+        return new DynamoScanFilter<Entity, KeySchema>({filterExpression}, this._stack)
     }
 
     public withAttributes<K extends keyof Entity>(attributes: K[]) {

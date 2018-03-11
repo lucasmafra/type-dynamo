@@ -1,5 +1,5 @@
-import { randomGenerator } from '../chaining/expressions/randomGenerator'
 import { WithSortKeyCondition  } from '../chaining/find/query/with-sort-key-condition'
+import { randomGenerator } from '../expressions/random-generator'
 
 export function buildExclusiveStartKey<KeySchema>(lastKey: KeySchema) {
     let result = {}
@@ -13,6 +13,13 @@ export function buildExclusiveStartKey<KeySchema>(lastKey: KeySchema) {
         }
     }
     return result
+}
+
+export function projectionExpression(attributes: string[]) {
+    const result = attributes.reduce((acc, currentValue) => {
+        return acc + currentValue + ','
+    }, '')
+    return result.slice(0, result.length - 1)
 }
 
 export function buildKey<KeySchema>(key: KeySchema) {

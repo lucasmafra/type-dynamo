@@ -1,5 +1,5 @@
+import { randomGenerator } from '../../../expressions/random-generator'
 import { Chaining, CommonWithAttributes } from '../../common'
-import { randomGenerator } from '../../expressions/randomGenerator'
 import { GetChainingKind } from './'
 import { execute } from './execute'
 

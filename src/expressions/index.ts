@@ -1,12 +1,12 @@
-import ConditionExpression from './ConditionExpression'
-import MatchExpression from './MatchExpression'
-import NotExpression from './NotExpression'
+import ConditionExpression from './condition'
+import MatchExpression from './match'
+import NotExpression from './not'
 import {
     BeginsWith, ComparisonOperator, Contains, FunctionOperator, IsBetween, IsEqualTo,
     IsGreaterOrEqualTo, IsGreaterThan, IsIn, IsLessOrEqualTo, IsLessThan, IsNotEqualTo, Operator,
- } from './Operator'
-import { randomGenerator } from './randomGenerator'
-import { resolveExpression } from './resolveExpression'
+ } from './operator'
+import { randomGenerator } from './random-generator'
+import { resolveExpression } from './resolve-expression'
 
 export function condition(expression: ConditionExpression | MatchExpression | NotExpression): ConditionExpression {
     return new ConditionExpression(expression)

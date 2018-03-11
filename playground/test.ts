@@ -1,4 +1,4 @@
-import { isBetween, isIn, isLessOrEqualTo, match, size } from '../src/chaining/expressions'
+import { isBetween, isIn, isLessOrEqualTo, match, size } from '../src/expressions'
 import User from './User'
 
 async function scanTest() {

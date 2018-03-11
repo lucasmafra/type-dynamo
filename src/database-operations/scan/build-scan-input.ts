@@ -1,10 +1,10 @@
 import { DynamoDB } from 'aws-sdk'
 import { Filter, Paginate, WithAttributes } from '../../chaining/common'
-import Expression from '../../chaining/expressions/Expression'
-import { ResolvedExpression, resolveExpression } from '../../chaining/expressions/resolveExpression'
-import { projectionExpression } from '../../chaining/projectionExpression'
+import Expression from '../../expressions/expression'
+import { ResolvedExpression, resolveExpression } from '../../expressions/resolve-expression'
 import { EntitySchema } from '../../schema'
-import { buildExclusiveStartKey, mergeExpressionAttributeNames, mergeExpressionAttributeValues } from '../helpers'
+import { buildExclusiveStartKey, mergeExpressionAttributeNames,
+    mergeExpressionAttributeValues, projectionExpression } from '../helpers'
 import { DEFAULT_SCAN_LIMIT } from './constants'
 
 export function buildScanInput<KeySchema>(

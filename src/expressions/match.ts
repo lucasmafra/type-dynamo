@@ -1,7 +1,7 @@
-import AndExpression from './AndExpression'
-import Expression from './Expression'
-import { ExpressionAttributeValues } from './Operator'
-import OrExpression from './OrExpression'
+import AndExpression from './and'
+import Expression from './expression'
+import { ExpressionAttributeValues } from './operator'
+import OrExpression from './or'
 
 export default class MatchExpression extends Expression {
     public and: AndExpression

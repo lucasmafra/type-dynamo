@@ -1,6 +1,6 @@
+import Expression from '../../../expressions/expression'
 import { EntitySchema } from '../../../schema'
 import { Chaining } from '../../common'
-import Expression from '../../expressions/Expression'
 import { QueryChainingKind } from './'
 import { DynamoQueryAllResults } from './all-results'
 import { DynamoQueryFilter } from './filter'
@@ -36,7 +36,7 @@ export class DynamoQuery<
     }
 
     public filter(filterExpression: Expression) {
-        return new DynamoQueryFilter<Entity, PartitionKey & SortKey>(filterExpression, this._stack)
+        return new DynamoQueryFilter<Entity, PartitionKey & SortKey>({ filterExpression }, this._stack)
     }
 
     public withAttributes<K extends keyof Entity>(attributes: K[]) {

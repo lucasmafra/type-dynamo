@@ -1,8 +1,8 @@
-import AndExpression from './AndExpression'
-import ConditionExpression from './ConditionExpression'
-import Expression from './Expression'
-import MatchExpression from './MatchExpression'
-import OrExpression from './OrExpression'
+import AndExpression from './and'
+import ConditionExpression from './condition'
+import Expression from './expression'
+import MatchExpression from './match'
+import OrExpression from './or'
 
 export default class NotExpression extends Expression {
     public and: AndExpression

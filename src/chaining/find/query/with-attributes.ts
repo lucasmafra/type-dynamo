@@ -1,5 +1,5 @@
+import { randomGenerator } from '../../../expressions/random-generator'
 import { Chaining, CommonWithAttributes } from '../../common'
-import { randomGenerator } from '../../expressions/randomGenerator'
 import { QueryChainingKind } from './'
 import { DynamoQueryAllResults } from './all-results'
 import { DynamoQueryPaginate } from './paginate'

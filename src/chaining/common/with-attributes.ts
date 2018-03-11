@@ -1,4 +1,4 @@
-import { randomGenerator } from '../expressions/randomGenerator'
+import { randomGenerator } from '../../expressions/random-generator'
 import { Chaining } from './'
 
 export type WithAttributesType = 'withAttributes'

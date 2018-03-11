@@ -1,5 +1,5 @@
-import { Chaining, CommonFilter } from '../../common'
-import Expression from '../../expressions/Expression'
+import Expression from '../../../expressions/expression'
+import { Chaining, CommonFilter, Filter } from '../../common'
 import { ScanChainingKind } from './'
 import { DynamoScanAllResults } from './all-results'
 import { DynamoScanPaginate } from './paginate'
@@ -11,10 +11,10 @@ export class DynamoScanFilter<
 > extends CommonFilter<ScanChainingKind> {
 
     constructor(
-        filterExpression: Expression,
+        filter: Filter,
         currentStack: Array<Chaining<ScanChainingKind>>,
     ) {
-        super(filterExpression, currentStack)
+        super(filter, currentStack)
     }
 
     public withAttributes<K extends keyof Entity>(attributes: K[]) {

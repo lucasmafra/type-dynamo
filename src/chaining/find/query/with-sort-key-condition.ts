@@ -1,11 +1,11 @@
-import { EntitySchema } from '../../../schema'
-import { Chaining } from '../../common'
-import Expression from '../../expressions/Expression'
+import Expression from '../../../expressions/expression'
 import {
     BeginsWith, IsBetween, IsEqualTo, IsGreaterOrEqualTo, IsGreaterThan, IsLessOrEqualTo, IsLessThan,
     Operator,
- } from '../../expressions/Operator'
-import { randomGenerator } from '../../expressions/randomGenerator'
+ } from '../../../expressions/operator'
+import { randomGenerator } from '../../../expressions/random-generator'
+import { EntitySchema } from '../../../schema'
+import { Chaining } from '../../common'
 import { QueryChainingKind } from './'
 import { DynamoQueryAllResults } from './all-results'
 import { DynamoQueryFilter } from './filter'
@@ -47,7 +47,7 @@ export class DynamoWithSortKeyCondition<
     }
 
     public filter(filterExpression: Expression) {
-        return new DynamoQueryFilter<Entity, KeySchema>(filterExpression, this._stack)
+        return new DynamoQueryFilter<Entity, KeySchema>( {filterExpression }, this._stack)
     }
 
     public withAttributes<K extends keyof Entity>(attributes: K[]) {

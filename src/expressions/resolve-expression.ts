@@ -1,7 +1,7 @@
-import ConditionExpression from './ConditionExpression'
-import Expression from './Expression'
-import MatchExpression from './MatchExpression'
-import NotExpression from './NotExpression'
+import ConditionExpression from './condition'
+import Expression from './expression'
+import MatchExpression from './match'
+import NotExpression from './not'
 
 export interface ResolvedExpression {
     resolvedExpression: string,

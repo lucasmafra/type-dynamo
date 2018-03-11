@@ -1,13 +1,13 @@
 import { DynamoDB } from 'aws-sdk'
 import { Filter, Paginate, WithAttributes } from '../../chaining/common'
-import Expression from '../../chaining/expressions/Expression'
-import { randomGenerator } from '../../chaining/expressions/randomGenerator'
-import { ResolvedExpression, resolveExpression } from '../../chaining/expressions/resolveExpression'
 import { WithSortKeyCondition  } from '../../chaining/find/query/with-sort-key-condition'
-import { projectionExpression } from '../../chaining/projectionExpression'
+import Expression from '../../expressions/expression'
+import { randomGenerator } from '../../expressions/random-generator'
+import { ResolvedExpression, resolveExpression } from '../../expressions/resolve-expression'
 import { EntitySchema } from '../../schema'
 import {
-    buildExclusiveStartKey, buildKeyConditionExpression, mergeExpressionAttributeNames, mergeExpressionAttributeValues,
+    buildExclusiveStartKey, buildKeyConditionExpression, mergeExpressionAttributeNames,
+    mergeExpressionAttributeValues, projectionExpression,
 } from '../helpers'
 import { DEFAULT_QUERY_LIMIT } from './constants'
 

@@ -1,4 +1,4 @@
-import Expression from '../expressions/Expression'
+import Expression from '../../expressions/expression'
 import { Chaining } from './'
 
 export type FilterType = 'filter'
@@ -12,11 +12,11 @@ export class CommonFilter<ChainingKind> extends Chaining<ChainingKind | FilterTy
     private _filter: Filter
 
     constructor(
-        filterExpression: Expression,
+        filter: Filter,
         currentStack: Array<Chaining<ChainingKind>>,
     ) {
         super('filter', currentStack)
-        this._filter = { filterExpression }
+        this._filter = filter
         this._stack.push(this)
     }
 
