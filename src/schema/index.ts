@@ -25,8 +25,8 @@ export interface TableSchema {
     writeCapacity: number
 }
 
-export { defineTable } from './defineTable'
-export { globalIndex } from './globalIndex'
-export { withGlobalIndexes } from './withGlobalIndexes'
-export { localIndex } from './localIndex'
-export { withLocalIndexes } from './withLocalIndexes'
+export { defineTable } from './define-table'
+export { globalIndex } from './global-index'
+export { withGlobalIndexes } from './with-global-indexes'
+export { localIndex } from './local-index'
+export { withLocalIndexes } from './with-local-indexes'
