@@ -81,6 +81,17 @@ class DynamoToPromise {
             })
         })
     }
+
+    public async batchWrite(params: DynamoDB.BatchWriteItemInput): Promise<DynamoDB.BatchWriteItemOutput> {
+        return new Promise((resolve, reject) => {
+            this.dynamo.batchWrite(params, (err: AWS.AWSError, data: DynamoDB.DocumentClient.BatchWriteItemOutput) => {
+                if (err) {
+                    return reject(err)
+                }
+                return resolve(data)
+            })
+        })
+    }
 }
 
 export default DynamoToPromise

@@ -1,2 +1,2 @@
-export * from './build-get-input'
-export * from './get'
+export * from './build-batch-write-input'
+export * from './batch-write'

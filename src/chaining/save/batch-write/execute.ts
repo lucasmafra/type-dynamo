@@ -1,28 +1,21 @@
 import { DynamoDB } from 'aws-sdk'
-import { buildGetInput, get} from '../../../database-operations/get'
+import { batchWrite, buildBatchWriteInput} from '../../../database-operations/batch-write'
 import { EntitySchema } from '../../../schema'
 import { Chaining, Filter, Paginate, WithAttributes } from '../../common'
-import { GetChainingKind } from './'
-import { Get } from './get'
+import { BatchWriteChainingKind } from './'
+import { BatchWrite } from './batch-write'
 
-function extractFromStack<KeySchema>(stack: Array<Chaining<GetChainingKind>>): {
-    getMetadata: Get<KeySchema>,
-    withAttributes?: WithAttributes,
+function extractFromStack<Table>(stack: Array<Chaining<BatchWriteChainingKind>>): {
+    batchWriteMetadata: BatchWrite<Table>,
 } {
-    const getMetadata = (stack[0] as any)._get
-    let withAttributes: WithAttributes | undefined
-    for (const current of stack) {
-        switch ((current as any)._kind) {
-            case 'withAttributes': withAttributes = (current as any)._withAttributes
-        }
-    }
-    return { getMetadata, withAttributes }
+    const batchWriteMetadata = (stack[0] as any)._batchWrite
+    return { batchWriteMetadata }
 }
 
-export function execute<Entity, KeySchema>(
-    stack: Array<Chaining<GetChainingKind>>,
+export function execute<Entity>(
+    stack: Array<Chaining<BatchWriteChainingKind>>,
 ) {
-    const { getMetadata, withAttributes } = extractFromStack<KeySchema>(stack)
-    const getInput = buildGetInput(getMetadata, withAttributes)
-    return get<Entity, KeySchema>(getInput)
+    const { batchWriteMetadata } = extractFromStack<Entity>(stack)
+    const batchWriteInput = buildBatchWriteInput(batchWriteMetadata)
+    return batchWrite<Entity>(batchWriteMetadata.items, batchWriteInput)
 }

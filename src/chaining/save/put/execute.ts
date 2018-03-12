@@ -24,5 +24,5 @@ export function execute<Entity>(
 ) {
     const { putMetadata, withCondition } = extractFromStack<Entity>(stack)
     const putInput = buildPutInput(putMetadata, withCondition)
-    return put<Entity>(putInput)
+    return put<Entity>(putMetadata.item, putInput)
 }

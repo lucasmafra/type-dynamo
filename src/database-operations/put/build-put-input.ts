@@ -5,6 +5,7 @@ import { Put } from '../../chaining/save/put/put'
 import Expression from '../../expressions/expression'
 import { resolveExpression } from '../../expressions/resolve-expression'
 import { EntitySchema } from '../../schema'
+import { mergeExpressionAttributeNames, mergeExpressionAttributeValues } from '../helpers'
 export function buildPutInput<Table>(
     put: Put<Table>,
     conditionalExpression?: WithCondition,
@@ -16,8 +17,8 @@ export function buildPutInput<Table>(
     if (conditionalExpression) {
         const expression = resolveExpression((conditionalExpression.expression as any).stack)
         input.ConditionExpression = expression.resolvedExpression
-        input.ExpressionAttributeNames = expression.expressionAttributeNames
-        input.ExpressionAttributeValues = expression.expressionAttributeValues
+        input.ExpressionAttributeNames = mergeExpressionAttributeNames(expression.expressionAttributeNames)
+        input.ExpressionAttributeValues = mergeExpressionAttributeValues(expression.expressionAttributeValues)
     }
     return input
 }

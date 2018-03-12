@@ -15,9 +15,11 @@ export async function batchGet<
 >(tableName: string, batchGetInput: DynamoDB.BatchGetItemInput): Promise<BatchGetResult<Entity, KeySchema>> {
     let batchGetOutput = await dynamoPromise.batchGet(batchGetInput)
     let partialResult = batchGetOutput.Responses ? batchGetOutput.Responses[tableName] : new Array<Entity>()
-    while (batchGetOutput.UnprocessedKeys && batchGetOutput.UnprocessedKeys[tableName]) {
-        partialResult = (partialResult as any).concat((batchGetOutput.Responses![tableName]))
-        batchGetInput.RequestItems[tableName].Keys = batchGetOutput.UnprocessedKeys[tableName].Keys
+    while (batchGetOutput.UnprocessedKeys && Object.keys(batchGetOutput.UnprocessedKeys).length) {
+        if (batchGetOutput.Responses && batchGetOutput.Responses[tableName]) {
+            partialResult = (partialResult as any).concat((batchGetOutput.Responses[tableName]))
+        }
+        batchGetInput.RequestItems = batchGetOutput.UnprocessedKeys
         batchGetOutput = await dynamoPromise.batchGet(batchGetInput)
     }
     const result: BatchGetResult<Entity, KeySchema> = {

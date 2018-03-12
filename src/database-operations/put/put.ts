@@ -12,10 +12,10 @@ export interface PutResult<TableModel> {
 
 export async function put<
     Entity
->(putInput: DynamoDB.PutItemInput): Promise<PutResult<Entity>> {
+>(item: Entity, putInput: DynamoDB.PutItemInput): Promise<PutResult<Entity>> {
     const putOutput = await dynamoPromise.put(putInput)
     const result: PutResult<Entity> = {
-        data: putInput.Item as any,
+        data: item,
     }
     return result
 }

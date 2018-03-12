@@ -1,6 +1,6 @@
 import { TableSchema } from '../'
 import { DynamoBatchGet, DynamoGet, DynamoQuery, DynamoScan } from '../../chaining/find'
-import { DynamoPut } from '../../chaining/save'
+import { DynamoBatchWrite, DynamoPut } from '../../chaining/save'
 import { DynamoEntityWithCompositeKey } from '../dynamo-entity'
 
 export class DynamoTableWithCompositeKey<Table, PartitionKey, SortKey> extends DynamoEntityWithCompositeKey<
@@ -27,12 +27,12 @@ export class DynamoTableWithCompositeKey<Table, PartitionKey, SortKey> extends D
         if (!args) {
             return new DynamoScan<Table, PartitionKey & SortKey>(this._entitySchema)
         }
-        if (args.length) {
+        if (args.constructor === Array && args.length) {
             return new DynamoBatchGet<Table, PartitionKey & SortKey>({
                 schema: this._entitySchema, keys: args,
             })
         }
-        if (args.length === 0) { // call batch get without key
+        if (args.constructor === Array && args.length === 0) { // call batch get without key
             throw new Error('BatchGetWithNoKeys')
         }
         if (Object.keys(args).length === 2) {
@@ -47,10 +47,10 @@ export class DynamoTableWithCompositeKey<Table, PartitionKey, SortKey> extends D
     }
 
     public save(item: Table): DynamoPut<Table>
-    public save(items: Table[]): DynamoBatchWrite<Table[]>
+    public save(items: Table[]): DynamoBatchWrite<Table>
 
     public save(args: any) {
-        if (args.length === undefined) {
+        if (args.constructor !== Array) {
             return new DynamoPut<Table>({
                 schema: this._entitySchema,
                 item: args,

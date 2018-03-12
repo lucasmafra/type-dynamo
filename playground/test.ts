@@ -1,4 +1,4 @@
-import { isBetween, isIn, isLessOrEqualTo, match, size } from '../src/expressions'
+import { attributeNotExists, isBetween, isIn, isLessOrEqualTo, match, size } from '../src/expressions'
 import User from './User'
 
 async function scanTest() {
@@ -72,10 +72,32 @@ async function putTest() {
                         .save({
                             email: 'maithe@gmail.com',
                             name: 'Maithe',
-                            companyName: 'AppSimples',
-                            hiringDate: 1520748807000,
+                            companyName: 'Nubank',
+                            hiringDate: 1520748307000,
                             age: 22,
                         })
+                        .withCondition(
+                            attributeNotExists('companyName').and.attributeNotExists('hiringDate'),
+                        )
+                        .execute()
+    console.log('PUT', user.data)
+}
+
+async function batchWriteTest() {
+    const user = await  User
+                        .save([{
+                            email: 'lucas@gmail.com',
+                            name: 'Lucas',
+                            companyName: 'QuintoAndar',
+                            hiringDate: 1520748807000,
+                            age: 22,
+                        }, {
+                            email: 'paps@gmail.com',
+                            name: 'Paps',
+                            companyName: 'Nubank',
+                            hiringDate: 1520748807000,
+                            age: 22,
+                        }])
                         .execute()
     console.log('PUT', user.data)
 }
@@ -87,3 +109,4 @@ batchGetTest()
 scanOnIndexTest()
 queryOnIndexTest()
 putTest()
+batchWriteTest()

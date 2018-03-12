@@ -1,6 +1,5 @@
-import { WithAttributesType } from '../../common'
-import { GetType } from './get'
+import { BatchWriteType } from './batch-write'
 
-export type GetChainingKind = GetType | WithAttributesType
+export type BatchWriteChainingKind = BatchWriteType
 
-export { DynamoGet } from './get'
+export { DynamoBatchWrite } from './batch-write'
