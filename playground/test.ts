@@ -1,4 +1,5 @@
 import { attributeNotExists, isBetween, isIn, isLessOrEqualTo, match, size } from '../src/expressions'
+import { mockUsers } from './mock'
 import User from './User'
 
 async function scanTest() {
@@ -84,21 +85,7 @@ async function putTest() {
 }
 
 async function batchWriteTest() {
-    const user = await  User
-                        .save([{
-                            email: 'lucas@gmail.com',
-                            name: 'Lucas',
-                            companyName: 'QuintoAndar',
-                            hiringDate: 1520748807000,
-                            age: 22,
-                        }, {
-                            email: 'paps@gmail.com',
-                            name: 'Paps',
-                            companyName: 'Nubank',
-                            hiringDate: 1520748807000,
-                            age: 22,
-                        }])
-                        .execute()
+    const user = await  User.save(mockUsers).execute()
     console.log('PUT', user.data)
 }
 

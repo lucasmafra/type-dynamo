@@ -1,6 +1,4 @@
-import User from './User'
-
-User.mock([
+export const mockUsers = [
     {
         email: 'lucas.mafra95@gmail.com',
         name: 'Lucas',
@@ -36,4 +34,4 @@ User.mock([
         hiringDate: 1394507537000,
         age: 24,
     },
-])
+]
