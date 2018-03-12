@@ -2,7 +2,6 @@ import Expression from '../../expressions/expression'
 import { Chaining, CommonWithAttributes } from './'
 
 export type WithConditionType = 'withCondition'
-
 export interface WithCondition {
     expression: Expression
 }
