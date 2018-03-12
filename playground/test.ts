@@ -1,4 +1,4 @@
-import { attributeNotExists, isBetween, isIn, isLessOrEqualTo, match, size } from '../src/expressions'
+import { attributeNotExists, isBetween, isIn, isLessOrEqualTo, isNotEqualTo, match, size } from '../src/expressions'
 import { mockUsers } from './mock'
 import User from './User'
 
@@ -89,11 +89,31 @@ async function batchWriteTest() {
     console.log('PUT', user.data)
 }
 
-scanTest()
-queryTest()
-getTest()
-batchGetTest()
-scanOnIndexTest()
-queryOnIndexTest()
-putTest()
-batchWriteTest()
+async function deleteTest() {
+    const oldUser = await User
+                        .delete({companyName: 'Nubank', hiringDate: 1394507537000})
+                        .withCondition(match('companyName', isNotEqualTo('Nubank')))
+                        .execute()
+    console.log('DELETE', oldUser.data)
+}
+
+async function batchDeleteTest() {
+    await User
+        .delete([
+            { companyName: 'Nubank', hiringDate: 1394507537000 },
+            { companyName: 'QuintoAndar', hiringDate: 1426043537000 },
+        ])
+        .execute()
+    console.log('BATCH DELETE')
+}
+
+// scanTest()
+// queryTest()
+// getTest()
+// batchGetTest()
+// scanOnIndexTest()
+// queryOnIndexTest()
+// putTest()
+// batchWriteTest()
+// deleteTest()
+// batchDeleteTest()

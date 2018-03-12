@@ -1,4 +1,5 @@
 import { TableSchema } from '../'
+import { DynamoBatchDelete, DynamoDelete } from '../../chaining/delete'
 import { DynamoBatchGet, DynamoGet, DynamoQuery, DynamoScan } from '../../chaining/find'
 import { DynamoBatchWrite, DynamoPut } from '../../chaining/save'
 import { DynamoEntityWithCompositeKey } from '../dynamo-entity'
@@ -70,12 +71,22 @@ export class DynamoTableWithCompositeKey<Table, PartitionKey, SortKey> extends D
         // TODO
     }
 
-    public delete() {
-        // TODO
+    public delete(key: PartitionKey & SortKey): DynamoDelete<Table, PartitionKey & SortKey>
+    public delete(keys: Array<PartitionKey & SortKey>): DynamoBatchDelete<PartitionKey & SortKey>
+    public delete(args: any) {
+        if (args.constructor !== Array) {
+            return new DynamoDelete({
+                schema: this._entitySchema,
+                key: args,
+            })
+        } else {
+            if (!args.length) {
+                throw new Error('BatchDeleteWithNoKeys')
+            }
+            return new DynamoBatchDelete({
+                schema: this._entitySchema,
+                keys: args,
+            })
+        }
     }
-
-    public mock(data: Table[]) {
-        this.mockData = data
-    }
-
 }

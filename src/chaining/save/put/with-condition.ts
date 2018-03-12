@@ -1,7 +1,6 @@
 import { Chaining, CommonWithCondition, WithCondition } from '../../common'
 import { PutChainingKind } from './'
 import { execute } from './execute'
-export type PutType = 'put'
 
 export class DynamoPutWithCondition<
     Entity
