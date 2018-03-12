@@ -134,6 +134,17 @@ diff@^3.1.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.4.0.tgz#b1d85507daf3964828de54b37d0d73ba67dda56c"
 
+dispatch-recursive@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/dispatch-recursive/-/dispatch-recursive-2.0.0.tgz#8e458886b3c1f8371e0fc716d0829a8bd32ecc22"
+
+dynamodb-marshaler@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/dynamodb-marshaler/-/dynamodb-marshaler-2.0.0.tgz#ef0d7088be08e2b6679ef17279167e3ccd784729"
+  dependencies:
+    dispatch-recursive "^2.0.0"
+    lodash "^4.11.2"
+
 escape-string-regexp@1.0.5, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
@@ -200,7 +211,7 @@ jmespath@0.15.0:
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/jmespath/-/jmespath-0.15.0.tgz#a3f222a9aae9f966f5d27c796510e28091764217"
 
-lodash@^4.0.0:
+lodash@^4.0.0, lodash@^4.11.2:
   version "4.17.5"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
 

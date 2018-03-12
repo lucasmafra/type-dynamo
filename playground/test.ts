@@ -67,9 +67,23 @@ async function queryOnIndexTest() {
     console.log('QUERY ON INDEX', users.data)
 }
 
+async function putTest() {
+    const user = await  User
+                        .save({
+                            email: 'maithe@gmail.com',
+                            name: 'Maithe',
+                            companyName: 'AppSimples',
+                            hiringDate: 1520748807000,
+                            age: 22,
+                        })
+                        .execute()
+    console.log('PUT', user.data)
+}
+
 scanTest()
 queryTest()
 getTest()
 batchGetTest()
 scanOnIndexTest()
 queryOnIndexTest()
+putTest()

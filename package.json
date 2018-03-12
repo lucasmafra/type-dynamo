@@ -16,7 +16,8 @@
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "git+https://git@github.com/lucasmafra/aws-sdk-js.git",
-    "commander": "^2.11.0"
+    "commander": "^2.11.0",
+    "dynamodb-marshaler": "^2.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",

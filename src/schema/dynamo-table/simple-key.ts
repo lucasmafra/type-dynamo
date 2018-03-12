@@ -1,5 +1,6 @@
 import { TableSchema } from '../'
 import { DynamoBatchGet, DynamoGet, DynamoScan } from '../../chaining/find'
+import { DynamoPut } from '../../chaining/save'
 import { DynamoEntityWithSimpleKey } from '../dynamo-entity'
 
 export class DynamoTableWithSimpleKey<Table, PartitionKey> extends DynamoEntityWithSimpleKey<
@@ -37,8 +38,24 @@ export class DynamoTableWithSimpleKey<Table, PartitionKey> extends DynamoEntityW
         )
     }
 
-    public save() {
-        // TODO
+    public save(item: Table): DynamoPut<Table>
+    public save(items: Table[]): DynamoBatchWrite<Table[]>
+
+    public save(args: any) {
+        if (args.length === undefined) {
+            return new DynamoPut<Table>({
+                schema: this._entitySchema,
+                item: args,
+            })
+        }
+        if (args.length) {
+            return new DynamoBatchWrite<Table>({
+                schema: this._entitySchema,
+                items: args,
+            })
+        } else {
+            throw new Error('BatchWriteWithNoItems')
+        }
     }
 
     public update() {
