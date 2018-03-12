@@ -67,7 +67,7 @@ export class DynamoTableWithSimpleKey<Table, PartitionKey> extends DynamoEntityW
     }
 
     public delete(key: PartitionKey): DynamoDelete<Table, PartitionKey>
-    public delete(keys: PartitionKey[]): DynamoBatchDelete<Table, PartitionKey>
+    public delete(keys: PartitionKey[]): DynamoBatchDelete<PartitionKey>
     public delete(args: any) {
         if (args.constructor !== Array) {
             return new DynamoDelete({

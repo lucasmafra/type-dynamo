@@ -72,7 +72,7 @@ export class DynamoTableWithCompositeKey<Table, PartitionKey, SortKey> extends D
     }
 
     public delete(key: PartitionKey & SortKey): DynamoDelete<Table, PartitionKey & SortKey>
-    public delete(keys: Array<PartitionKey & SortKey>): DynamoBatchDelete<Table, PartitionKey & SortKey>
+    public delete(keys: Array<PartitionKey & SortKey>): DynamoBatchDelete<PartitionKey & SortKey>
     public delete(args: any) {
         if (args.constructor !== Array) {
             return new DynamoDelete({

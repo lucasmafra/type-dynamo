@@ -97,6 +97,16 @@ async function deleteTest() {
     console.log('DELETE', oldUser.data)
 }
 
+async function batchDeleteTest() {
+    await User
+        .delete([
+            { companyName: 'Nubank', hiringDate: 1394507537000 },
+            { companyName: 'QuintoAndar', hiringDate: 1426043537000 },
+        ])
+        .execute()
+    console.log('BATCH DELETE')
+}
+
 // scanTest()
 // queryTest()
 // getTest()
@@ -105,4 +115,5 @@ async function deleteTest() {
 // queryOnIndexTest()
 // putTest()
 // batchWriteTest()
-deleteTest()
+// deleteTest()
+// batchDeleteTest()
