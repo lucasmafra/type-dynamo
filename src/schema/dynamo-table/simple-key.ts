@@ -2,6 +2,7 @@ import { TableSchema } from '../'
 import { DynamoBatchDelete, DynamoDelete } from '../../chaining/delete'
 import { DynamoBatchGet, DynamoGet, DynamoScan } from '../../chaining/find'
 import { DynamoBatchWrite, DynamoPut } from '../../chaining/save'
+import { DynamoUpdate, ExplicitKeyItemType, ImplicityKeyItemType } from '../../chaining/update'
 import { DynamoEntityWithSimpleKey } from '../dynamo-entity'
 
 export class DynamoTableWithSimpleKey<Table, PartitionKey> extends DynamoEntityWithSimpleKey<
@@ -62,8 +63,25 @@ export class DynamoTableWithSimpleKey<Table, PartitionKey> extends DynamoEntityW
         }
     }
 
-    public update() {
-        // TODO
+    public update(key: PartitionKey, item: ExplicitKeyItemType<Table, PartitionKey>):
+        DynamoUpdate<Table, PartitionKey>
+
+    public update(item: ImplicityKeyItemType<Table, PartitionKey>):
+        DynamoUpdate<Table, PartitionKey>
+
+    public update(...args: any[]) {
+        if (args.length === 2) {
+            return new DynamoUpdate({
+                schema: this._entitySchema,
+                key: args[0],
+                item: args[1],
+            } as any)
+        } else {
+            return new DynamoUpdate({
+                schema: this._entitySchema,
+                item: args[0],
+            })
+        }
     }
 
     public delete(key: PartitionKey): DynamoDelete<Table, PartitionKey>

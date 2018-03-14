@@ -2,8 +2,8 @@ import { TableSchema } from '../'
 import { DynamoBatchDelete, DynamoDelete } from '../../chaining/delete'
 import { DynamoBatchGet, DynamoGet, DynamoQuery, DynamoScan } from '../../chaining/find'
 import { DynamoBatchWrite, DynamoPut } from '../../chaining/save'
+import { DynamoUpdate, ExplicitKeyItemType, ImplicityKeyItemType } from '../../chaining/update'
 import { DynamoEntityWithCompositeKey } from '../dynamo-entity'
-
 export class DynamoTableWithCompositeKey<Table, PartitionKey, SortKey> extends DynamoEntityWithCompositeKey<
     Table, PartitionKey, SortKey
 > {
@@ -67,8 +67,24 @@ export class DynamoTableWithCompositeKey<Table, PartitionKey, SortKey> extends D
         }
     }
 
-    public update() {
-        // TODO
+    public update(key: PartitionKey & SortKey, item: ExplicitKeyItemType<Table, PartitionKey & SortKey>):
+        DynamoUpdate<Table, PartitionKey & SortKey>
+    public update(item: ImplicityKeyItemType<Table, PartitionKey & SortKey>):
+        DynamoUpdate<Table, PartitionKey & SortKey>
+
+    public update(...args: any[]) {
+        if (args.length === 2) {
+            return new DynamoUpdate({
+                schema: this._entitySchema,
+                key: args[0],
+                item: args[1],
+            } as any)
+        } else {
+            return new DynamoUpdate({
+                schema: this._entitySchema,
+                item: args[0],
+            })
+        }
     }
 
     public delete(key: PartitionKey & SortKey): DynamoDelete<Table, PartitionKey & SortKey>
