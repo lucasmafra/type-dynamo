@@ -17,5 +17,5 @@ export function execute<Entity>(
 ) {
     const { batchWriteMetadata } = extractFromStack<Entity>(stack)
     const batchWriteInput = buildBatchWriteInput(batchWriteMetadata)
-    return batchWrite<Entity>(batchWriteMetadata.items, batchWriteInput)
+    return batchWrite<Entity>(batchWriteMetadata.items, batchWriteInput, batchWriteMetadata.schema.dynamoPromise)
 }

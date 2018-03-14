@@ -17,5 +17,5 @@ export function execute<Entity>(
 ) {
     const { batchDeleteMetadata } = extractFromStack<Entity>(stack)
     const batchDeleteInput = buildBatchDeleteInput(batchDeleteMetadata)
-    return batchDelete<Entity>(batchDeleteMetadata.keys, batchDeleteInput)
+    return batchDelete<Entity>(batchDeleteMetadata.keys, batchDeleteInput, batchDeleteMetadata.schema.dynamoPromise)
 }

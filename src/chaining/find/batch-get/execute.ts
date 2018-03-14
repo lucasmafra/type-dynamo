@@ -24,5 +24,7 @@ export function execute<Entity, KeySchema>(
 ) {
     const { batchGetMetadata, withAttributes } = extractFromStack<KeySchema>(stack)
     const batchGetInput = buildBatchGetInput(batchGetMetadata, withAttributes)
-    return batchGet<Entity, KeySchema>(batchGetMetadata.schema.tableName, batchGetInput)
+    return batchGet<Entity, KeySchema>(
+        batchGetMetadata.schema.tableName, batchGetInput, batchGetMetadata.schema.dynamoPromise,
+    )
 }

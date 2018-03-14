@@ -11,7 +11,7 @@ export class DynamoIndexWithCompositeKey<Index, PartitionKey, SortKey>
         super({
             tableName: indexSchema.tableName,
             indexSchema,
-        })
+        } as any)
     }
 
     public find(): DynamoScan<Index, PartitionKey & SortKey>

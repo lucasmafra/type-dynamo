@@ -24,5 +24,5 @@ export function execute<Entity, KeySchema>(
 ) {
     const { getMetadata, withAttributes } = extractFromStack<KeySchema>(stack)
     const getInput = buildGetInput(getMetadata, withAttributes)
-    return get<Entity, KeySchema>(getInput)
+    return get<Entity, KeySchema>(getInput, getMetadata.schema.dynamoPromise)
 }

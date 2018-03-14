@@ -2,10 +2,6 @@ import { DynamoDB } from 'aws-sdk'
 import { Omit } from '../../helpers'
 import DynamoToPromise from '../dynamo-to-promise'
 import { buildExclusiveStartKey } from '../helpers'
-const dynamoPromise = new DynamoToPromise(new DynamoDB.DocumentClient({
-    region: 'localhost',
-    endpoint: 'http://localhost:8000',
-}))
 
 export interface QueryResult<TableModel, KeySchema> {
     data: TableModel[]
@@ -14,7 +10,7 @@ export interface QueryResult<TableModel, KeySchema> {
 
 export async function queryPaginate<
     Entity, KeySchema
->(queryInput: DynamoDB.QueryInput): Promise<QueryResult<Entity, KeySchema>> {
+>(queryInput: DynamoDB.QueryInput, dynamoPromise: DynamoToPromise): Promise<QueryResult<Entity, KeySchema>> {
     const queryOutput = await dynamoPromise.query(queryInput)
     const result: QueryResult<Entity, KeySchema> = {
         data: queryOutput.Items as any,
@@ -25,7 +21,9 @@ export async function queryPaginate<
 
 export async function queryAllResults<
     Entity, KeySchema
-    >(queryInput: DynamoDB.QueryInput): Promise<Omit<QueryResult<Entity, KeySchema>, 'lastKey'>> {
+    >(
+        queryInput: DynamoDB.QueryInput, dynamoPromise: DynamoToPromise,
+    ): Promise<Omit<QueryResult<Entity, KeySchema>, 'lastKey'>> {
     let lastKey
     const result: QueryResult<Entity, KeySchema> = {} as any
     do {

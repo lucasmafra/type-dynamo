@@ -24,5 +24,5 @@ export function execute<Entity, KeySchema>(
 ) {
     const { deleteMetadata, withCondition } = extractFromStack<Entity, KeySchema>(stack)
     const deleteInput = buildDeleteInput(deleteMetadata, withCondition)
-    return deleteItem<Entity>(deleteInput)
+    return deleteItem<Entity>(deleteInput, deleteMetadata.schema.dynamoPromise)
 }

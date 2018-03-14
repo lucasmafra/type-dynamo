@@ -1,9 +1,12 @@
+import DynamoPromise from '../database-operations/dynamo-to-promise'
+
 export type ProjectionType = 'ALL' | 'INCLUDE' | 'KEYS_ONLY'
 
 export interface EntitySchema {
     tableName: string
     tableSchema?: TableSchema,
     indexSchema?: IndexSchema
+    dynamoPromise: DynamoPromise
 }
 
 export interface IndexSchema {
@@ -25,7 +28,6 @@ export interface TableSchema {
     writeCapacity: number
 }
 
-export { defineTable } from './define-table'
 export { globalIndex } from './global-index'
 export { withGlobalIndexes } from './with-global-indexes'
 export { localIndex } from './local-index'

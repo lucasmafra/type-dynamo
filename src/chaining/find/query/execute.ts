@@ -37,7 +37,7 @@ export function executeAllResults<Entity, KeySchema>(
 ) {
     const { query, filter, withSortKeyCondition, withAttributes } = extractFromStack<KeySchema>(stack)
     const queryInput = buildQueryInput(query, withSortKeyCondition, filter, withAttributes)
-    return queryAllResults<Entity, KeySchema>(queryInput)
+    return queryAllResults<Entity, KeySchema>(queryInput, query.schema.dynamoPromise)
 }
 
 export function executePaginate<Entity, KeySchema>(
@@ -45,5 +45,5 @@ export function executePaginate<Entity, KeySchema>(
 ) {
     const { query, filter, withSortKeyCondition, withAttributes, paginate } = extractFromStack(stack)
     const queryInput = buildQueryInput(query, withSortKeyCondition, filter, withAttributes, paginate)
-    return queryPaginate<Entity, KeySchema>(queryInput)
+    return queryPaginate<Entity, KeySchema>(queryInput, query.schema.dynamoPromise)
 }

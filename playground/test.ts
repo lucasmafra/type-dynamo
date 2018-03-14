@@ -130,7 +130,7 @@ async function updateTestWithImplicit() {
     console.log('UPDATE', updatedUser.data)
 }
 
-// scanTest()
+scanTest()
 // queryTest()
 // getTest()
 // batchGetTest()

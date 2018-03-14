@@ -2,6 +2,7 @@ import { DynamoIndexWithCompositeKey, DynamoIndexWithSimpleKey } from './dynamo-
 
 export function globalIndex< // partitionKey; keysOnly
     Table,
+    TableSchema,
     IndexName extends string,
     PartitionKey extends keyof Table
     >(
@@ -11,11 +12,12 @@ export function globalIndex< // partitionKey; keysOnly
         partitionKey: PartitionKey,
     },
 ): { [P in IndexName]: DynamoIndexWithSimpleKey<
-    Pick<Table, PartitionKey>,
+    Pick<Table, PartitionKey> & TableSchema,
     Pick<Table, PartitionKey>> }
 
 export function globalIndex< // partitionKey and sortKey; keysOnly
     Table,
+    TableSchema,
     IndexName extends string,
     PartitionKey extends keyof Table,
     SortKey extends keyof Table
@@ -28,12 +30,13 @@ export function globalIndex< // partitionKey and sortKey; keysOnly
         },
 ): {
     [P in IndexName]: DynamoIndexWithCompositeKey<
-        Pick<Table, PartitionKey & SortKey>, Pick<Table, PartitionKey>, Pick<Table, SortKey>
+        Pick<Table, PartitionKey & SortKey> & TableSchema, Pick<Table, PartitionKey>, Pick<Table, SortKey>
     >
 }
 
 export function globalIndex< // partitionKey; ALL
     Table,
+    TableSchema,
     IndexName extends string,
     PartitionKey extends keyof Table
     >(
@@ -46,6 +49,7 @@ export function globalIndex< // partitionKey; ALL
 
 export function globalIndex< // partitionKey and sortKey; ALL
     Table,
+    TableSchema,
     IndexName extends string,
     PartitionKey extends keyof Table,
     SortKey extends keyof Table
@@ -62,6 +66,7 @@ export function globalIndex< // partitionKey and sortKey; ALL
 
 export function globalIndex< // partitionKey; INCLUDE
     Table,
+    TableSchema,
     IndexName extends string,
     PartitionKey extends keyof Table,
     ProjectionAttributes extends keyof Table
@@ -73,12 +78,13 @@ export function globalIndex< // partitionKey; INCLUDE
     partitionKey: PartitionKey,
 },
 ): { [P in IndexName]: DynamoIndexWithSimpleKey<
-    Pick<Table, PartitionKey | ProjectionAttributes>,
+    Pick<Table, PartitionKey | ProjectionAttributes> & TableSchema,
     Pick<Table, PartitionKey>
 > }
 
 export function globalIndex< // partitionKey and sortKey; INCLUDE
     Table,
+    TableSchema,
     IndexName extends string,
     PartitionKey extends keyof Table,
     SortKey extends keyof Table,
@@ -92,7 +98,7 @@ export function globalIndex< // partitionKey and sortKey; INCLUDE
     sortKey: SortKey,
 },
     ): { [P in IndexName]: DynamoIndexWithCompositeKey<
-    Pick<Table, PartitionKey | SortKey | ProjectionAttributes>,
+    Pick<Table, PartitionKey | SortKey | ProjectionAttributes> & TableSchema,
     Pick<Table, PartitionKey>,
     Pick<Table, SortKey>
 > }

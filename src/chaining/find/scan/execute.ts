@@ -29,7 +29,7 @@ export function executeAllResults<Entity, KeySchema>(
 ) {
     const { schema, filter, withAttributes } = extractFromStack<KeySchema>(stack)
     const scanInput = buildScanInput(schema, filter, withAttributes)
-    return scanAllResults<Entity, KeySchema>(scanInput)
+    return scanAllResults<Entity, KeySchema>(scanInput, schema.dynamoPromise)
 }
 
 export function executePaginate<Entity, KeySchema>(
@@ -37,5 +37,5 @@ export function executePaginate<Entity, KeySchema>(
 ) {
     const { schema, filter, withAttributes, paginate } = extractFromStack(stack)
     const scanInput = buildScanInput(schema, filter, withAttributes, paginate)
-    return scanPaginate<Entity, KeySchema>(scanInput)
+    return scanPaginate<Entity, KeySchema>(scanInput, schema.dynamoPromise)
 }

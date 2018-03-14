@@ -12,7 +12,7 @@ export class DynamoIndexWithSimpleKey<Index, PartitionKey>
         super({
             tableName: indexSchema.tableName,
             indexSchema,
-        })
+        } as any)
     }
 
     public find(): DynamoScan<Index, PartitionKey>

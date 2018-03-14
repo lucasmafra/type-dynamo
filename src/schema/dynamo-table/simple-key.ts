@@ -3,6 +3,7 @@ import { DynamoBatchDelete, DynamoDelete } from '../../chaining/delete'
 import { DynamoBatchGet, DynamoGet, DynamoScan } from '../../chaining/find'
 import { DynamoBatchWrite, DynamoPut } from '../../chaining/save'
 import { DynamoUpdate, ExplicitKeyItemType, ImplicityKeyItemType } from '../../chaining/update'
+import DynamoPromise from '../../database-operations/dynamo-to-promise'
 import { DynamoEntityWithSimpleKey } from '../dynamo-entity'
 
 export class DynamoTableWithSimpleKey<Table, PartitionKey> extends DynamoEntityWithSimpleKey<
@@ -13,10 +14,12 @@ export class DynamoTableWithSimpleKey<Table, PartitionKey> extends DynamoEntityW
 
     constructor(
         tableSchema: TableSchema,
+        dynamoPromise: DynamoPromise,
     ) {
         super({
             tableName: tableSchema.tableName,
             tableSchema,
+            dynamoPromise,
         })
     }
 

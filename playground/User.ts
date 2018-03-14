@@ -1,4 +1,5 @@
-import { defineTable, globalIndex, withGlobalIndexes } from '../src/schema'
+import { globalIndex, withGlobalIndexes } from '../src/schema'
+import { typeDynamo } from './database.config'
 
 class User {
     public email: string
@@ -8,7 +9,7 @@ class User {
     public age: number
 }
 
-export default defineTable(User, {
+export default typeDynamo.define(User, {
     tableName: 'User',
     partitionKey: 'companyName',
     sortKey: 'hiringDate',

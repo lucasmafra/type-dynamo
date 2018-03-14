@@ -6,7 +6,7 @@ import { UpdateChainingKind } from './'
 import { Update } from './update'
 
 function extractFromStack<Entity, KeySchema>(stack: Array<Chaining<UpdateChainingKind>>): {
-    updateMetadata: Update<Entity, KeySchema>,
+    updateMetadata: Update<KeySchema>,
     withCondition?: WithCondition,
 } {
     const updateMetadata = (stack[0] as any)._update
@@ -24,5 +24,5 @@ export function execute<Entity, KeySchema>(
 ) {
     const { updateMetadata, withCondition } = extractFromStack<Entity, KeySchema>(stack)
     const updateInput = buildUpdateInput(updateMetadata, withCondition)
-    return update<Entity>(updateInput)
+    return update<Entity>(updateInput, updateMetadata.schema.dynamoPromise)
 }
