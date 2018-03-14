@@ -31,7 +31,7 @@ async function queryTest() {
 
 async function getTest() {
     const user = await  User
-                        .find({ companyName: 'QuintoAndar', hiringDate: 1457665937000 })
+                        .find({ companyName: 'Nubank', hiringDate: 1394507537000 })
                         .execute()
     console.log('GET', user.data)
 }
@@ -107,6 +107,29 @@ async function batchDeleteTest() {
     console.log('BATCH DELETE')
 }
 
+async function updateTestWithExplicit() {
+    const key = { companyName: 'Nubank', hiringDate: 1394507537000 }
+    const updatedUser = await User
+                        .update(key, {
+                            name: 'John Doe',
+                            age: 50,
+                         })
+                        .execute()
+    console.log('UPDATE', updatedUser.data)
+}
+
+async function updateTestWithImplicit() {
+    const key = { companyName: 'Nubank', hiringDate: 1394507537000 }
+    const updatedUser = await User
+                        .update({
+                            name: 'John Doe',
+                            age: 60,
+                            ...key,
+                         })
+                        .execute()
+    console.log('UPDATE', updatedUser.data)
+}
+
 // scanTest()
 // queryTest()
 // getTest()
@@ -117,3 +140,5 @@ async function batchDeleteTest() {
 // batchWriteTest()
 // deleteTest()
 // batchDeleteTest()
+// updateTestWithExplicit()
+// updateTestWithImplicit()

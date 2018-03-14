@@ -6,7 +6,7 @@ import { DynamoTableWithCompositeKey, DynamoTableWithSimpleKey } from './dynamo-
 function buildTableSchema(schema: any): TableSchema {
     const tableSchema: TableSchema = {
         tableName: schema.tableName,
-        partitionKey: schema.keySchema,
+        partitionKey: schema.partitionKey,
         sortKey: schema.sortKey,
         writeCapacity: schema.writeCapacity || 1,
         readCapacity: schema.readCapacity || 1,
