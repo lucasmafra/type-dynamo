@@ -18,11 +18,14 @@ Some of TypeDynamo features:
 ## Table of Contents
 
  * [Installation](#getting-started-with-firebase)
- * [Dynamo Setup](#getting-started-with-firebase)
- * [Defining your schema](#documentation)
- * [Querying data](#examples)
- * [Writing data](#examples)
- * [Running locally](#examples)
+ * [Getting started](#getting-started-with-firebase)
+    * [Dynamo Setup](#getting-started-with-firebase)
+    * [Defining your schema](#documentation)
+    * [Querying data](#examples)
+    * [Writing data](#examples)
+    * [Running locally](#examples)
+ * [Advanced Guide]()
+ * [Demos]()
  * [API Reference](#migration-guides)
  * [Contributing](#contributing)
 
@@ -39,9 +42,11 @@ Some of TypeDynamo features:
  npm install --save type-dynamo
 ```
 
-## Dynamo Setup
+## Getting started
 
-In order to use DynamoDB for your projects, you must have an AWS access key and secret key. If you don't have it, refer to this [link](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console).
+### Dynamo Setup
+
+In order to use DynamoDB in your projects, you must have an AWS access key and secret key. If you don't have it, refer to this [link](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console).
 
 Now, you only have to create a TypeDynamo instance passing your configuration:
 
@@ -64,14 +69,14 @@ export const typeDynamo = new TypeDynamo({
 })
 ```
 
-As an option, you could define your keys at *~/.aws/credentials* file. If you don't know how to do that, fefer to this [link](https://docs.aws.amazon.com/cli/latest/userguide/cli-config-files.html). After that, you can instantiate TypeDynamo with no arguments:
+As an option, you could define your keys at *~/.aws/credentials* file. If you don't know how to do that, refer to this [link](https://docs.aws.amazon.com/cli/latest/userguide/cli-config-files.html). After that, you can instantiate TypeDynamo with no arguments:
 ```ts
 // dynamo.config.ts
 import { TypeDynamo } from 'type-dynamo'
 export const typeDynamo = new TypeDynamo() // it will look for your credentials at ~/.aws/credentials
 ```
 
-## Defining your Schema
+### Defining your Schema
 
 In TypeDynamo, your tables are just regular Typescript classes. Let's say you have the following User class:
 
@@ -88,7 +93,7 @@ You just have to import your typeDynamo instance and then export that User class
 
 ```ts
 // User.ts
-import { typeDynamo } from './dynamo.config.ts'
+import { typeDynamo } from './dynamo  .config.ts'
 
 export class User {
   id: string,
@@ -103,16 +108,25 @@ export default typeDynamo.define(User, {
 })
 ```
 
-... and that's all! You're ready to start querying and writing to Dynamo! Let's see some examples:
+... and that's all! You're ready to start querying and writing to Dynamo!
+
+### Querying data
+
+TypeDynamo makes easier to retrieve data from Dynamo by providing a high level *find* method. Let's see some examples:
 
 ```ts
 // examples.ts
 
 import { attributeNotExists } from 'type-dynamo'
-import { default as UserRepo, User } from './User'
+import UserRepo from './User' // our exported schema
 
 async function getUserById(id: string) { 
   return UserRepo.find({id}).execute()
+}
+
+async function getUsersByIds(ids: string[]) {
+  const keys = ids.map(id => ({id})) // map each element to an object {id}
+  return UserRepo.find(keys).executue()
 }
 
 async function getAllUsers() {
@@ -139,47 +153,23 @@ async function getUsersPreview() {
     // this causes a compiler error
     console.log(userPreview.email, userPreview.age) 
   }))
-
-  async function saveNewUser(user: User) {
-    return UserRepo.save(user).execute()
-  }
-
-  async function updateUser(partialUser: Partial<User>) {
-    return UserRepo.update(partialUser).execute()
-  }
+  
 }
-
 ```
-## Documentation
 
-* [Quickstart](docs/quickstart.md)
-* [Guide](docs/guide/README.md)
-* [API Reference](docs/reference.md)
+Everytime you need to retrieve data from Dynamo,
 
+### Writing data
 
-## Examples
+### Running locally
 
-### Full Examples
+## Advanced Guide
+## Demos
 
-* [Wait And Eat](https://github.com/gordonmzhu/angular-course-demo-app-v2)
-* [TodoMVC](https://github.com/tastejs/todomvc/tree/master/examples/firebase-angular)
-* [Tic-Tac-Tic-Tac-Toe](https://github.com/jwngr/tic-tac-tic-tac-toe/)
-* [Firereader](http://github.com/firebase/firereader)
-* [Firepoker](https://github.com/Wizehive/Firepoker)
-
-### Recipes
-
-* [Date Object To A Firebase Timestamp Using `$extend`](http://jsfiddle.net/katowulf/syuzw9k1/)
-* [Filter a `$FirebaseArray`](http://jsfiddle.net/firebase/ku8uL0pr/)
-
-
-## Migration Guides
-
-* [Migrating from AngularFire `1.x.x` to `2.x.x`](docs/migration/1XX-to-2XX.md)
-* [Migrating from AngularFire `0.9.x` to `1.x.x`](docs/migration/09X-to-1XX.md)
-
+* [Node.js + Serverless backend for a TODO app](https://github.com/gordonmzhu/angular-course-demo-app-v2)
+* [Node.js + Express backend for a TODO app](https://github.com/tastejs/todomvc/tree/master/examples/firebase-angular)
 
 ## Contributing
 
-If you'd like to contribute to AngularFire, please first read through our [contribution
+If you'd like to contribute to TypeDynamo, please first read through our [contribution
 guidelines](.github/CONTRIBUTING.md). Local setup instructions are available [here](.github/CONTRIBUTING.md#local-setup).
