@@ -24,8 +24,8 @@ Some of TypeDynamo features:
     * [Querying data]()
     * [Writing data]()
     * [Indexes]()
-      * [GlobalIndex]()
-      * [LocalIndex]()
+      * [Global Index]()
+      * [Local Index]()
     * [Running locally]()
  * [Advanced Guide]()
  * [Demos]()
@@ -52,7 +52,7 @@ Some of TypeDynamo features:
 
 In order to use DynamoDB in your projects, you must have an AWS access key and secret key. If you don't have it, refer to this [link](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console).
 
-Now, you only have to create a TypeDynamo instance passing your configuration:
+Now, you just have to create a TypeDynamo instance by passing your configuration:
 
 ```ts
 // dynamo.config.ts
@@ -95,11 +95,11 @@ class User {
 }
 ```
 
-All you have to do is import your typeDynamo instance and then export that User class using the *define* HOF (high order function):
+All you have to do is call your typeDynamo instance *define* method, passing your table configuration:
 
 ```ts
 // User.ts
-import { typeDynamo } from './dynamo  .config.ts'
+import { typeDynamo } from './dynamo.config.ts'
 
 export class User {
   id: string,
@@ -108,13 +108,15 @@ export class User {
   age: number
 }
 
-export default typeDynamo.define(User, {
+export const UserRepo = typeDynamo.define(User, {
   tableName: 'UserTable',
   partitionKey: 'id'
 })
 ```
 
 ... and that's all! You're ready to start querying and writing data to Dynamo!
+
+**OBS**: DynamoDB requires that the partitionKey and sortKey attributes must be either of type **string** or **number**. So if you pass an boolean attribute to partitionKey, for example, DynamoDB will thrown an error at execution time, although TypeDynamo cannot antecipate this error in compile time due to a TypeScript limitation.
 
 ### Querying data
 
@@ -124,7 +126,7 @@ TypeDynamo makes easier to retrieve data from Dynamo by providing *find*, a high
 // examples.ts
 
 import { attributeNotExists, match, isLessThan, contains } from 'type-dynamo/expressions'
-import UserRepo from './User' // our exported schema
+import { UserRepo } from './User' // our exported schema
 
 async function getUserById(id: string) { 
   return UserRepo.find({id}).execute()
@@ -207,9 +209,9 @@ If you want to know more about how to use *find* method, checkout the [API Refer
 
 ### Indexes
 
-#### Global Indexes
+#### Global Index
 
-#### Local Indexes
+#### Local Index
 
 ### Running locally
 
