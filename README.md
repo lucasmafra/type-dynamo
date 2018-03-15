@@ -129,7 +129,7 @@ export const UserRepo = typeDynamo.define(User, {
 
 ### Querying data
 
-TypeDynamo makes easier to retrieve data from Dynamo by providing *find*, a high level function for reading the data. Let's see some examples:
+TypeDynamo makes easier to retrieve data from Dynamo by providing *find*, a high level function for reading the data. Let's see some examples based on the User schema declared in the early section:
 
 * Getting a specific user by id
 ```ts
@@ -160,7 +160,8 @@ async function getUsersByIds(ids: string[]) {
 import { UserRepo } from './User'
 
 async function getAllUsers() {
-  const result = await UserRepo.find().allResults().execute() // find() method also accepts no id
+  // use .allResults() carefully! It's not a good idea call it on a large table
+  const result = await UserRepo.find().allResults().execute() // find() method also accepts no id as parameter
   result.data.map(user => {
     console.log(user.id, user.name, user.email, user.age)
   })
@@ -225,6 +226,8 @@ find(partitionKey: PartitionKey) // makes either a GetItem or Query, depending w
 
 This way, TypeDynamo will allways make the Dynamo request that fits best to your use case.
 
+A great thing about *find* is that it comes with a built-in workaround for DynamoDB limitations in the size of the result for [BatchGetItem](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BatchGetItem.html), [Scan](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html) and [Query](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html) methods.
+
 Also, *find* method is strongly typed so if you try to pass invalid arguments TypeScript will complain about it. In our User example, all of these calls would cause a compiler error:
 
 ```ts
@@ -238,6 +241,59 @@ UserRepo.find({ id: '1', email: 'johndoe@email.com'}).execute() // Compiler erro
 If you want to know more about how to use *find* method, checkout the [API Reference]().
 
 ### Writing new data
+
+Many times you're going to need not only query data from the database, but also write new data into it. For that, TypeDynamo provides the high level *save* method. Let's get into some examples with the User schema:
+
+* Saving a new user
+```ts
+import { UserRepo, User } from './User'
+
+async function saveUser(newUser: User) { 
+  const result = await UserRepo.save(newUser).execute() // by default, TypeDynamo save() allways return the created item
+  const user = result.data
+  console.log(user.id, user.name, user.email, user.age)
+}
+```
+
+* Saving many new users
+```ts
+import { UserRepo } from './User'
+
+async function saveMultipleUsers(newUsers: User[]) {
+  const result = await UserRepo.save(newUsers).executue() // save() method also accepts an array of items
+  result.data.map(user => {
+    console.log(user.id, user.name, user.email, user.age)
+  })
+}
+```
+
+* Writing a new user only if not exists
+```ts
+import { UserRepo } from './User'
+
+async function saveUser() {
+  const result = await UserRepo
+                      .save(User)
+                      .withCondition(attributeNotExists('id'))
+                      .execute() 
+  result.data.map(user => {
+    console.log(user.id, user.name, user.email, user.age)
+  })
+}
+```
+
+Like *find()*, the *save* method has overload signature to support both single write and batch write operations:
+
+```ts
+save(item: Item) // makes a Dynamo PutItem request behind the scenes
+
+save(items: Item[]) // makes a Dynamo BatchWrite behind the scenes
+
+```
+
+It also handles Dynamo limitations for [BatchWrite]() out of the box, so you don't have to worry if you want to write more than 25 items at once, for example.
+
+**Note**: By default, *save* method has the same behavior of Dynamo SDK when writing an item, which means that it will overwrite an existing item unless you add a *.withCondition(attributeNotExists(TABLE_KEY))*. Also, remember that Dynamo does not allow you to put such condition when calling BatchWriteItem, which means that you're subject to overwrite items when calling a *save* with multiple items.
 
 ### Updating data
 
