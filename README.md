@@ -112,7 +112,7 @@ export default typeDynamo.define(User, {
 
 ### Querying data
 
-TypeDynamo makes easier to retrieve data from Dynamo by providing a high level *find* method. Let's see some examples:
+TypeDynamo makes easier to retrieve data from Dynamo by providing *find*, a high level function for reading the data. Let's see some examples:
 
 ```ts
 // examples.ts
@@ -157,7 +157,31 @@ async function getUsersPreview() {
 }
 ```
 
-Everytime you need to retrieve data from Dynamo,
+To support every use case of reading data from Dynamo, the *find* method has 4 overload signatures:
+
+```ts
+find() // makes a Dynamo Scan request behind the scenes
+
+find(keys: Array<PartitionKey & SortKey>) // makes a Dynamo BatchGetItem behind the scenes
+
+find(key: PartitionKey & SortKey) // makes a Dynamo GetItem behind the scenes
+
+find(partitionKey: PartitionKey) // makes either a GetItem or Query, depending whether the schema has declared a sortKey.
+```
+
+This way, TypeDynamo will allways make the most appropriate Dynamo request according to your use case.
+
+Also, *find* method is strongly typed, so if you try to pass invalid arguments to find, TypeScript will complain about it. In our User example, all of this would cause a compiler error:
+
+```ts
+UserRepo.find({ id: false }).execute() // Error: User id is of type string
+
+UserRepo.find({id: '1'}).withAttributes(['lastName']).execute() // Error: attribute 'lastName' does not belong to User declaration
+
+UserRepo.find({ id: '1', email: 'johndoe@email.com'}) // Error: email does not belong to user PartitionKey
+```
+
+If you want know more how to use *find* method, checkout  the [API Reference]().
 
 ### Writing data
 
