@@ -1,6 +1,6 @@
 <div align="center" padding-top="80px">
   <a href="https://typeorm.io/">
-    <img src="https://s3.amazonaws.com/type-dynamo-docs/645095395_0f9334af-9aac-4638-b4b8-920d87b9fc97.png" width="400" height="74">
+    <img src="https://s3.amazonaws.com/type-dynamo-docs/logo.png" width="350" height="257">
   </a>
   <br>
   <br>
@@ -8,8 +8,7 @@
   <br>
 </div>
 
-
-# TypeDynamo
+#
 
 TypeDynamo is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) for your Typescript projects running in Node.js environment. Its goal is to help you develop backend applications that uses [DynamoDB](https://aws.amazon.com/dynamodb) by abstracting most of the Dynamo boilerplate and letting you focus on what really matters: querying and writing your data!
 
