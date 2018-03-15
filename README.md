@@ -4,7 +4,7 @@ TypeDynamo is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) 
 
 TypeDynamo is completely agnostic to your server structure, so it supports both serverless and serverfull projects (see more in the examples section).
 
-This library is inspired by other famous ORMs and ODMs, like Sequelize and Mongoose.
+This library is heavily inspired by other famous ORMs and ODMs, like Sequelize and Mongoose.
 
 Some of TypeDynamo features:
   *  Easy declaration for your tables and indexes;
@@ -26,37 +26,102 @@ Some of TypeDynamo features:
  * [Contributing](#contributing)
 
 
-## Getting Started With Firebase
+## Instalation
 
-AngularFire requires [Firebase](https://firebase.google.com/) in order to authenticate users and sync
-and store data. Firebase is a suite of integrated products designed to help you develop your app,
-grow your user base, and earn money. You can [sign up here for a free account](https://console.firebase.google.com/).
-
-
-## Downloading AngularFire
-
-In order to use AngularFire in your project, you need to include the following files in your HTML:
-
-```html
-<!-- AngularJS -->
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
-
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script>
-
-<!-- AngularFire -->
-<script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
+### yarn
+```sh
+ yarn add type-dynamo
 ```
 
-You can also install AngularFire via npm and Bower and its dependencies will be downloaded
-automatically:
+### npm
+```ts
+ npm install --save type-dynamo
+```
+## Defining your Schema
 
-```bash
-$ npm install angularfire --save
+In TypeDynamo, your tables are just regular Typescript classes. Let's say you have the following User class:
+
+```ts
+class User {
+  id: string,
+  name: string,
+  email: string,
+  age: number
+}
 ```
 
-```bash
-$ bower install angularfire --save
+You just have to import your typeDynamo instance and export that User class within the *define* HOF (high order function):
+
+```ts
+// User.ts
+import { typeDynamo } from './database.config.ts'
+
+export class User {
+  id: string,
+  name: string,
+  email: string,
+  age: number
+}
+
+export default typeDynamo.define(User, {
+  tableName: 'UserTable',
+  partitionKey: 'id'
+})
+```
+
+... and that's all! You're ready to start querying and writing to Dynamo! Let's see some examples:
+
+```ts
+// examples.ts
+
+import { attributeNotExists } from 'type-dynamo'
+import { default as UserRepo, User } from './User'
+
+async function getUserById(id: string) {
+  // Behind the scenes, TypeDynamo converts find to a dynamo getItem request
+  return UserRepo.find({id}).execute()
+}
+
+
+async function getAllUsers() {
+  // Do this very carefully -> finding allResults is not a good idea for large tables
+  const users = await UserRepo.find().allResults().execute()
+  users.map(user => {
+    // you are type-safe!
+    console.log(user.id, user.name, user.email, user.age 
+  }))
+}
+
+async function getUsersPreview() {
+  // gets 50 users per call with just their id and name
+  // TypeDynamo will request from Dynamo only the desired attributes
+  const usersPreview = await UserRepo
+                      .find()
+                      .withAttributes(['id', 'name'])
+                      .paginate(50)
+                      .execute()
+
+  usersPreview.map(userPreview => {
+    // you are still type-safe
+
+    // no problem with this call
+    console.log(userPreview.id, userPreview.name) 
+
+    // this causes a compiler error
+    console.log(userPreview.email, userPreview.age) 
+  }))
+
+  async function saveNewUser(user: User) {
+    return UserRepo.save(user)
+          .withCondition(attributeNotExists('id'))
+          .execute()
+  }
+
+  async function updateUser(partialUser: Partial<User>) {
+    return UserRepo.update(partialUser).execute()
+  }
+}
+
 ```
 
 
