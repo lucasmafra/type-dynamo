@@ -17,17 +17,17 @@ Some of TypeDynamo features:
 
 ## Table of Contents
 
- * [Installation](#getting-started-with-firebase)
- * [Getting started](#getting-started-with-firebase)
-    * [Dynamo Setup](#getting-started-with-firebase)
-    * [Defining your schema](#documentation)
-    * [Querying data](#examples)
-    * [Writing data](#examples)
-    * [Running locally](#examples)
+ * [Installation]()
+ * [Getting started]()
+    * [Dynamo Setup]()
+    * [Defining your schema]()
+    * [Querying data]()
+    * [Writing data]()
+    * [Running locally]()
  * [Advanced Guide]()
  * [Demos]()
- * [API Reference](#migration-guides)
- * [Contributing](#contributing)
+ * [API Reference]()
+ * [Contributing]()
 
 
 ## Instalation
@@ -117,7 +117,7 @@ TypeDynamo makes easier to retrieve data from Dynamo by providing *find*, a high
 ```ts
 // examples.ts
 
-import { attributeNotExists } from 'type-dynamo'
+import { attributeNotExists, match, isLessThan, contains } from 'type-dynamo/expressions'
 import UserRepo from './User' // our exported schema
 
 async function getUserById(id: string) { 
@@ -154,6 +154,18 @@ async function getUsersPreview() {
     console.log(userPreview.email, userPreview.age) 
   }))
   
+  async function getFilteredUsers(lastId?: string) {
+    // finds all users with age less than 30 and with gmail
+    return UserRepo
+          .find()
+          .filter(
+            match('age', isLessThan(30))
+            .and.
+            match('email', contains('@gmail.com'))
+          )
+          .paginate(100, { id: lastId })
+          .execute()
+  }
 }
 ```
 
@@ -169,16 +181,16 @@ find(key: PartitionKey & SortKey) // makes a Dynamo GetItem behind the scenes
 find(partitionKey: PartitionKey) // makes either a GetItem or Query, depending whether the schema has declared a sortKey.
 ```
 
-This way, TypeDynamo will allways make the most appropriate Dynamo request according to your use case.
+This way, TypeDynamo will allways make the Dynamo request that fits best to your use case.
 
-Also, *find* method is strongly typed, so if you try to pass invalid arguments to find, TypeScript will complain about it. In our User example, all of this would cause a compiler error:
+Also, *find* method is strongly typed, so if you try to pass invalid arguments to find, TypeScript will complain about it. In our User example, all of these calls would cause a compiler error:
 
 ```ts
 UserRepo.find({ id: false }).execute() // Error: User id is of type string
 
 UserRepo.find({id: '1'}).withAttributes(['lastName']).execute() // Error: attribute 'lastName' does not belong to User declaration
 
-UserRepo.find({ id: '1', email: 'johndoe@email.com'}) // Error: email does not belong to user PartitionKey
+UserRepo.find({ id: '1', email: 'johndoe@email.com'}) // Error: 'email' does not belong to type PartitionKey
 ```
 
 If you want know more how to use *find* method, checkout  the [API Reference]().
@@ -190,10 +202,10 @@ If you want know more how to use *find* method, checkout  the [API Reference]().
 ## Advanced Guide
 ## Demos
 
-* [Node.js + Serverless backend for a TODO app](https://github.com/gordonmzhu/angular-course-demo-app-v2)
-* [Node.js + Express backend for a TODO app](https://github.com/tastejs/todomvc/tree/master/examples/firebase-angular)
+* [Node.js + Serverless backend for a TODO app]()
+* [Node.js + Express backend for a TODO app]()
 
 ## Contributing
 
 If you'd like to contribute to TypeDynamo, please first read through our [contribution
-guidelines](.github/CONTRIBUTING.md). Local setup instructions are available [here](.github/CONTRIBUTING.md#local-setup).
+guidelines](). Local setup instructions are available [here]().
