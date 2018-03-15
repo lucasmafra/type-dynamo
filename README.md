@@ -224,9 +224,9 @@ find(key: PartitionKey & SortKey) // makes a Dynamo GetItem behind the scenes
 find(partitionKey: PartitionKey) // makes either a GetItem or Query, depending whether the schema has declared a sortKey.
 ```
 
-This way, TypeDynamo will allways make the Dynamo request that fits best to your use case.
+This way, TypeDynamo will allways make the Dynamo request that best fits to your use case.
 
-A great thing about *find* is that it comes with a built-in workaround for DynamoDB limitations in the size of the result for [BatchGetItem](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BatchGetItem.html), [Scan](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html) and [Query](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html) methods.
+A great thing about *find* is that it comes with a built-in workaround for DynamoDB limitations in the result size for [BatchGetItem](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BatchGetItem.html), [Scan](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html) and [Query](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html) methods, so you don't have to worry about that.
 
 Also, *find* method is strongly typed so if you try to pass invalid arguments TypeScript will complain about it. In our User example, all of these calls would cause a compiler error:
 
@@ -242,7 +242,7 @@ If you want to know more about how to use *find* method, checkout the [API Refer
 
 ### Writing new data
 
-Many times you're going to need not only query data from the database, but also write new data into it. For that, TypeDynamo provides the high level *save* method. Let's get into some examples with the User schema:
+Many times you're going to need not only to query data from the database, but also write new data into it. TypeDynamo provides the high level *save*() method for that. Let's get into some examples with the User schema:
 
 * Saving a new user
 ```ts
@@ -267,7 +267,7 @@ async function saveMultipleUsers(newUsers: User[]) {
 }
 ```
 
-* Writing a new user only if not exists
+* Writing a new user only if not already exists
 ```ts
 import { UserRepo } from './User'
 
@@ -282,7 +282,7 @@ async function saveUser() {
 }
 ```
 
-Like *find()*, the *save* method has overload signature to support both single write and batch write operations:
+Like *find()*, the *save()* method has overload signature to support both single and batch write operations:
 
 ```ts
 save(item: Item) // makes a Dynamo PutItem request behind the scenes
@@ -293,7 +293,7 @@ save(items: Item[]) // makes a Dynamo BatchWrite behind the scenes
 
 It also handles Dynamo limitations for [BatchWrite]() out of the box, so you don't have to worry if you want to write more than 25 items at once, for example.
 
-**Note**: By default, *save* method has the same behavior of Dynamo SDK when writing an item, which means that it will overwrite an existing item unless you add a *.withCondition(attributeNotExists(TABLE_KEY))*. Also, remember that Dynamo does not allow you to put such condition when calling BatchWriteItem, which means that you're subject to overwrite items when calling a *save* with multiple items.
+**Note**: By default, *save* method has the same behavior of Dynamo SDK when writing an item, which means that it will overwrite an existing item unless you add a *.withCondition(attributeNotExists(TABLE_KEY))*. Also, remember that Dynamo does not allow you to add such condition when calling BatchWriteItem, which means that you're allways subject to overwriting items when calling a *save* with multiple items.
 
 ### Updating data
 
