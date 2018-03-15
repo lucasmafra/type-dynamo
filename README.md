@@ -2,7 +2,7 @@
 
 TypeDynamo is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) for your Typescript projects running in Node.js environment. Its goal is to help you develop backend applications that uses [DynamoDB](https://aws.amazon.com/dynamodb) by abstracting most of the Dynamo boilerplate and letting you focus on what really matters: querying and writing your data!
 
-TypeDynamo is completely agnostic to your server structure, so it supports both serverless and serverfull projects (see more in the examples section).
+TypeDynamo is completely agnostic to your server structure, so it supports both serverless and serverfull projects (see more in the [Demo]() section).
 
 This library is heavily inspired by other famous ORMs and ODMs, like TypeORM, Sequelize and Mongoose.
 
@@ -82,7 +82,9 @@ export const typeDynamo = new TypeDynamo() // it will look for your credentials 
 
 ### Defining your Schema
 
-In TypeDynamo, your tables are just regular Typescript classes. Let's say you have the following User class:
+In DynamoDB, you must allways declare an attribute as a *partition key* and optionally another attribute as a *sort key* for your Table. The choice of your key is very important since Dynamo will index your table based on the provided keys, which means that you'll be able to access your items immediately through this keys. For more information, checkout this [link](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.CoreComponents.html).
+
+With that in mind, TypeDynamo makes your schema declaration very easy, since your table model is just a regular Typescript class. Let's say you have the following User class:
 
 ```ts
 class User {
@@ -93,7 +95,7 @@ class User {
 }
 ```
 
-You just have to import your typeDynamo instance and then export that User class using the *define* HOF (high order function):
+All you have to do is import your typeDynamo instance and then export that User class using the *define* HOF (high order function):
 
 ```ts
 // User.ts
@@ -111,8 +113,6 @@ export default typeDynamo.define(User, {
   partitionKey: 'id'
 })
 ```
-
-OBS: In DynamoDB, you must **allways** declare a *partition key* and optionally a *sort key* for your Table. The choice of your key is very important since Dynamo will index your table based on the provided keys, which means that you'll be able to access your items immediately through this keys. For more information, checkout this [link](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.CoreComponents.html)
 
 ... and that's all! You're ready to start querying and writing data to Dynamo!
 
@@ -204,6 +204,12 @@ UserRepo.find({ id: '1', email: 'johndoe@email.com'}).execute() // Error: 'email
 If you want to know more about how to use *find* method, checkout the [API Reference]().
 
 ### Writing data
+
+### Indexes
+
+#### Global Indexes
+
+#### Local Indexes
 
 ### Running locally
 
