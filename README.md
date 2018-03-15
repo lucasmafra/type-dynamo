@@ -4,7 +4,7 @@ TypeDynamo is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) 
 
 TypeDynamo is completely agnostic to your server structure, so it supports both serverless and serverfull projects (see more in the examples section).
 
-This library is heavily inspired by other famous ORMs and ODMs, like Sequelize and Mongoose.
+This library is heavily inspired by other famous ORMs and ODMs, like TypeORM, Sequelize and Mongoose.
 
 Some of TypeDynamo features:
   *  Easy declaration for your tables and indexes;
@@ -161,7 +161,9 @@ async function getUsersPreview() {
   }))
   
   async function getFilteredUsers(lastId?: string) {
-    // finds all users with age less than 30 and with gmail
+    // finds users with age less than 30 and email containing "@gmail.com", and paginates the result
+    // if lastId is passed, it returns up to the next 100 results after the lastId encountered
+    // else, it returns up to the first 100 results encountered
     return UserRepo
           .find()
           .filter(
@@ -169,7 +171,7 @@ async function getUsersPreview() {
             .and.
             match('email', contains('@gmail.com'))
           )
-          .paginate(100, { id: lastId })
+          .paginate(100, lastId? { id: lastId } : undefined)
           .execute()
   }
 }
@@ -199,7 +201,7 @@ UserRepo.find({id: '1'}).withAttributes(['lastName']).execute() // Error: attrib
 UserRepo.find({ id: '1', email: 'johndoe@email.com'}).execute() // Error: 'email' does not belong to type PartitionKey
 ```
 
-If you want to know more how to use *find* method, checkout  the [API Reference]().
+If you want to know more about how to use *find* method, checkout the [API Reference]().
 
 ### Writing data
 
