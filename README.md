@@ -1,9 +1,7 @@
-<div align="center" padding-top="80px">
+<div align="center">
   <a href="https://typeorm.io/">
-    <img src="https://s3.amazonaws.com/type-dynamo-docs/logo.png" width="350" height="257">
+    <img src="https://s3.amazonaws.com/type-dynamo-docs/logo.png" width="280" height="205">
   </a>
-  <br>
-  <br>
   <br>
   <br>
 </div>
