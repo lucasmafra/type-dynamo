@@ -196,7 +196,7 @@ import { match, isLessThan, contains } from 'type-dynamo/expressions'
 async function getFilteredUsers(lastId?: string) {
   const result = await UserRepo
         .find()
-        .filter( // gettin just the users with age less than 30 and email containing "@gmail.com"
+        .filter( // getting just users with age less than 30 and email containing "@gmail.com"
           match('age', isLessThan(30))
           .and.
           match('email', contains('@gmail.com'))
@@ -228,11 +228,11 @@ This way, TypeDynamo will allways make the Dynamo request that fits best to your
 Also, *find* method is strongly typed so if you try to pass invalid arguments TypeScript will complain about it. In our User example, all of these calls would cause a compiler error:
 
 ```ts
-UserRepo.find({ id: false }).execute() // Error: User id is of type string
+UserRepo.find({ id: false }).execute() // Compiler error, because user id is of type string and not boolean
 
-UserRepo.find({id: '1'}).withAttributes(['lastName']).execute() // Error: attribute 'lastName' does not belong to User declaration
+UserRepo.find({id: '1'}).withAttributes(['lastName']).execute() // Compiler error bacause attribute 'lastName' does not belong to User
 
-UserRepo.find({ id: '1', email: 'johndoe@email.com'}).execute() // Error: 'email' does not belong to type PartitionKey
+UserRepo.find({ id: '1', email: 'johndoe@email.com'}).execute() // Compiler error because 'email' does not belong to User partition key or sort key
 ```
 
 If you want to know more about how to use *find* method, checkout the [API Reference]().
