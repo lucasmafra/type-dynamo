@@ -1,7 +1,5 @@
 <div align="center">
-  <a href="https://typeorm.io/">
-    <img src="https://s3.amazonaws.com/type-dynamo-docs/logo.png" width="280" height="205">
-  </a>
+  <img src="https://s3.amazonaws.com/type-dynamo-docs/logo.png" width="280" height="205">
   <br>
   <br>
 </div>
@@ -73,7 +71,7 @@ export const typeDynamo = new TypeDynamo({
   secretAccessKey: '<YOUR_SECRET_ACCESS_KEY>',
 })
 ```
-**OBS**: It's a bad practice to put your keys hardcoded like that. In real projects you should set your keys as Node environment variables and access them in your code:
+**Note**: It's a bad practice to put your keys hardcoded like that. In real projects you should set your keys as Node environment variables and access them in your code:
 
 ```ts
 // dynamo.config.ts
@@ -127,70 +125,89 @@ export const UserRepo = typeDynamo.define(User, {
 
 ... and that's all! You're ready to start querying and writing data to Dynamo!
 
-**OBS**: DynamoDB requires that the partitionKey and sortKey attributes must be either of type **string** or **number**. So if you pass an boolean attribute to partitionKey, for example, DynamoDB will thrown an error at execution time, although TypeDynamo cannot antecipate this error in compile time due to a TypeScript limitation.
+**Note**: DynamoDB requires the partitionKey and sortKey attributes to be of type **string** or **number**. So if you declare an boolean attribute as your partitionKey, for example, DynamoDB will throw an error at execution time. Although, TypeDynamo cannot prevent this error in compile time due to a TypeScript limitation.
 
 ### Querying data
 
 TypeDynamo makes easier to retrieve data from Dynamo by providing *find*, a high level function for reading the data. Let's see some examples:
 
+* Getting a specific user by id
 ```ts
-// examples.ts
-
-import { attributeNotExists, match, isLessThan, contains } from 'type-dynamo/expressions'
-import { UserRepo } from './User' // our exported schema
+import { UserRepo } from './User'
 
 async function getUserById(id: string) { 
-  const user = await UserRepo.find({id}).execute()
-  return user.data
+  const result = await UserRepo.find({id}).execute() // pass the id as an object { "id": id }
+  const user = result.data
+  console.log(user.id, user.name, user.email, user.age) // you're type-safe
 }
+```
+
+* Getting many specific users by ids
+```ts
+import { UserRepo } from './User'
 
 async function getUsersByIds(ids: string[]) {
-  const keys = ids.map(id => ({id})) // map each element to an object {id}
-  const users = await UserRepo.find(keys).executue()
-  return users.data
-}
-
-async function getAllUsers() {
-  const users = await UserRepo.find().allResults().execute()
-  users.data.map(user => {
-    // you are type-safe!
-    console.log(user.id, user.name, user.email, user.age )
+  const keys = ids.map(id => ({id})) // map each element to an object { "id" : id }
+  const result = await UserRepo.find(keys).executue() // find() method accepts an array of ids
+  result.data.map(user => {
+    console.log(user.id, user.name, user.email, user.age)
   })
 }
+```
+
+* Getting all users in the table
+```ts
+import { UserRepo } from './User'
+
+async function getAllUsers() {
+  const result = await UserRepo.find().allResults().execute() // find() method also accepts no id
+  result.data.map(user => {
+    console.log(user.id, user.name, user.email, user.age)
+  })
+}
+```
+
+* Getting a paginated list of users with fewer attributes
+```ts
+import { UserRepo } from './User'
 
 async function getUsersPreview() {
-  // gets the first 50 users encountered with just id and name attributes
-  // because of withAttributes(), TypeDynamo will request only the desired attributes
-  const usersPreview = await UserRepo
+  const result = await UserRepo
                       .find()
-                      .withAttributes(['id', 'name'])
-                      .paginate(50)
+                      .withAttributes(['id', 'name']) // request only 'id' and 'name' to Dynamo
+                      .paginate(50) // gets the first 50 users encountered
                       .execute()
 
-  usersPreview.data.map(userPreview => { // you are still type-safe
+  result.data.map(userPreview => { // you are still type-safe
     // no problem with this call
     console.log(userPreview.id, userPreview.name) 
 
-    // this causes a compiler error
+    // this causes a compiler error... awesome!
     console.log(userPreview.email, userPreview.age) 
   }))
 }
+```
+
+* Getting a user list applying a filter expression
+```ts
+import { UserRepo } from './User'
+import { match, isLessThan, contains } from 'type-dynamo/expressions'
 
 async function getFilteredUsers(lastId?: string) {
-  // finds users with age less than 30 and email containing "@gmail.com", and paginates the result
-  // if lastId is passed, it returns up to the next 100 results after the lastId encountered
-  // else, it returns up to the first 100 results encountered
-  const users = await UserRepo
+  const result = await UserRepo
         .find()
-        .filter(
+        .filter( // gettin just the users with age less than 30 and email containing "@gmail.com"
           match('age', isLessThan(30))
           .and.
           match('email', contains('@gmail.com'))
         )
-        .paginate(100, lastId? { id: lastId } : undefined)
+        .paginate(100, lastId? { id: lastId } : undefined) // if lastId is passed, it evaluates the items after the lastId encountered
         .execute()
-  console.log(users.data) // array of users
-  console.log(users.lastKey) // if there are more items in the table, it can be used for the next paginated request
+
+  result.data.map(user => {
+    console.log(user.id, user.name, user.email, user.age)
+  })
+  console.log(result.lastKey) // if it's undefined, there are no more items to evaluate in the table. Otherwise, it can be used for the next request
 }
 ```
 
