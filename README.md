@@ -11,7 +11,7 @@ Some of TypeDynamo features:
   *  Very simple CRUD methods with promise-like and chaining style;
   *  Type-safe database operations: all TypeDynamo methods have it's signature based on your table/index declaration, so you're allways type-safe;
   *  Pagination out of the box;
-  *  Smart and intuitive expressions: never write complicated [expressions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html) with attribute [names](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ExpressionAttributeNames.html) and [values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ExpressionAttributeValues.html) again!
+  *  Expression resolver: never write complicated [expressions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html) with attribute [names](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ExpressionAttributeNames.html) and [values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ExpressionAttributeValues.html) again!
 
 ...and more!
 
@@ -34,7 +34,7 @@ Some of TypeDynamo features:
 ```
 
 ### npm
-```ts
+```sh
  npm install --save type-dynamo
 ```
 ## Defining your Schema
@@ -50,7 +50,7 @@ class User {
 }
 ```
 
-You just have to import your typeDynamo instance and export that User class within the *define* HOF (high order function):
+You just have to import your typeDynamo instance and then export that User class using the *define* HOF (high order function):
 
 ```ts
 // User.ts
@@ -77,14 +77,11 @@ export default typeDynamo.define(User, {
 import { attributeNotExists } from 'type-dynamo'
 import { default as UserRepo, User } from './User'
 
-async function getUserById(id: string) {
-  // Behind the scenes, TypeDynamo converts find to a dynamo getItem request
+async function getUserById(id: string) { 
   return UserRepo.find({id}).execute()
 }
 
-
 async function getAllUsers() {
-  // Do this very carefully -> finding allResults is not a good idea for large tables
   const users = await UserRepo.find().allResults().execute()
   users.map(user => {
     // you are type-safe!
@@ -93,17 +90,14 @@ async function getAllUsers() {
 }
 
 async function getUsersPreview() {
-  // gets 50 users per call with just their id and name
-  // TypeDynamo will request from Dynamo only the desired attributes
+  // gets 50 users per call with just their id and name, and TypeDynamo will request from only the desired attributes
   const usersPreview = await UserRepo
                       .find()
                       .withAttributes(['id', 'name'])
                       .paginate(50)
                       .execute()
 
-  usersPreview.map(userPreview => {
-    // you are still type-safe
-
+  usersPreview.map(userPreview => { // you are still type-safe
     // no problem with this call
     console.log(userPreview.id, userPreview.name) 
 
@@ -112,9 +106,7 @@ async function getUsersPreview() {
   }))
 
   async function saveNewUser(user: User) {
-    return UserRepo.save(user)
-          .withCondition(attributeNotExists('id'))
-          .execute()
+    return UserRepo.save(user).execute()
   }
 
   async function updateUser(partialUser: Partial<User>) {
