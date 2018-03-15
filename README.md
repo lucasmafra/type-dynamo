@@ -1,3 +1,14 @@
+<div align="center" padding-top="80px">
+  <a href="https://typeorm.io/">
+    <img src="https://s3.amazonaws.com/type-dynamo-docs/645095395_0f9334af-9aac-4638-b4b8-920d87b9fc97.png" width="400" height="74">
+  </a>
+  <br>
+  <br>
+  <br>
+  <br>
+</div>
+
+
 # TypeDynamo
 
 TypeDynamo is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) for your Typescript projects running in Node.js environment. Its goal is to help you develop backend applications that uses [DynamoDB](https://aws.amazon.com/dynamodb) by abstracting most of the Dynamo boilerplate and letting you focus on what really matters: querying and writing your data!
@@ -19,10 +30,13 @@ Some of TypeDynamo features:
 
  * [Installation]()
  * [Getting started]()
-    * [Dynamo Setup]()
+    * [Dynamo setup]()
     * [Defining your schema]()
     * [Querying data]()
-    * [Writing data]()
+    * [Writing new data]()
+    * [Updating data]()
+    * [Deleting data]()
+    * [Expressions]()
     * [Indexes]()
       * [Global Index]()
       * [Local Index]()
@@ -48,7 +62,7 @@ Some of TypeDynamo features:
 
 ## Getting started
 
-### Dynamo Setup
+### Dynamo setup
 
 In order to use DynamoDB in your projects, you must have an AWS access key and secret key. If you don't have it, refer to this [link](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console).
 
@@ -129,53 +143,57 @@ import { attributeNotExists, match, isLessThan, contains } from 'type-dynamo/exp
 import { UserRepo } from './User' // our exported schema
 
 async function getUserById(id: string) { 
-  return UserRepo.find({id}).execute()
+  const user = await UserRepo.find({id}).execute()
+  return user.data
 }
 
 async function getUsersByIds(ids: string[]) {
   const keys = ids.map(id => ({id})) // map each element to an object {id}
-  return UserRepo.find(keys).executue()
+  const users = await UserRepo.find(keys).executue()
+  return users.data
 }
 
 async function getAllUsers() {
   const users = await UserRepo.find().allResults().execute()
-  users.map(user => {
+  users.data.map(user => {
     // you are type-safe!
     console.log(user.id, user.name, user.email, user.age )
   })
 }
 
 async function getUsersPreview() {
-  // gets 50 users per call with just their id and name, and TypeDynamo will
-  // request only the desired attributes
+  // gets the first 50 users encountered with just id and name attributes
+  // because of withAttributes(), TypeDynamo will request only the desired attributes
   const usersPreview = await UserRepo
                       .find()
                       .withAttributes(['id', 'name'])
                       .paginate(50)
                       .execute()
 
-  usersPreview.map(userPreview => { // you are still type-safe
+  usersPreview.data.map(userPreview => { // you are still type-safe
     // no problem with this call
     console.log(userPreview.id, userPreview.name) 
 
     // this causes a compiler error
     console.log(userPreview.email, userPreview.age) 
   }))
-  
-  async function getFilteredUsers(lastId?: string) {
-    // finds users with age less than 30 and email containing "@gmail.com", and paginates the result
-    // if lastId is passed, it returns up to the next 100 results after the lastId encountered
-    // else, it returns up to the first 100 results encountered
-    return UserRepo
-          .find()
-          .filter(
-            match('age', isLessThan(30))
-            .and.
-            match('email', contains('@gmail.com'))
-          )
-          .paginate(100, lastId? { id: lastId } : undefined)
-          .execute()
-  }
+}
+
+async function getFilteredUsers(lastId?: string) {
+  // finds users with age less than 30 and email containing "@gmail.com", and paginates the result
+  // if lastId is passed, it returns up to the next 100 results after the lastId encountered
+  // else, it returns up to the first 100 results encountered
+  const users = await UserRepo
+        .find()
+        .filter(
+          match('age', isLessThan(30))
+          .and.
+          match('email', contains('@gmail.com'))
+        )
+        .paginate(100, lastId? { id: lastId } : undefined)
+        .execute()
+  console.log(users.data) // array of users
+  console.log(users.lastKey) // if there are more items in the table, it can be used for the next paginated request
 }
 ```
 
@@ -205,7 +223,13 @@ UserRepo.find({ id: '1', email: 'johndoe@email.com'}).execute() // Error: 'email
 
 If you want to know more about how to use *find* method, checkout the [API Reference]().
 
-### Writing data
+### Writing new data
+
+### Updating data
+
+### Deleting data
+
+### Expressions
 
 ### Indexes
 
