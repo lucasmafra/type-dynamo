@@ -18,6 +18,7 @@ Some of TypeDynamo features:
 ## Table of Contents
 
  * [Installation](#getting-started-with-firebase)
+ * [Dynamo Setup](#getting-started-with-firebase)
  * [Defining your schema](#documentation)
  * [Querying data](#examples)
  * [Writing data](#examples)
@@ -37,6 +38,10 @@ Some of TypeDynamo features:
 ```sh
  npm install --save type-dynamo
 ```
+
+## Dynamo Setup
+
+
 ## Defining your Schema
 
 In TypeDynamo, your tables are just regular Typescript classes. Let's say you have the following User class:
@@ -85,12 +90,13 @@ async function getAllUsers() {
   const users = await UserRepo.find().allResults().execute()
   users.map(user => {
     // you are type-safe!
-    console.log(user.id, user.name, user.email, user.age 
-  }))
+    console.log(user.id, user.name, user.email, user.age )
+  })
 }
 
 async function getUsersPreview() {
-  // gets 50 users per call with just their id and name, and TypeDynamo will request from only the desired attributes
+  // gets 50 users per call with just their id and name, and TypeDynamo will
+  // request only the desired attributes
   const usersPreview = await UserRepo
                       .find()
                       .withAttributes(['id', 'name'])
@@ -115,8 +121,6 @@ async function getUsersPreview() {
 }
 
 ```
-
-
 ## Documentation
 
 * [Quickstart](docs/quickstart.md)
