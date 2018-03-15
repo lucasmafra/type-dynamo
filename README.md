@@ -41,6 +41,35 @@ Some of TypeDynamo features:
 
 ## Dynamo Setup
 
+In order to use DynamoDB for your projects, you must have an AWS access key and secret key. If you don't have it, refer to this [link](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console).
+
+Now, you only have to create a TypeDynamo instance passing your configuration:
+
+```ts
+// dynamo.config.ts
+import { TypeDynamo } from 'type-dynamo'
+export const typeDynamo = new TypeDynamo({
+  accessKeyId: '<YOUR_ACCESS_KEY_ID>',
+  secretAccessKey: '<YOUR_SECRET_ACCESS_KEY>',
+})
+```
+**OBS**: It's a bad practice to put your keys hardcoded like that. In real projects you should set your keys as Node environment variables and access them in your code:
+
+```ts
+// dynamo.config.ts
+import { TypeDynamo } from 'type-dynamo'
+export const typeDynamo = new TypeDynamo({
+  accessKeyId: process.env.accessKeyId,
+  secretAccessKey: process.env.secretAccessKey,
+})
+```
+
+As an option, you could define your keys at *~/.aws/credentials* file. If you don't know how to do that, fefer to this [link](https://docs.aws.amazon.com/cli/latest/userguide/cli-config-files.html). After that, you can instantiate TypeDynamo with no arguments:
+```ts
+// dynamo.config.ts
+import { TypeDynamo } from 'type-dynamo'
+export const typeDynamo = new TypeDynamo() // it will look for your credentials at ~/.aws/credentials
+```
 
 ## Defining your Schema
 
@@ -59,7 +88,7 @@ You just have to import your typeDynamo instance and then export that User class
 
 ```ts
 // User.ts
-import { typeDynamo } from './database.config.ts'
+import { typeDynamo } from './dynamo.config.ts'
 
 export class User {
   id: string,
