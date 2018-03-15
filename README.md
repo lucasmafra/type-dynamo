@@ -11,7 +11,7 @@ Some of TypeDynamo features:
   *  Very simple CRUD methods with promise-like and chaining style;
   *  Type-safe database operations: all TypeDynamo methods have it's signature based on your table/index declaration, so you're allways type-safe;
   *  Pagination out of the box;
-  *  Expression resolver: never write complicated [expressions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html) with attribute [names](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ExpressionAttributeNames.html) and [values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ExpressionAttributeValues.html) again!
+  *  Expression resolvers: never write complicated [expressions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html) with attribute [names](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ExpressionAttributeNames.html) and [values](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ExpressionAttributeValues.html) again!
 
 ...and more!
 
@@ -23,10 +23,14 @@ Some of TypeDynamo features:
     * [Defining your schema]()
     * [Querying data]()
     * [Writing data]()
+    * [Indexes]()
+      * [GlobalIndex]()
+      * [LocalIndex]()
     * [Running locally]()
  * [Advanced Guide]()
  * [Demos]()
  * [API Reference]()
+ * [Known Issues]()
  * [Contributing]()
 
 
@@ -108,7 +112,9 @@ export default typeDynamo.define(User, {
 })
 ```
 
-... and that's all! You're ready to start querying and writing to Dynamo!
+OBS: In DynamoDB, you must **allways** declare a *partition key* and optionally a *sort key* for your Table. The choice of your key is very important since Dynamo will index your table based on the provided keys, which means that you'll be able to access your items immediately through this keys. For more information, checkout this [link](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.CoreComponents.html)
+
+... and that's all! You're ready to start querying and writing data to Dynamo!
 
 ### Querying data
 
@@ -183,27 +189,30 @@ find(partitionKey: PartitionKey) // makes either a GetItem or Query, depending w
 
 This way, TypeDynamo will allways make the Dynamo request that fits best to your use case.
 
-Also, *find* method is strongly typed, so if you try to pass invalid arguments to find, TypeScript will complain about it. In our User example, all of these calls would cause a compiler error:
+Also, *find* method is strongly typed so if you try to pass invalid arguments TypeScript will complain about it. In our User example, all of these calls would cause a compiler error:
 
 ```ts
 UserRepo.find({ id: false }).execute() // Error: User id is of type string
 
 UserRepo.find({id: '1'}).withAttributes(['lastName']).execute() // Error: attribute 'lastName' does not belong to User declaration
 
-UserRepo.find({ id: '1', email: 'johndoe@email.com'}) // Error: 'email' does not belong to type PartitionKey
+UserRepo.find({ id: '1', email: 'johndoe@email.com'}).execute() // Error: 'email' does not belong to type PartitionKey
 ```
 
-If you want know more how to use *find* method, checkout  the [API Reference]().
+If you want to know more how to use *find* method, checkout  the [API Reference]().
 
 ### Writing data
 
 ### Running locally
 
 ## Advanced Guide
+
 ## Demos
 
 * [Node.js + Serverless backend for a TODO app]()
 * [Node.js + Express backend for a TODO app]()
+
+## Known Issues
 
 ## Contributing
 
