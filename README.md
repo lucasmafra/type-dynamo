@@ -27,10 +27,11 @@ Some of TypeDynamo features:
  * [Getting started]()
     * [Dynamo setup]()
     * [Defining your schema]()
-    * [Querying data]()
-    * [Writing new data]()
-    * [Updating data]()
-    * [Deleting data]()
+    * [Database operations]()
+      * [Querying data]()
+      * [Writing new data]()
+      * [Updating data]()
+      * [Deleting data]()
     * [Expressions]()
     * [Indexes]()
       * [Global Index]()
@@ -108,7 +109,7 @@ All you have to do is call your typeDynamo instance *define* method, passing you
 
 ```ts
 // User.ts
-import { typeDynamo } from './dynamo.config.ts'
+import { typeDynamo } from './dynamo.config'
 
 export class User {
   id: string,
@@ -127,7 +128,11 @@ export const UserRepo = typeDynamo.define(User, {
 
 **Note**: DynamoDB requires the partitionKey and sortKey attributes to be of type **string** or **number**. So if you declare an boolean attribute as your partitionKey, for example, DynamoDB will throw an error at execution time. Although, TypeDynamo cannot prevent this error in compile time due to a TypeScript limitation.
 
-### Querying data
+### Database operations
+
+TypeDynamo provides 4 high level functions to help you querying and writing data with easy: *find()*, *save()*, *update()* and *delete()*
+
+#### Querying data
 
 TypeDynamo makes easier to retrieve data from Dynamo by exposing *find()*, a high level function for reading the data. Let's see some examples based on the User schema declared in the early section:
 
@@ -217,14 +222,35 @@ To support every use case of reading data from Dynamo, the *find()* method has 4
 ```ts
 find() // makes a Dynamo Scan request behind the scenes
 
-find(keys: Array<PartitionKey & SortKey>) // makes a Dynamo BatchGetItem behind the scenes
+find(keys: Array<Key>) // makes a Dynamo BatchGetItem behind the scenes
 
-find(key: PartitionKey & SortKey) // makes a Dynamo GetItem behind the scenes
+find(key: Key) // makes a Dynamo GetItem behind the scenes
 
 find(partitionKey: PartitionKey) // makes either a GetItem or Query, depending whether the schema has declared a sortKey.
 ```
 
 This way, TypeDynamo will allways make the Dynamo request that best fits to your use case.
+
+**PS**: The Key type is actually a generic type depending on your schema declaration. In the provided User schema example, the Key type would be `type Key = { id: string }`. Notice that since this table has only a partition key, TypeDynamo will never make a query request because it doesn't make sense: you can get any item with the partition key already. But if you have a schema declaration with a composite key like this:
+
+```ts
+// UserOrder.ts
+import { typeDynamo } from './dynamo.config'
+
+export class UserOrder {
+  userId: string,
+  orderId: string,
+  createdAt: number // timestamp
+}
+
+export const UserOrderRepo = typeDynamo.define(User, {
+  tableName: 'UserTable',
+  partitionKey: 'userId',
+  sortKey: 'orderId'
+})
+```
+
+...then you have `type PartitionKey = { userId: string }` and `type Key = { userId: string, orderId: string }`. This way, TypeDynamo can know that when you call *find*() like `UserOrderRepo.find({ userId: '1', orderId: 'abc'})` it must make a GetItem request, since you are getting a specific item from the table. But if you're calling *find()* like `UserOrderRepo.find({ userId: '1'})` you're actually making a query, because there could be more than one item in the table with this userId. So it will look for every item in the table with this userId and return the matched results.
 
 A great thing about *find* is that it comes with a built-in workaround for DynamoDB limitations in the result size for [BatchGetItem](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BatchGetItem.html), [Scan](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html) and [Query](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html) methods, so you don't have to worry about that.
 
@@ -240,7 +266,7 @@ UserRepo.find({ id: '1', email: 'johndoe@email.com'}).execute() // Compiler erro
 
 If you want to know more about how to use *find()* method, checkout the [API Reference]().
 
-### Writing new data
+#### Writing new data
 
 Many times you're going to need not only to query data from the database, but also write new data into it. TypeDynamo provides the high level *save*() method for that. Let's get into some examples with the User schema:
 
@@ -295,26 +321,28 @@ It also handles Dynamo limitations for [BatchWrite]() out of the box, so you don
 
 **Note**: By default, *save()* method has the same behavior of Dynamo SDK when writing an item, which means that it will overwrite an existing item unless you add a *.withCondition(attributeNotExists(TABLE_KEY))*. Also, remember that Dynamo does not allow you to add such condition when calling BatchWriteItem, which means that you're allways subject to overwriting items when calling a *save()* with multiple items.
 
-### Updating data
+#### Updating data
 
-For updating, use the *update()* method. A couple of examples:
+For updating, use the *update()* method. TypeDynamo allows you to call *update()* in two different ways. A couple of examples:
 
-* Updating a new user with two arguments
+* Updating a new user with two arguments - the key and the update item
 ```ts
 import { UserRepo, User } from './User'
 
-async function updateUser(id: string, input: Partial<Pick<User, 'email' | 'name' | 'age' >>) { 
+async function updateUser(id: string, input: Partial<User>) { // the input contains the attributes you want to update
+  // example: input = { email: 'newemail@gmail.com' }
   const result = await UserRepo.update({ id }, input).execute() 
   const user = result.data
   console.log(user.id, user.name, user.email, user.age)
 }
 ```
 
-* Updating a new user with just one argument
+* Updating a new user with just one argument - the update item
 ```ts
 import { UserRepo, User } from './User'
 
-async function updateUser(input: Partial<User> && { id: string }) { 
+async function updateUser(input: Partial<User> && { id: string }) {  // in this case the input item must also contain the key
+  // example: input = { id: '1', email: 'newemail@gmail.com' } 
   const result = await UserRepo.update({ id }, input).execute() 
   const user = result.data
   console.log(user.id, user.name, user.email, user.age)
@@ -336,11 +364,63 @@ async function updateUserWithCondition(input: Partial<User> && { id: string }) {
 }
 ```
 
-If you notice well, when you call *update()* method providing two arguments, the second argument **must not** contain the item key. Otherwise, you would be trying to update an item key, which is not allowed by DynamoDB. On the other hand, if you decide to call *update()* method providing just one argument, it **must** contain the item key. Otherwise, DynamoDB can not know which item you're trying to udpate. But don't worry: all of this is really well typed in TypeDynamo, so you won't be able to make mistakes.
+If you notice well, when you call *update()* method with just one argument, the input **must** contain the item key along with the attributes you want to update. Otherwise, DynamoDB can not know which item you're trying to udpate. But don't worry: this is really well typed in TypeDynamo, so you won't be able to make any mistakes.
 
 **Note**: TypeDynamo *update()* does not currently support batch update due to DynamoDB limitations.
   
-### Deleting data
+#### Deleting data
+
+TypeDynamo exposes the high level function *delete()* for deleting your items. Examples:
+
+* Deleting a single user
+```ts
+import { UserRepo, User } from './User'
+
+async function deleteUser(id: string) {
+  const result = await UserRepo.delete({ id }).execute() // by default, delete() returns the deleted item in case you need it
+  const user = result.data
+  console.log(user.id, user.name, user.email, user.age)
+}
+```
+
+* Deleting a single user under a specific condition
+```ts
+import { UserRepo, User } from './User'
+import { match, isEqualTo } from 'type-dynamo/expressions'
+
+async function deleteUserWithCondition(id: string) { 
+  const result = await UserRepo
+                      .delete({ id })
+                      .withCondition(match('name', isEqualTo('John Doe')) // only updates if the corresponding item in the table has name equal to John Doe
+                      .execute() 
+  const user = result.data
+  console.log(user.id, user.name, user.email, user.age)
+}
+```
+
+* Deleting multiple users
+```ts
+import { UserRepo, User } from './User'
+
+async function deleteUsers(ids: string[] }) {
+  const keys = ids.map(id => ({id})) // map each array string element to the object { 'id': id }
+  await UserRepo.delete(keys).execute() // this is a void method, it does not return the deleted items
+}
+```
+
+To support both single and multiple delete operations, TypeDynamo *delete()* method has 2 signatures:
+
+```ts
+delete(key: Key) // makes a Dynamo DeleteItem request behind the scenes
+
+delete(keys: Key[]) // makes a Dynamo BatchWriteItem behind the scenes (weird, but it's how Dynamo accepts batch delete)
+
+```
+
+Just like *find()* and *save()*, the *delete()* method has a workaround for DynamoDB limitations, so you don't have to worry
+about deleting more items than DynamoDB allows.
+
+**Note**: When deleting many items at once, TypeDynamo can't return the deleted items from the table, since DynamoDB doesn't support it. Also, DynamoDB only supports specifying conditions to single delete operations, so when you call TypeDynamo *delete()* method passing more than one item, you can't specify a delete condition.
 
 ### Expressions
 

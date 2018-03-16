@@ -12,7 +12,7 @@ const marshalItem = require('dynamodb-marshaler').marshalItem
 export type UpdateType = 'update'
 
 export type ExplicitKeyItemType<Entity, KeySchema> =
-    Partial<Pick<Entity, Diff<keyof Entity, keyof KeySchema>>>
+    Partial<Entity>
 
 export type ImplicityKeyItemType<Entity, KeySchema> = Partial<Entity> & KeySchema
 
@@ -79,7 +79,8 @@ export class DynamoUpdate<
             throw new Error('UpdateEmptyItem')
         }
         for (const key in update.item) {
-            if (update.item.hasOwnProperty(key)) {
+            if (update.item.hasOwnProperty(key)
+            && update.schema.tableSchema!.partitionKey !== key && update.schema.tableSchema!.sortKey !== key) {
                 const newName = `#${randomGenerator()}`
                 const newValue = `:${randomGenerator()}`
                 resolvedExpression += ` ${newName} = ${newValue},`
