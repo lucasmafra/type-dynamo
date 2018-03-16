@@ -322,6 +322,8 @@ It also handles Dynamo limitations for [BatchWrite]() out of the box, so you don
 
 **Note**: By default, *save()* method has the same behavior of Dynamo SDK when writing an item, which means that it will overwrite any existing item unless you add a *.withCondition(attributeNotExists('TABLE_KEY'))* clause. Also, remember that Dynamo does not allow you to add such condition when calling BatchWriteItem, which means that you're allways subject to overwriting items when calling a *save()* with multiple items.
 
+Find out more about *save()* in the [API Reference]().
+
 #### Updating data
 
 For updating, use the *update()* method. TypeDynamo allows you to call *update()* in two different ways. A couple of examples:
@@ -369,6 +371,8 @@ If you notice well, when you call *update()* method with just one argument, the 
 
 **Note**: TypeDynamo *update()* does not currently support batch update due to DynamoDB limitations.
   
+Know more about *update()* in the [API Reference]().
+
 #### Deleting data
 
 TypeDynamo exposes the high level function *delete()* for deleting your items. Examples:
@@ -422,6 +426,8 @@ Just like *find()* and *save()*, the *delete()* method has a workaround for Dyna
 about deleting more items than DynamoDB actually supports.
 
 **Note**: When deleting many items at once, TypeDynamo can't return the deleted items from the table, since DynamoDB doesn't support it. Also, DynamoDB only supports specifying conditions to single delete operations, so when you call TypeDynamo *delete()* method passing more than one item, you can't specify a delete condition.
+
+Explore the [API Reference]() to know more about *delete()*.
 
 ### Expressions
 
