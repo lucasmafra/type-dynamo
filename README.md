@@ -129,7 +129,7 @@ export const UserRepo = typeDynamo.define(User, {
 
 ### Querying data
 
-TypeDynamo makes easier to retrieve data from Dynamo by providing *find*, a high level function for reading the data. Let's see some examples based on the User schema declared in the early section:
+TypeDynamo makes easier to retrieve data from Dynamo by exposing *find()*, a high level function for reading the data. Let's see some examples based on the User schema declared in the early section:
 
 * Getting a specific user by id
 ```ts
@@ -212,7 +212,7 @@ async function getFilteredUsers(lastId?: string) {
 }
 ```
 
-To support every use case of reading data from Dynamo, the *find* method has 4 overload signatures:
+To support every use case of reading data from Dynamo, the *find()* method has 4 overload signatures:
 
 ```ts
 find() // makes a Dynamo Scan request behind the scenes
@@ -228,7 +228,7 @@ This way, TypeDynamo will allways make the Dynamo request that best fits to your
 
 A great thing about *find* is that it comes with a built-in workaround for DynamoDB limitations in the result size for [BatchGetItem](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BatchGetItem.html), [Scan](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html) and [Query](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html) methods, so you don't have to worry about that.
 
-Also, *find* method is strongly typed so if you try to pass invalid arguments TypeScript will complain about it. In our User example, all of these calls would cause a compiler error:
+Also, *find()* method is strongly typed so if you try to pass invalid arguments TypeScript will complain about it. In our User example, all of these calls would cause a compiler error:
 
 ```ts
 UserRepo.find({ id: false }).execute() // Compiler error, because user id is of type string and not boolean
@@ -238,7 +238,7 @@ UserRepo.find({id: '1'}).withAttributes(['lastName']).execute() // Compiler erro
 UserRepo.find({ id: '1', email: 'johndoe@email.com'}).execute() // Compiler error because 'email' does not belong to User partition key or sort key
 ```
 
-If you want to know more about how to use *find* method, checkout the [API Reference]().
+If you want to know more about how to use *find()* method, checkout the [API Reference]().
 
 ### Writing new data
 
@@ -293,10 +293,55 @@ save(items: Item[]) // makes a Dynamo BatchWrite behind the scenes
 
 It also handles Dynamo limitations for [BatchWrite]() out of the box, so you don't have to worry if you want to write more than 25 items at once, for example.
 
-**Note**: By default, *save* method has the same behavior of Dynamo SDK when writing an item, which means that it will overwrite an existing item unless you add a *.withCondition(attributeNotExists(TABLE_KEY))*. Also, remember that Dynamo does not allow you to add such condition when calling BatchWriteItem, which means that you're allways subject to overwriting items when calling a *save* with multiple items.
+**Note**: By default, *save()* method has the same behavior of Dynamo SDK when writing an item, which means that it will overwrite an existing item unless you add a *.withCondition(attributeNotExists(TABLE_KEY))*. Also, remember that Dynamo does not allow you to add such condition when calling BatchWriteItem, which means that you're allways subject to overwriting items when calling a *save()* with multiple items.
 
 ### Updating data
 
+For updating, use the *update()* method. A couple of examples:
+
+* Updating a new user with two arguments
+```ts
+import { UserRepo, User } from './User'
+
+async function updateUser(id: string, input: Partial<Pick<User, 'email' | 'name' | 'age' >>) { 
+  
+  const result = await UserRepo.update({ id }, input).execute() 
+  const user = result.data
+  console.log(user.id, user.name, user.email, user.age)
+}
+```
+
+* Updating a new user with just one argument
+```ts
+import { UserRepo, User } from './User'
+
+async function updateUser(input: Partial<User> && { id: string }) { 
+  // update() also accepts just the model to update as its argument, but in this case the input model must contain the item key
+  const result = await UserRepo.update({ id }, input).execute() 
+  const user = result.data
+  console.log(user.id, user.name, user.email, user.age)
+}
+```
+
+* Updating a new user under a specific condition
+```ts
+import { UserRepo, User } from './User'
+import { match, isGreaterThan } from 'type-dynamo/expressions'
+
+async function updateUserWithCondition(input: Partial<User> && { id: string }) { 
+  const result = await UserRepo
+                      .update({ id }, input)
+                      .withCondition(match('age', isGreaterThan(40))) // only updates if the corresponding item in the table has age greater than 40
+                      .execute() 
+  const user = result.data
+  console.log(user.id, user.name, user.email, user.age)
+}
+```
+
+If you notice well, when you call *update()* method providing two arguments, the second argument **must not** contain the item key. Otherwise, you would be trying to update an item key, which is not allowed by DynamoDB. On the other hand, if you decide to call *update()* method providing just one argument, it **must** contain the item key. Otherwise, DynamoDB can not know which item you're trying to udpate. But don't worry: all of this is really well typed in TypeDynamo, so you won't be able to make mistakes.
+
+**Note**: TypeDynamo *update()* does not currently support batch update due to DynamoDB limitations.
+  
 ### Deleting data
 
 ### Expressions
