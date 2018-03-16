@@ -130,7 +130,7 @@ export const UserRepo = typeDynamo.define(User, {
 
 ### Database operations
 
-TypeDynamo provides 4 high level functions to help you querying and writing data with easy: *find()*, *save()*, *update()* and *delete()*
+TypeDynamo provides 4 high level functions to help you querying and writing data: *find()*, *save()*, *update()* and *delete()*. Let's dive into it!
 
 #### Querying data
 
@@ -165,8 +165,8 @@ async function getUsersByIds(ids: string[]) {
 import { UserRepo } from './User'
 
 async function getAllUsers() {
-  // use .allResults() carefully! It's not a good idea call it on a large table
-  const result = await UserRepo.find().allResults().execute() // find() method also accepts no id as parameter
+  // use .allResults() carefully! It's not a good idea to call it on a large table
+  const result = await UserRepo.find().allResults().execute() // find() method accepts parameters
   result.data.map(user => {
     console.log(user.id, user.name, user.email, user.age)
   })
@@ -231,7 +231,7 @@ find(partitionKey: PartitionKey) // makes either a GetItem or Query, depending w
 
 This way, TypeDynamo will allways make the Dynamo request that best fits to your use case.
 
-**PS**: The Key type is actually a generic type depending on your schema declaration. In the provided User schema example, the Key type would be `type Key = { id: string }`. Notice that since this table has only a partition key, TypeDynamo will never make a query request because it doesn't make sense: you can get any item with the partition key already. But if you have a schema declaration with a composite key like this:
+**PS**: The Key type is actually a generic type depending on your schema declaration. In the provided User schema example, you would have `type PartitionKey = { id: string }` and `type Key = { id: string }` as well. Notice that since this table has only a partition key, TypeDynamo will never make a query request because it doesn't make sense: you can get any item with the partition key already. But if you have a schema declaration with a composite key like this:
 
 ```ts
 // UserOrder.ts
@@ -244,15 +244,16 @@ export class UserOrder {
 }
 
 export const UserOrderRepo = typeDynamo.define(User, {
+  // this table has a composite key since it has both partition and sort key
   tableName: 'UserTable',
   partitionKey: 'userId',
-  sortKey: 'orderId'
+  sortKey: 'orderId' 
 })
 ```
 
-...then you have `type PartitionKey = { userId: string }` and `type Key = { userId: string, orderId: string }`. This way, TypeDynamo can know that when you call *find*() like `UserOrderRepo.find({ userId: '1', orderId: 'abc'})` it must make a GetItem request, since you are getting a specific item from the table. But if you're calling *find()* like `UserOrderRepo.find({ userId: '1'})` you're actually making a query, because there could be more than one item in the table with this userId. So it will look for every item in the table with this userId and return the matched results.
+...then you have `type PartitionKey = { userId: string }`, `type SortKey = { orderId: string }` and `type Key = { userId: string, orderId: string }`. This way, TypeDynamo can know that when you call *find*() like `UserOrderRepo.find({ userId: '1', orderId: 'abc'})` it must make a GetItem request, since you are getting a specific item from the table. But if you're calling *find()* like `UserOrderRepo.find({ userId: '1'})` you're actually making a query, because there could be more than one item in the table with this userId. So it will look for every item in the table with this userId and return the matched results.
 
-A great thing about *find* is that it comes with a built-in workaround for DynamoDB limitations in the result size for [BatchGetItem](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BatchGetItem.html), [Scan](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html) and [Query](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html) methods, so you don't have to worry about that.
+A great thing about *find()* is that it comes with a built-in workaround for DynamoDB limitations in the result size for [BatchGetItem](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BatchGetItem.html), [Scan](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html) and [Query](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html) methods, so you don't have to worry about that.
 
 Also, *find()* method is strongly typed so if you try to pass invalid arguments TypeScript will complain about it. In our User example, all of these calls would cause a compiler error:
 
@@ -261,7 +262,7 @@ UserRepo.find({ id: false }).execute() // Compiler error, because user id is of 
 
 UserRepo.find({id: '1'}).withAttributes(['lastName']).execute() // Compiler error bacause attribute 'lastName' does not belong to User
 
-UserRepo.find({ id: '1', email: 'johndoe@email.com'}).execute() // Compiler error because 'email' does not belong to User partition key or sort key
+UserRepo.find({ id: '1', email: 'johndoe@email.com'}).execute() // Compiler error because 'email' does not belong to User Key
 ```
 
 If you want to know more about how to use *find()* method, checkout the [API Reference]().
@@ -319,7 +320,7 @@ save(items: Item[]) // makes a Dynamo BatchWrite behind the scenes
 
 It also handles Dynamo limitations for [BatchWrite]() out of the box, so you don't have to worry if you want to write more than 25 items at once, for example.
 
-**Note**: By default, *save()* method has the same behavior of Dynamo SDK when writing an item, which means that it will overwrite an existing item unless you add a *.withCondition(attributeNotExists(TABLE_KEY))*. Also, remember that Dynamo does not allow you to add such condition when calling BatchWriteItem, which means that you're allways subject to overwriting items when calling a *save()* with multiple items.
+**Note**: By default, *save()* method has the same behavior of Dynamo SDK when writing an item, which means that it will overwrite any existing item unless you add a *.withCondition(attributeNotExists('TABLE_KEY'))* clause. Also, remember that Dynamo does not allow you to add such condition when calling BatchWriteItem, which means that you're allways subject to overwriting items when calling a *save()* with multiple items.
 
 #### Updating data
 
@@ -331,7 +332,7 @@ import { UserRepo, User } from './User'
 
 async function updateUser(id: string, input: Partial<User>) { // the input contains the attributes you want to update
   // example: input = { email: 'newemail@gmail.com' }
-  const result = await UserRepo.update({ id }, input).execute() 
+  const result = await UserRepo.update({ id }, input).execute() // by default, *update()* return the updated item in case you need it
   const user = result.data
   console.log(user.id, user.name, user.email, user.age)
 }
@@ -413,12 +414,12 @@ To support both single and multiple delete operations, TypeDynamo *delete()* met
 ```ts
 delete(key: Key) // makes a Dynamo DeleteItem request behind the scenes
 
-delete(keys: Key[]) // makes a Dynamo BatchWriteItem behind the scenes (weird, but it's how Dynamo accepts batch delete)
+delete(keys: Key[]) // makes a Dynamo BatchWriteItem behind the scenes (weird, but it's how DynamoDB works with batch delete)
 
 ```
 
 Just like *find()* and *save()*, the *delete()* method has a workaround for DynamoDB limitations, so you don't have to worry
-about deleting more items than DynamoDB allows.
+about deleting more items than DynamoDB actually supports.
 
 **Note**: When deleting many items at once, TypeDynamo can't return the deleted items from the table, since DynamoDB doesn't support it. Also, DynamoDB only supports specifying conditions to single delete operations, so when you call TypeDynamo *delete()* method passing more than one item, you can't specify a delete condition.
 
