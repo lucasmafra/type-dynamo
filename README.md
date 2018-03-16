@@ -304,7 +304,6 @@ For updating, use the *update()* method. A couple of examples:
 import { UserRepo, User } from './User'
 
 async function updateUser(id: string, input: Partial<Pick<User, 'email' | 'name' | 'age' >>) { 
-  
   const result = await UserRepo.update({ id }, input).execute() 
   const user = result.data
   console.log(user.id, user.name, user.email, user.age)
@@ -316,7 +315,6 @@ async function updateUser(id: string, input: Partial<Pick<User, 'email' | 'name'
 import { UserRepo, User } from './User'
 
 async function updateUser(input: Partial<User> && { id: string }) { 
-  // update() also accepts just the model to update as its argument, but in this case the input model must contain the item key
   const result = await UserRepo.update({ id }, input).execute() 
   const user = result.data
   console.log(user.id, user.name, user.email, user.age)
