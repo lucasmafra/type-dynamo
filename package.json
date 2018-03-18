@@ -5,6 +5,7 @@
     "type-dynamo": "dist/cli.js"
   },
   "main": "dist/index.js",
+  "version": "0.0.1",
   "types": "dist/index.d.ts",
   "scripts": {
     "prepare": "npm run build",
