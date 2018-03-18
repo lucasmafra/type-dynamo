@@ -1,7 +1,9 @@
-import { globalIndex, withGlobalIndexes } from '../src/schema'
+import { globalIndex, withGlobalIndexes } from '../src'
+import { DynamoIndexWithSimpleKey } from '../src/schema/dynamo-index'
+import { DynamoORMWithCompositeKey } from '../src/schema/dynamo-orm'
 import { typeDynamo } from './database.config'
 
-class User {
+export class User {
     public email: string
     public name: string
     public companyName: string

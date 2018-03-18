@@ -1,1 +1,2 @@
-export * from './type-dynamo'
+export { TypeDynamo } from './type-dynamo'
+export * from './schema'

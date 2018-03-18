@@ -5,7 +5,7 @@ import { DynamoIndexWithCompositeKey, DynamoIndexWithSimpleKey } from './schema/
 import { DynamoORMWithCompositeKey, DynamoORMWithSimpleKey } from './schema/dynamo-orm'
 import { DynamoTableWithCompositeKey, DynamoTableWithSimpleKey } from './schema/dynamo-table'
 
-interface SdkOptions {
+export interface SdkOptions {
     accessKeyId?: string,
     secretAccessKey?: string,
     credentials?: AWS.Credentials
