@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import { buildScanInput, scanAllResults, scanPaginate} from '../../../database-operations/scan'
+import { buildScanInput, scanAllResults, scanPaginate, ScanResult} from '../../../database-operations/scan'
 import { EntitySchema } from '../../../schema'
 import { Chaining, Filter, Paginate, WithAttributes } from '../../common'
 import { ScanChainingKind } from './'

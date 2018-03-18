@@ -1,9 +1,11 @@
+import { PutResult } from '../../../database-operations/put'
 import Expression from '../../../expressions/expression'
 import { EntitySchema } from '../../../schema'
 import { Chaining } from '../../common'
 import { PutChainingKind } from './'
 import { execute } from './execute'
 import { DynamoPutWithCondition } from './with-condition'
+
 export type PutType = 'put'
 
 export interface Put<Entity> {

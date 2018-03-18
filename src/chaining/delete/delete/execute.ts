@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import { buildDeleteInput, deleteItem } from '../../../database-operations/delete'
+import { buildDeleteInput, deleteItem, DeleteResult } from '../../../database-operations/delete'
 import { EntitySchema } from '../../../schema'
 import { Chaining, WithCondition } from '../../common'
 import { DeleteChainingKind } from './'

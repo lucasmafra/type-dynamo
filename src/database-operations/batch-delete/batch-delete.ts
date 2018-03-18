@@ -1,7 +1,9 @@
 import { DynamoDB } from 'aws-sdk'
 import DynamoToPromise from '../dynamo-to-promise'
 
-export interface BatchDeleteResult<TableModel> {}
+export interface BatchDeleteResult<TableModel> {
+    data: TableModel[]
+}
 
 export async function batchDelete<
     Entity

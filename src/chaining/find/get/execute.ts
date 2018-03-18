@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import { buildGetInput, get} from '../../../database-operations/get'
+import { buildGetInput, get, GetResult} from '../../../database-operations/get'
 import { EntitySchema } from '../../../schema'
 import { Chaining, Filter, Paginate, WithAttributes } from '../../common'
 import { GetChainingKind } from './'

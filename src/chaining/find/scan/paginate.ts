@@ -1,3 +1,4 @@
+import { ScanResult } from '../../../database-operations/scan'
 import { Chaining, CommonPaginate, Paginate } from '../../common'
 import { ScanChainingKind } from './'
 import { executePaginate } from './execute'

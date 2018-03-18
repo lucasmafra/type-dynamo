@@ -1,3 +1,4 @@
+import { GetResult} from '../../../database-operations/get'
 import { randomGenerator } from '../../../expressions/random-generator'
 import { Chaining, CommonWithAttributes } from '../../common'
 import { GetChainingKind } from './'

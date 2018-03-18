@@ -1,3 +1,4 @@
+import { BatchDeleteResult } from '../../../database-operations/batch-delete'
 import { EntitySchema } from '../../../schema'
 import { Chaining } from '../../common'
 import { BatchDeleteChainingKind } from './'

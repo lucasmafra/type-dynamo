@@ -1,3 +1,4 @@
+import { UpdateResult } from '../../database-operations/update'
 import Expression from '../../expressions/expression'
 import { randomGenerator } from '../../expressions/random-generator'
 import { ResolvedExpression } from '../../expressions/resolve-expression'

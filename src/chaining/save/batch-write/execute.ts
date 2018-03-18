@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import { batchWrite, buildBatchWriteInput} from '../../../database-operations/batch-write'
+import { batchWrite, BatchWriteResult, buildBatchWriteInput } from '../../../database-operations/batch-write'
 import { EntitySchema } from '../../../schema'
 import { Chaining, Filter, Paginate, WithAttributes } from '../../common'
 import { BatchWriteChainingKind } from './'

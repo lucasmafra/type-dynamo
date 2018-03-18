@@ -1,3 +1,4 @@
+import { GetResult} from '../../../database-operations/get'
 import { EntitySchema } from '../../../schema'
 import { Chaining } from '../../common'
 import { GetChainingKind } from './'

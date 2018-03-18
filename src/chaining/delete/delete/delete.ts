@@ -1,3 +1,4 @@
+import { DeleteResult } from '../../../database-operations/delete'
 import Expression from '../../../expressions/expression'
 import { EntitySchema } from '../../../schema'
 import { Chaining } from '../../common'

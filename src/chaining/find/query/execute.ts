@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import { buildQueryInput, queryAllResults, queryPaginate} from '../../../database-operations/query'
+import { buildQueryInput, queryAllResults, queryPaginate, QueryResult} from '../../../database-operations/query'
 import { EntitySchema } from '../../../schema'
 import { Chaining, Filter, Paginate, WithAttributes } from '../../common'
 import { QueryChainingKind } from './'

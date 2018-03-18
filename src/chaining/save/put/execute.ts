@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import { buildPutInput, put } from '../../../database-operations/put'
+import { buildPutInput, put, PutResult } from '../../../database-operations/put'
 import { EntitySchema } from '../../../schema'
 import { Chaining, WithCondition } from '../../common'
 import { PutChainingKind } from './'

@@ -1,3 +1,4 @@
+import { QueryResult } from '../../../database-operations/query'
 import Expression from '../../../expressions/expression'
 import { EntitySchema } from '../../../schema'
 import { Chaining, CommonAllResults } from '../../common'
