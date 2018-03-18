@@ -15,6 +15,6 @@
         "strictPropertyInitialization": false
     },
     "exclude": [
-        "node_modules", "test", "dist"
+        "node_modules", "test", "dist", "playground"
     ]
 }

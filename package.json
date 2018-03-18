@@ -9,7 +9,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "clean && tsc",
+    "build": "npm run clean && tsc",
     "prepare": "npm run build",
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
     "cli": "npm run build && node dist/cli.js"
