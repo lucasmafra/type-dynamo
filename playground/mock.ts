@@ -14,7 +14,7 @@ export const mockUsers = [
         age: 25,
     },
     {
-        email: 'mutti@gmail.com',
+        email: 'lucas.mafra95@gmail.com',
         name: 'Mutti',
         companyName: 'QuintoAndar',
         hiringDate: 1457665937000,

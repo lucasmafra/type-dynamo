@@ -5,12 +5,12 @@ import User from './User'
 async function scanTest() {
     const users = await User
                         .find()
-                        .filter(
-                            match('companyName', isIn(['Nubank', 'QuintoAndar']))
-                            .and.
-                            match('age', isLessOrEqualTo(24)),
-                        )
-                        .withAttributes(['email'])
+                        // .filter(
+                        //     match('companyName', isIn(['Nubank', 'QuintoAndar']))
+                        //     .and.
+                        //     match('age', isLessOrEqualTo(24)),
+                        // )
+                        // .withAttributes(['email'])
                         .allResults()
                         .execute()
     console.log('SCAN', users.data)
@@ -130,14 +130,14 @@ async function updateTestWithImplicit() {
     console.log('UPDATE', updatedUser.data)
 }
 
-scanTest()
+// scanTest()
 // queryTest()
 // getTest()
 // batchGetTest()
 // scanOnIndexTest()
 // queryOnIndexTest()
 // putTest()
-// batchWriteTest()
+batchWriteTest()
 // deleteTest()
 // batchDeleteTest()
 // updateTestWithExplicit()

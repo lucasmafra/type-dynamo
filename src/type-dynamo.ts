@@ -4,36 +4,41 @@ import { IndexSchema, TableSchema } from './schema'
 import { DynamoIndexWithCompositeKey, DynamoIndexWithSimpleKey } from './schema/dynamo-index'
 import { DynamoORMWithCompositeKey, DynamoORMWithSimpleKey } from './schema/dynamo-orm'
 import { DynamoTableWithCompositeKey, DynamoTableWithSimpleKey } from './schema/dynamo-table'
+const AmazonDaxClient = require('amazon-dax-client');
 
 export interface SdkOptions {
+    region: string
     accessKeyId?: string,
     secretAccessKey?: string,
     credentials?: AWS.Credentials
     credentialProvider?: AWS.CredentialProviderChain,
     apiVersion?: string,
     endpoint?: string,
-    region?: string
     sslEnabled?: boolean,
     sessionToken?: string,
     maxRetries?: number,
     maxRedirects?: number,
+    daxEndpoints?: string[]
+
 }
 
 export class TypeDynamo {
     private dynamoPromise: DynamoPromise
-    constructor(sdkOptions?: SdkOptions) {
+    constructor(sdkOptions: SdkOptions) {
         this.dynamoPromise = new DynamoPromise(new DynamoDB.DocumentClient({
-            accessKeyId: sdkOptions && sdkOptions.accessKeyId,
-            secretAccessKey: sdkOptions && sdkOptions.secretAccessKey,
-            apiVersion: sdkOptions && sdkOptions.apiVersion,
-            credentials: sdkOptions && sdkOptions.credentials,
-            credentialProvider: sdkOptions && sdkOptions.credentialProvider,
-            endpoint: sdkOptions && sdkOptions.endpoint,
-            region: sdkOptions && sdkOptions.region,
-            sslEnabled: sdkOptions && sdkOptions.sslEnabled,
-            sessionToken: sdkOptions && sdkOptions.sessionToken,
-            maxRetries: sdkOptions && sdkOptions.maxRetries,
-            maxRedirects: sdkOptions && sdkOptions.maxRedirects,
+            accessKeyId: sdkOptions.accessKeyId,
+            secretAccessKey: sdkOptions.secretAccessKey,
+            apiVersion: sdkOptions.apiVersion,
+            credentials: sdkOptions.credentials,
+            credentialProvider: sdkOptions.credentialProvider,
+            endpoint: sdkOptions.endpoint,
+            region: sdkOptions.region,
+            sslEnabled: sdkOptions.sslEnabled,
+            sessionToken: sdkOptions.sessionToken,
+            maxRetries: sdkOptions.maxRetries,
+            maxRedirects: sdkOptions.maxRedirects,
+            service: sdkOptions.daxEndpoints &&
+                AmazonDaxClient({endpoints: sdkOptions.daxEndpoints, region: sdkOptions.region}),
         }))
     }
 
