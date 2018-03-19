@@ -1,4 +1,6 @@
-import { attributeNotExists, isBetween, isIn, isLessOrEqualTo, isNotEqualTo, match, size } from '../src/expressions'
+import {
+    attributeNotExists, isBetween, isGreaterThan, isIn, isLessOrEqualTo, isNotEqualTo, match, size,
+} from '../src/expressions'
 import { mockUsers } from './mock'
 import User from './User'
 
@@ -10,7 +12,7 @@ async function scanTest() {
                         //     .and.
                         //     match('age', isLessOrEqualTo(24)),
                         // )
-                        // .withAttributes(['email'])
+                        .withAttributes(['email'])
                         .allResults()
                         .execute()
     console.log('SCAN', users.data)
@@ -18,13 +20,13 @@ async function scanTest() {
 
 async function queryTest() {
     const users = await User
-                        .find({companyName: 'AppSimples'})
-                        .withSortKeyCondition(isBetween(1457665937000, 1520737937000))
+                        .find({companyName: 'JumpXS'})
+                        // .withSortKeyCondition(isBetween(1457665937000, 1520737937000))
                         .filter(
-                            size('name', isLessOrEqualTo(5)),
+                            match('age', isGreaterThan(30)),
                         )
-                        .withAttributes(['email'])
-                        .allResults()
+                        .withAttributes(['age'])
+                        .paginate(4)
                         .execute()
     console.log('QUERY', users.data)
 }
@@ -37,11 +39,11 @@ async function getTest() {
 }
 
 async function batchGetTest() {
+    const keys = mockUsers.map(
+        (user) => ({ companyName: user.companyName, hiringDate: new Date(user.hiringDate).getTime()}),
+    )
     const users = await User
-                        .find([
-                            { companyName: 'QuintoAndar', hiringDate: 1457665937000 },
-                            { companyName: 'AppSimples', hiringDate: 1520737937000 },
-                        ])
+                        .find(keys)
                         .withAttributes(['name'])
                         .execute()
     console.log('BATCHGET', users.data)
@@ -50,11 +52,11 @@ async function batchGetTest() {
 async function scanOnIndexTest() {
     const users = await User.onIndex.emailIndex
                         .find()
-                        .filter(
-                            match('companyName', isIn(['Nubank', 'QuintoAndar']))
-                            .and.
-                            match('age', isLessOrEqualTo(25)),
-                        )
+                        // .filter(
+                        //     match('companyName', isIn(['Nubank', 'QuintoAndar']))
+                        //     .and.
+                        //     match('age', isGreaterThan(30)),
+                        // )
                         .allResults()
                         .execute()
     console.log('SCAN ON INDEX', users.data)
@@ -85,45 +87,49 @@ async function putTest() {
 }
 
 async function batchWriteTest() {
-    const user = await  User.save(mockUsers).execute()
-    console.log('PUT', user.data)
+    const users = await User.save(
+        mockUsers.map((mock) => ({ ...mock, hiringDate: new Date(mock.hiringDate).getTime()})),
+    ).execute()
+    // console.log('BATCH WRITE', users.data)
 }
 
 async function deleteTest() {
     const oldUser = await User
                         .delete({companyName: 'Nubank', hiringDate: 1394507537000})
-                        .withCondition(match('companyName', isNotEqualTo('Nubank')))
+                        // .withCondition(match('companyName', isNotEqualTo('Nubank')))
                         .execute()
     console.log('DELETE', oldUser.data)
 }
 
 async function batchDeleteTest() {
-    await User
-        .delete([
-            { companyName: 'Nubank', hiringDate: 1394507537000 },
-            { companyName: 'QuintoAndar', hiringDate: 1426043537000 },
-        ])
+        await User
+        .delete(
+            mockUsers.map((mock) => (
+                { companyName: mock.companyName, hiringDate: new Date(mock.hiringDate).getTime() }
+            )),
+        )
         .execute()
-    console.log('BATCH DELETE')
+        console.log('BATCH DELETE')
 }
 
 async function updateTestWithExplicit() {
-    const key = { companyName: 'Nubank', hiringDate: 1394507537000 }
-    const updatedUser = await User
+     const key = { companyName: mockUsers[0].companyName, hiringDate: new Date(mockUsers[0].hiringDate).getTime() }
+     const updatedUser = await User
                         .update(key, {
                             name: 'John Doe',
                             age: 50,
+                            ...key,
                          })
                         .execute()
-    console.log('UPDATE', updatedUser.data)
+     console.log('UPDATE', updatedUser.data)
 }
 
 async function updateTestWithImplicit() {
-    const key = { companyName: 'Nubank', hiringDate: 1394507537000 }
+    const key = { companyName: mockUsers[0].companyName, hiringDate: new Date(mockUsers[0].hiringDate).getTime() }
     const updatedUser = await User
                         .update({
                             name: 'John Doe',
-                            age: 60,
+                            age: 40,
                             ...key,
                          })
                         .execute()
@@ -137,7 +143,7 @@ async function updateTestWithImplicit() {
 // scanOnIndexTest()
 // queryOnIndexTest()
 // putTest()
-batchWriteTest()
+// batchWriteTest()
 // deleteTest()
 // batchDeleteTest()
 // updateTestWithExplicit()

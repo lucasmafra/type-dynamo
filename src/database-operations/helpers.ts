@@ -7,7 +7,7 @@ export function buildExclusiveStartKey<KeySchema>(lastKey: KeySchema) {
         if (lastKey.hasOwnProperty(propertyKey)) {
             result = Object.assign({}, result, {
                 [propertyKey]: {
-                    [typeof lastKey[propertyKey] === 'string' ? 'S' : 'N']: lastKey[propertyKey],
+                    [typeof lastKey[propertyKey] === 'string' ? 'S' : 'N']: lastKey[propertyKey].toString(),
                 },
             })
         }
@@ -28,7 +28,7 @@ export function buildKey<KeySchema>(key: KeySchema) {
         if (key.hasOwnProperty(propertyKey)) {
             result = Object.assign({}, result, {
                 [propertyKey]: {
-                    [typeof key[propertyKey] === 'string' ? 'S' : 'N']: key[propertyKey],
+                    [typeof key[propertyKey] === 'string' ? 'S' : 'N']: key[propertyKey].toString(),
                 },
             })
         }
@@ -91,3 +91,5 @@ export function buildKeyConditionExpression<PartitionKey>(
         expressionAttributeValues,
     }
 }
+
+export const deepClone = (obj: object) => JSON.parse(JSON.stringify(obj))
