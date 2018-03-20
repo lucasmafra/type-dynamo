@@ -93,3 +93,6 @@ export function buildKeyConditionExpression<PartitionKey>(
 }
 
 export const deepClone = (obj: object) => JSON.parse(JSON.stringify(obj))
+export const timeoutPromise = (time: number) => setTimeout(() => new Promise((resolve, reject) => {
+    resolve()
+}), time)

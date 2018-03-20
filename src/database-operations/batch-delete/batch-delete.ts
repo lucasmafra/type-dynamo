@@ -1,8 +1,15 @@
-import { DynamoDB } from 'aws-sdk'
+import { AWSError, DynamoDB } from 'aws-sdk'
+import { merge } from 'lodash'
 import DynamoToPromise from '../dynamo-to-promise'
+import { timeoutPromise } from '../helpers'
 import { deepClone } from '../helpers'
+const marshalItem = require('dynamodb-marshaler').marshalItem
 
-export interface BatchDeleteResult<TableModel> {}
+const BATCH_WRITE_LIMIT = 25 // items
+const INITIAL_BACKOFF = 50 // ms
+const MAX_BACKOFF = 1000 // ms
+
+export interface BatchDeleteResult {}
 
 const segmentBatchDeleteInputs = (batchDeleteInput: DynamoDB.BatchWriteItemInput) => {
     const RequestItems = deepClone(batchDeleteInput.RequestItems)
@@ -10,10 +17,12 @@ const segmentBatchDeleteInputs = (batchDeleteInput: DynamoDB.BatchWriteItemInput
     const segments = new Array<DynamoDB.BatchWriteItemInput>()
     do {
         const segment = deepClone(batchDeleteInput)
-        segment.RequestItems[tableName] = deepClone(RequestItems[tableName].slice(0, 25)),
+        segment.RequestItems[tableName] = RequestItems[tableName].slice(0, BATCH_WRITE_LIMIT)
         segments.push(segment)
-        if (RequestItems[tableName].length > 25) {
-            RequestItems[tableName] = RequestItems[tableName].slice(25, RequestItems[tableName].length)
+        if (RequestItems[tableName].length > BATCH_WRITE_LIMIT) {
+            RequestItems[tableName] = RequestItems[tableName].slice(
+                BATCH_WRITE_LIMIT, RequestItems[tableName].length,
+            )
         } else {
             RequestItems[tableName] = []
         }
@@ -21,26 +30,53 @@ const segmentBatchDeleteInputs = (batchDeleteInput: DynamoDB.BatchWriteItemInput
     return segments
 }
 
-const singleBatchDelete = async <Entity> (
+const singleBatchDelete = async (
     batchDeleteInput: DynamoDB.BatchWriteItemInput,
     dynamoPromise: DynamoToPromise,
 ) => {
-    let batchDeleteOutput = await dynamoPromise.batchWrite(batchDeleteInput)
-    while (batchDeleteOutput.UnprocessedItems && Object.keys(batchDeleteOutput.UnprocessedItems).length) {
-        batchDeleteInput.RequestItems = batchDeleteOutput.UnprocessedItems
-        batchDeleteOutput = await dynamoPromise.batchWrite(batchDeleteInput)
+    const tableName =  Object.keys(batchDeleteInput.RequestItems)[0]
+    try {
+        const batchDeleteOutput = await dynamoPromise.batchWrite(batchDeleteInput)
+        if (batchDeleteOutput.UnprocessedItems && Object.keys(batchDeleteOutput.UnprocessedItems).length) {
+            batchDeleteInput.RequestItems[tableName] =
+                batchDeleteOutput.UnprocessedItems[tableName].map( (request) => ({
+                    DeleteRequest: { Key: marshalItem(request.DeleteRequest!.Key) },
+                }))
+            return batchDeleteInput
+        }
+        return undefined
+    } catch (err) {
+        if ((err as AWSError).code === 'ProvisionedThroughputExceededException') {
+            return batchDeleteInput
+        } else {
+            throw new Error('UnknownError')
+        }
     }
 }
 
-export async function batchDelete<
-    Entity
->(
-    items: Entity[], batchDeleteInput: DynamoDB.BatchWriteItemInput, dynamoPromise: DynamoToPromise,
-): Promise<BatchDeleteResult<Entity>> {
-    const segmentedBatchDeleteInputs = segmentBatchDeleteInputs(batchDeleteInput)
-    const batchDeletes = segmentedBatchDeleteInputs.map( (segment) => singleBatchDelete(
-        segment, dynamoPromise,
-    ))
-    await Promise.all(batchDeletes)
+const mergeArray = (arr1: any[], arr2: any[]) => {
+    let arrMerge = new Array()
+    arrMerge = arrMerge.concat(arr1)
+    arrMerge = arrMerge.concat(arr2)
+    return arrMerge
+}
+
+export async function batchDelete(
+    batchDeleteInput: DynamoDB.BatchWriteItemInput, dynamoPromise: DynamoToPromise,
+): Promise<BatchDeleteResult> {
+    let unprocessed = batchDeleteInput
+    const tableName = Object.keys(unprocessed.RequestItems)[0]
+    do {
+        const segments = segmentBatchDeleteInputs(unprocessed)
+        const batchDeletes = segments.map( (segment) => singleBatchDelete(
+            segment, dynamoPromise,
+        ))
+        unprocessed = (await Promise.all(batchDeletes)).reduce((acc, current) => {
+            if (current) {
+                acc.RequestItems[tableName] = mergeArray(acc.RequestItems[tableName], current.RequestItems[tableName])
+            }
+            return acc
+        }, { RequestItems : { [tableName]: [] } } as any)
+    } while (unprocessed.RequestItems[tableName].length)
     return {}
 }

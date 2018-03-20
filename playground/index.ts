@@ -2,10 +2,10 @@ import {
     attributeNotExists, isBetween, isGreaterThan, isIn, isLessOrEqualTo, isNotEqualTo, match, size,
 } from '../src/expressions'
 import { mockUsers } from './mock'
-import User from './User'
+import { UserRepo } from './User'
 
 async function scanTest() {
-    const users = await User
+    const users = await UserRepo
                         .find()
                         // .filter(
                         //     match('companyName', isIn(['Nubank', 'QuintoAndar']))
@@ -15,11 +15,11 @@ async function scanTest() {
                         .withAttributes(['email'])
                         .allResults()
                         .execute()
-    console.log('SCAN', users.data)
+    console.log('SCAN', users.data.length)
 }
 
 async function queryTest() {
-    const users = await User
+    const users = await UserRepo
                         .find({companyName: 'JumpXS'})
                         // .withSortKeyCondition(isBetween(1457665937000, 1520737937000))
                         .filter(
@@ -32,7 +32,7 @@ async function queryTest() {
 }
 
 async function getTest() {
-    const user = await  User
+    const user = await  UserRepo
                         .find({ companyName: 'Nubank', hiringDate: 1394507537000 })
                         .execute()
     console.log('GET', user.data)
@@ -42,15 +42,15 @@ async function batchGetTest() {
     const keys = mockUsers.map(
         (user) => ({ companyName: user.companyName, hiringDate: new Date(user.hiringDate).getTime()}),
     )
-    const users = await User
+    const users = await UserRepo
                         .find(keys)
                         .withAttributes(['name'])
                         .execute()
-    console.log('BATCHGET', users.data)
+    console.log('BATCHGET', users.data.length)
 }
 
 async function scanOnIndexTest() {
-    const users = await User.onIndex.emailIndex
+    const users = await UserRepo.onIndex.emailIndex
                         .find()
                         // .filter(
                         //     match('companyName', isIn(['Nubank', 'QuintoAndar']))
@@ -63,15 +63,15 @@ async function scanOnIndexTest() {
 }
 
 async function queryOnIndexTest() {
-    const users = await User.onIndex.emailIndex
-                        .find({email: 'lucas.mafra95@gmail.com'})
+    const users = await UserRepo.onIndex.emailIndex
+                        .find({companyName: 'bla'})
                         .allResults()
                         .execute()
     console.log('QUERY ON INDEX', users.data)
 }
 
 async function putTest() {
-    const user = await  User
+    const user = await  UserRepo
                         .save({
                             email: 'maithe@gmail.com',
                             name: 'Maithe',
@@ -87,14 +87,14 @@ async function putTest() {
 }
 
 async function batchWriteTest() {
-    const users = await User.save(
+    const users = await UserRepo.save(
         mockUsers.map((mock) => ({ ...mock, hiringDate: new Date(mock.hiringDate).getTime()})),
     ).execute()
     // console.log('BATCH WRITE', users.data)
 }
 
 async function deleteTest() {
-    const oldUser = await User
+    const oldUser = await UserRepo
                         .delete({companyName: 'Nubank', hiringDate: 1394507537000})
                         // .withCondition(match('companyName', isNotEqualTo('Nubank')))
                         .execute()
@@ -102,7 +102,7 @@ async function deleteTest() {
 }
 
 async function batchDeleteTest() {
-        await User
+        await UserRepo
         .delete(
             mockUsers.map((mock) => (
                 { companyName: mock.companyName, hiringDate: new Date(mock.hiringDate).getTime() }
@@ -114,7 +114,7 @@ async function batchDeleteTest() {
 
 async function updateTestWithExplicit() {
      const key = { companyName: mockUsers[0].companyName, hiringDate: new Date(mockUsers[0].hiringDate).getTime() }
-     const updatedUser = await User
+     const updatedUser = await UserRepo
                         .update(key, {
                             name: 'John Doe',
                             age: 50,
@@ -126,7 +126,7 @@ async function updateTestWithExplicit() {
 
 async function updateTestWithImplicit() {
     const key = { companyName: mockUsers[0].companyName, hiringDate: new Date(mockUsers[0].hiringDate).getTime() }
-    const updatedUser = await User
+    const updatedUser = await UserRepo
                         .update({
                             name: 'John Doe',
                             age: 40,
@@ -143,7 +143,7 @@ async function updateTestWithImplicit() {
 // scanOnIndexTest()
 // queryOnIndexTest()
 // putTest()
-// batchWriteTest()
+batchWriteTest()
 // deleteTest()
 // batchDeleteTest()
 // updateTestWithExplicit()

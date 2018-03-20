@@ -140,7 +140,7 @@ export class TypeDynamo {
         schema: {
             tableName: string,
             partitionKey: PartitionKey,
-            sortKey: PartitionKey,
+            sortKey: SortKey,
             localIndexes: LocalIndexes,
         },
         ): DynamoORMWithCompositeKey<
