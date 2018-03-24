@@ -15,7 +15,9 @@ export class FeedParams {
     public oldestEntityGroup: EntityGroup
 }
 
-export const FeedParamsRepo = typeDynamo.define(FeedParams, {
-    tableName: `FeedParamsLocal`,
-    partitionKey: 'id',
-})
+export const FeedParamsRepo = typeDynamo
+    .defineTable(FeedParams, {
+        tableName: `FeedParamsLocal`,
+        partitionKey: 'id',
+    })
+    .getInstance()

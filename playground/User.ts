@@ -1,4 +1,3 @@
-import { localIndex, withLocalIndexes } from '../src'
 import { DynamoIndexWithCompositeKey } from '../src/schema/dynamo-index'
 import { DynamoORMWithCompositeKey } from '../src/schema/dynamo-orm'
 import { typeDynamo } from './database.config'
@@ -11,16 +10,16 @@ export class User {
     public age: number
 }
 
-export const UserRepo = typeDynamo.define(User, {
-    tableName: 'User',
-    partitionKey: 'companyName',
-    sortKey: 'hiringDate',
-    localIndexes: withLocalIndexes(
-        localIndex(User, {
-            indexName: 'testIndex',
-            projectionType: 'ALL',
-            partitionKey: 'companyName',
-            sortKey: 'age',
-        }),
-    ),
-})
+export const UserRepo = typeDynamo
+    .defineTable(User, {
+        tableName: 'User',
+        partitionKey: 'companyName',
+        sortKey: 'hiringDate',
+    })
+    .withGlobalIndex({
+        indexName: 'testIndex',
+        projectionType: 'ALL',
+        partitionKey: 'companyName',
+        sortKey: 'age',
+    })
+    .getInstance()

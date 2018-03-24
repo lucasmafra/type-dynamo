@@ -13,4 +13,12 @@ const getFeedByAuthor = async (limit: number = 50, authorId: string, lastKey?: A
 
 }
 
-getFeedByAuthor(3, '0', { authorId: '0', timestamp: 1531623600000, generalGroup: 'general-group-0' } as any)
+getFeedByAuthor(
+    3,
+    '0',
+    { authorId: '0',
+    generalGroup: 'general-group-0',
+    timestamp: 1523761200000 },
+
+    // { authorId: '0', timestamp: 1531623600000, generalGroup: 'general-group-0' },
+)
