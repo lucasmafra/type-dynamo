@@ -7,7 +7,7 @@ import DynamoPromise from '../../database-operations/dynamo-to-promise'
 import { DynamoEntityWithCompositeKey } from '../dynamo-entity'
 
 export class DynamoTableWithCompositeKey<Table, PartitionKey, SortKey> extends DynamoEntityWithCompositeKey<
-    Table, PartitionKey, SortKey
+    Table, PartitionKey, SortKey, PartitionKey & SortKey
 > {
 
     private mockData: Table[]
@@ -26,7 +26,7 @@ export class DynamoTableWithCompositeKey<Table, PartitionKey, SortKey> extends D
     public find(): DynamoScan<Table, PartitionKey & SortKey>
     public find(keys: Array<PartitionKey & SortKey>): DynamoBatchGet<Table, PartitionKey & SortKey>
     public find(key: PartitionKey & SortKey): DynamoGet<Table, PartitionKey & SortKey>
-    public find(partitionKey: PartitionKey): DynamoQuery<Table, PartitionKey, SortKey>
+    public find(partitionKey: PartitionKey): DynamoQuery<Table, PartitionKey, SortKey, PartitionKey & SortKey>
 
     public find(args?: any): any {
         if (!args) {
@@ -45,7 +45,7 @@ export class DynamoTableWithCompositeKey<Table, PartitionKey, SortKey> extends D
                 { schema: this._entitySchema, key: args },
             )
         } else {
-            return new DynamoQuery<Table, PartitionKey, SortKey>({
+            return new DynamoQuery<Table, PartitionKey, SortKey, PartitionKey & SortKey>({
                 schema: this._entitySchema, partitionKey: args,
             })
         }

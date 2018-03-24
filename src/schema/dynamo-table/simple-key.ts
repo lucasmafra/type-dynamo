@@ -7,7 +7,7 @@ import DynamoPromise from '../../database-operations/dynamo-to-promise'
 import { DynamoEntityWithSimpleKey } from '../dynamo-entity'
 
 export class DynamoTableWithSimpleKey<Table, PartitionKey> extends DynamoEntityWithSimpleKey<
-    Table, PartitionKey
+    Table, PartitionKey, PartitionKey
 > {
 
     private mockData: Table[]

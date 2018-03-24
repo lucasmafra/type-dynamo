@@ -28,7 +28,4 @@ export interface TableSchema {
     writeCapacity: number
 }
 
-export { globalIndex } from './global-index'
-export { withGlobalIndexes } from './with-global-indexes'
-export { localIndex } from './local-index'
-export { withLocalIndexes } from './with-local-indexes'
+export { TypeDynamo } from './type-dynamo'

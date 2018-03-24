@@ -2,8 +2,8 @@ import { IndexSchema } from '../'
 import { DynamoQuery, DynamoScan } from '../../chaining/find'
 import { DynamoEntityWithCompositeKey } from '../dynamo-entity'
 
-export class DynamoIndexWithCompositeKey<Index, PartitionKey, SortKey>
-    extends DynamoEntityWithCompositeKey<Index, PartitionKey, SortKey> {
+export class DynamoIndexWithCompositeKey<Index, PartitionKey, SortKey, KeySchema>
+    extends DynamoEntityWithCompositeKey<Index, PartitionKey, SortKey, KeySchema> {
 
     constructor(
         indexSchema: IndexSchema,
@@ -14,15 +14,15 @@ export class DynamoIndexWithCompositeKey<Index, PartitionKey, SortKey>
         } as any)
     }
 
-    public find(): DynamoScan<Index, PartitionKey & SortKey>
+    public find(): DynamoScan<Index, KeySchema>
 
-    public find(partitionKey: PartitionKey): DynamoQuery<Index, PartitionKey, SortKey>
+    public find(partitionKey: PartitionKey): DynamoQuery<Index, PartitionKey, SortKey, KeySchema>
 
     public find(args?: any): any {
         if (!args) {
-            return new DynamoScan<Index, PartitionKey & SortKey>(this._entitySchema)
+            return new DynamoScan<Index, KeySchema>(this._entitySchema)
         }
-        return new DynamoQuery<Index, PartitionKey, SortKey>({
+        return new DynamoQuery<Index, PartitionKey, SortKey, KeySchema>({
             schema: this._entitySchema, partitionKey: args,
         })
     }

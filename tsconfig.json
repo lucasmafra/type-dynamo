@@ -5,6 +5,9 @@
         "declaration": true,
         "baseUrl": "src",
         "outDir": "./dist",
+        "paths": {
+            "type-dynamo": ["./src"]
+        },
         "strict": true,
         "lib": [
             "es2015"
@@ -12,7 +15,7 @@
         "suppressImplicitAnyIndexErrors": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "strictPropertyInitialization": false
+        // "strictPropertyInitialization": false
     },
     "exclude": [
         "node_modules", "test", "dist", "playground"

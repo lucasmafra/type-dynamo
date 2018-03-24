@@ -3,7 +3,8 @@ import { EntitySchema } from '../'
 export class DynamoEntityWithCompositeKey<
     Entity,
     PartitionKey,
-    SortKey
+    SortKey,
+    KeySchema
 > {
 
     protected _entitySchema: EntitySchema

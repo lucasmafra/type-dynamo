@@ -2,7 +2,8 @@ import { EntitySchema } from '../'
 
 export class DynamoEntityWithSimpleKey<
     Entity,
-    PartitionKey
+    PartitionKey,
+    KeySchema
 > {
 
     protected _entitySchema: EntitySchema
