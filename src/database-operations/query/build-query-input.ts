@@ -1,5 +1,6 @@
 import { DynamoDB } from 'aws-sdk'
 import { Filter, Paginate, WithAttributes } from '../../chaining/common'
+import { WithOptions } from '../../chaining/find/query/with-options'
 import { WithSortKeyCondition  } from '../../chaining/find/query/with-sort-key-condition'
 import Expression from '../../expressions/expression'
 import { randomGenerator } from '../../expressions/random-generator'
@@ -19,6 +20,7 @@ export function buildQueryInput<KeySchema>(
     withSortKeyCondition?: WithSortKeyCondition,
     filter?: Filter,
     withAttributes?: WithAttributes,
+    withOptions?: WithOptions,
     paginate?: Paginate<KeySchema>,
 ): DynamoDB.QueryInput {
     const input: DynamoDB.QueryInput = {
@@ -36,6 +38,9 @@ export function buildQueryInput<KeySchema>(
     }
     if (withAttributes) {
         input.ProjectionExpression = projectionExpression(withAttributes.attributes)
+    }
+    if (withOptions) {
+        input.ScanIndexForward = withOptions.order === 'descending' ?  false : true
     }
     if (paginate) {
         input.Limit = paginate.limit || DEFAULT_QUERY_LIMIT

@@ -3,22 +3,27 @@ import { Chaining, CommonWithAttributes } from '../../common'
 import { QueryChainingKind } from './'
 import { DynamoQueryAllResults } from './all-results'
 import { DynamoQueryPaginate } from './paginate'
-import { DynamoQueryWithOptions, WithOptions } from './with-options'
 
-export class DynamoQueryWithAttributes<
+export type WithOptionsType = 'withOptions'
+
+export interface WithOptions {
+    order?: 'ascending' | 'descending'
+}
+
+export class DynamoQueryWithOptions<
     Entity,
     KeySchema
-> extends CommonWithAttributes<QueryChainingKind> {
+> extends Chaining<QueryChainingKind> {
+
+    private _withOptions: WithOptions
 
     constructor(
-        attributes: string[],
         currentStack: Array<Chaining<QueryChainingKind>>,
+        withOptions: WithOptions,
     ) {
-        super(attributes, currentStack)
-    }
-
-    public withOptions(options: WithOptions) {
-        return new DynamoQueryWithOptions<Entity, KeySchema>(this._stack, options)
+        super('withOptions', currentStack)
+        this._withOptions = withOptions
+        this._stack.push(this)
     }
 
     public paginate(limit?: number, lastKey?: KeySchema) {

@@ -6,6 +6,7 @@ import { DynamoQueryAllResults } from './all-results'
 import { DynamoQueryFilter } from './filter'
 import { DynamoQueryPaginate } from './paginate'
 import { DynamoQueryWithAttributes } from './with-attributes'
+import { DynamoQueryWithOptions, WithOptions } from './with-options'
 import { DynamoWithSortKeyCondition, SortKeyConditionOperator, WithSortKeyCondition } from './with-sort-key-condition'
 
 export type QueryType = 'query'
@@ -44,6 +45,10 @@ export class DynamoQuery<
         return new DynamoQueryWithAttributes<Pick<Entity, K>, KeySchema>(
             attributes, this._stack,
         )
+    }
+
+    public withOptions(options: WithOptions) {
+        return new DynamoQueryWithOptions<Entity, KeySchema>(this._stack, options)
     }
 
     public paginate(limit?: number, lastKey?: KeySchema) {

@@ -11,6 +11,7 @@ import { DynamoQueryAllResults } from './all-results'
 import { DynamoQueryFilter } from './filter'
 import { DynamoQueryPaginate } from './paginate'
 import { DynamoQueryWithAttributes } from './with-attributes'
+import { DynamoQueryWithOptions, WithOptions } from './with-options'
 
 export type WithSortKeyConditionType = 'withSortKeyCondition'
 
@@ -25,6 +26,7 @@ export interface WithSortKeyCondition {
         },
     },
 }
+
 export type SortKeyConditionOperator =
     BeginsWith | IsEqualTo | IsGreaterThan | IsLessThan | IsLessOrEqualTo | IsGreaterOrEqualTo
     | IsBetween
@@ -54,6 +56,10 @@ export class DynamoWithSortKeyCondition<
         return new DynamoQueryWithAttributes<Pick<Entity, K>, KeySchema>(
             attributes, this._stack,
         )
+    }
+
+    public withOptions(options: WithOptions) {
+        return new DynamoQueryWithOptions<Entity, KeySchema>(this._stack, options)
     }
 
     public paginate(limit?: number, lastKey?: KeySchema) {
