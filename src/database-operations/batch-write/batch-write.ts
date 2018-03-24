@@ -9,7 +9,7 @@ const BATCH_WRITE_LIMIT = 25 // items
 const INITIAL_BACKOFF = 50 // ms
 const MAX_BACKOFF = 1000 // ms
 
-export interface BatchWriteResult<TableModel, KeySchema> {
+export interface BatchWriteResult<TableModel> {
     data: TableModel[]
 }
 
@@ -32,7 +32,7 @@ const segmentBatchWriteInputs = (batchWriteInput: DynamoDB.BatchWriteItemInput) 
     return segments
 }
 
-const singleBatchWrite = async <Entity, KeySchema> (
+const singleBatchWrite = async <Entity> (
     batchWriteInput: DynamoDB.BatchWriteItemInput,
     dynamoPromise: DynamoToPromise,
 ) => {
@@ -64,15 +64,15 @@ const mergeArray = (arr1: any[], arr2: any[]) => {
 }
 
 export async function batchWrite<
-    Entity, KeySchema
+    Entity
 >(
     items: Entity[], batchWriteInput: DynamoDB.BatchWriteItemInput, dynamoPromise: DynamoToPromise,
-): Promise<BatchWriteResult<Entity, KeySchema>> {
+): Promise<BatchWriteResult<Entity>> {
     let unprocessed = batchWriteInput
     const tableName = Object.keys(unprocessed.RequestItems)[0]
     do {
         const segments = segmentBatchWriteInputs(unprocessed)
-        const batchWrites = segments.map( (segment) => singleBatchWrite<Entity, KeySchema>(
+        const batchWrites = segments.map( (segment) => singleBatchWrite<Entity>(
             segment, dynamoPromise,
         ))
         unprocessed = (await Promise.all(batchWrites)).reduce((acc, current) => {
