@@ -14,8 +14,8 @@
         ],
         "suppressImplicitAnyIndexErrors": true,
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
-        // "strictPropertyInitialization": false
+        "emitDecoratorMetadata": true,
+        "strictPropertyInitialization": false
     },
     "exclude": [
         "node_modules", "test", "dist", "playground"
