@@ -1,8 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
 import DynamoPromise from '../../database-operations/dynamo-to-promise'
-import { IndexSchema, TableSchema } from '../../schema'
-import { DynamoIndexWithCompositeKey, DynamoIndexWithSimpleKey } from '../../schema/dynamo-index'
-import { DynamoORMWithCompositeKey, DynamoORMWithSimpleKey } from '../../schema/dynamo-orm'
 import { DynamoTableWithCompositeKey, DynamoTableWithSimpleKey } from '../../schema/dynamo-table'
 import { TypeDynamoDefineTableCompositeKey, TypeDynamoDefineTableSimpleKey } from './define-table'
 const AmazonDaxClient = require('amazon-dax-client')
@@ -43,7 +40,7 @@ export class TypeDynamo {
         }))
     }
 
-    public defineTable<
+    public define<
         Table,
         PartitionKey extends keyof Table,
         SortKey extends keyof Table
@@ -54,9 +51,9 @@ export class TypeDynamo {
             partitionKey: PartitionKey,
             sortKey: SortKey,
         },
-    ): TypeDynamoDefineTableCompositeKey<Table, PartitionKey, SortKey>
+    ): DynamoTableWithCompositeKey<Table, Pick<Table, PartitionKey>, Pick<Table, SortKey>>
 
-    public defineTable<
+    public define<
         Table,
         PartitionKey extends keyof Table
     >(
@@ -65,13 +62,13 @@ export class TypeDynamo {
             tableName: string,
             partitionKey: PartitionKey,
         },
-    ): TypeDynamoDefineTableSimpleKey<Table, PartitionKey>
+    ): DynamoTableWithSimpleKey<Table, Pick<Table, PartitionKey>>
 
-    public defineTable(table: any, schema: any) {
+    public define(table: any, schema: any) {
         if (schema.sortKey !== undefined) {
-            return new TypeDynamoDefineTableCompositeKey(this.dynamoPromise, schema)
+            return new TypeDynamoDefineTableCompositeKey(this.dynamoPromise, schema).getInstance()
         }
-        return new TypeDynamoDefineTableSimpleKey(this.dynamoPromise, schema)
+        return new TypeDynamoDefineTableSimpleKey(this.dynamoPromise, schema).getInstance()
     }
 
 }
