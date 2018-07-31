@@ -1,6 +1,6 @@
 {
   "name": "type-dynamo",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Easy-to-use ORM for your Typescript projects with DynamoDB and Node.js",
   "bin": {
     "type-dynamo": "dist/cli.js"
