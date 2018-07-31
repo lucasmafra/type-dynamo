@@ -23,25 +23,15 @@ Some of TypeDynamo features:
 
 ## Table of Contents
 
- * [Installation]()
- * [Getting started]()
-    * [Dynamo setup]()
-    * [Defining your schema]()
-    * [Database operations]()
-      * [Querying data]()
-      * [Writing new data]()
-      * [Updating data]()
-      * [Deleting data]()
-    * [Expressions]()
-    * [Indexes]()
-      * [Global Index]()
-      * [Local Index]()
-    * [Running locally]()
- * [Advanced Guide]()
- * [Demos]()
- * [API Reference]()
- * [Known Issues]()
- * [Contributing]()
+ * [Installation](#instalation)
+ * [Getting started](#getting-started)
+    * [Dynamo setup](#dynamo-setup)
+    * [Defining your schema](#defining-your-schema)
+    * [Database operations](#database-operations)
+      * [Querying data](#querying-data)
+      * [Writing new data](#writing-new-data)
+      * [Updating data](#updating-data)
+      * [Deleting data](#deleting-data)    
 
 
 ## Instalation
@@ -265,8 +255,6 @@ UserRepo.find({id: '1'}).withAttributes(['lastName']).execute() // Compiler erro
 UserRepo.find({ id: '1', email: 'johndoe@email.com'}).execute() // Compiler error because 'email' does not belong to User Key
 ```
 
-If you want to know more about how to use *find()* method, checkout the [API Reference]().
-
 #### Writing new data
 
 Many times you're going to need not only to query data from the database, but also write new data into it. TypeDynamo provides the high level *save*() method for that. Let's get into some examples with the User schema:
@@ -322,8 +310,6 @@ It also handles Dynamo limitations for [BatchWrite]() out of the box, so you don
 
 **Note**: By default, *save()* method has the same behavior of Dynamo SDK when writing an item, which means that it will overwrite any existing item unless you add a *.withCondition(attributeNotExists('TABLE_KEY'))* clause. Also, remember that Dynamo does not allow you to add such condition when calling BatchWriteItem, which means that you're allways subject to overwriting items when calling a *save()* with multiple items.
 
-Find out more about *save()* in the [API Reference]().
-
 #### Updating data
 
 For updating, use the *update()* method. TypeDynamo allows you to call *update()* in two different ways. A couple of examples:
@@ -371,8 +357,6 @@ If you notice well, when you call *update()* method with just one argument, the 
 
 **Note**: TypeDynamo *update()* does not currently support batch update due to DynamoDB limitations.
   
-Know more about *update()* in the [API Reference]().
-
 #### Deleting data
 
 TypeDynamo exposes the high level function *delete()* for deleting your items. Examples:
@@ -426,29 +410,3 @@ Just like *find()* and *save()*, the *delete()* method has a workaround for Dyna
 about deleting more items than DynamoDB actually supports.
 
 **Note**: When deleting many items at once, TypeDynamo can't return the deleted items from the table, since DynamoDB doesn't support it. Also, DynamoDB only supports specifying conditions to single delete operations, so when you call TypeDynamo *delete()* method passing more than one item, you can't specify a delete condition.
-
-Explore the [API Reference]() to know more about *delete()*.
-
-### Expressions
-
-### Indexes
-
-#### Global Index
-
-#### Local Index
-
-### Running locally
-
-## Advanced Guide
-
-## Demos
-
-* [Node.js + Serverless backend for a TODO app]()
-* [Node.js + Express backend for a TODO app]()
-
-## Known Issues
-
-## Contributing
-
-If you'd like to contribute to TypeDynamo, please first read through our [contribution
-guidelines](). Local setup instructions are available [here]().
