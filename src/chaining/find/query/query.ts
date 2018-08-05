@@ -7,7 +7,7 @@ import { DynamoQueryFilter } from './filter'
 import { DynamoQueryPaginate } from './paginate'
 import { DynamoQueryWithAttributes } from './with-attributes'
 import { DynamoQueryWithOptions, WithOptions } from './with-options'
-import { DynamoWithSortKeyCondition, SortKeyConditionOperator, WithSortKeyCondition } from './with-sort-key-condition'
+import { DynamoWithSortKeyCondition, SortKeyConditionOperator } from './with-sort-key-condition'
 
 export type QueryType = 'query'
 

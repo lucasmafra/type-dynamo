@@ -100,9 +100,20 @@ export function contains(operand: string): Contains {
     }
 }
 
-export function isEqualTo(a: number | string): IsEqualTo {
+export function isEqualTo(a: number | string | boolean): IsEqualTo {
     const randomId = ':' + randomGenerator()
-    const type = typeof a === 'string' ? 'S' : 'N'
+    let type
+    switch (typeof  a) {
+        case 'boolean': {
+            type = 'BOOL'
+            break
+        }
+        case 'number': {
+            type = 'N'
+            break
+        }
+        default: type = 'S'
+    }
     return {
         value: `= ${randomId}`,
         type: 'comparison',
