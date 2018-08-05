@@ -126,9 +126,20 @@ export function isEqualTo(a: number | string | boolean): IsEqualTo {
     }
 }
 
-export function isNotEqualTo(a: number | string): IsNotEqualTo {
+export function isNotEqualTo(a: number | string | boolean): IsNotEqualTo {
     const randomId = ':' + randomGenerator()
-    const type = typeof a === 'string' ? 'S' : 'N'
+    let type
+    switch (typeof  a) {
+        case 'boolean': {
+            type = 'BOOL'
+            break
+        }
+        case 'number': {
+            type = 'N'
+            break
+        }
+        default: type = 'S'
+    }
     return {
         value: `<> ${randomId}`,
         type: 'comparison',
