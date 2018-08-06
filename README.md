@@ -439,10 +439,11 @@ export const UserRepo = typeDynamo.define(User, {
    
 Now, you can make operations upon indexes just like that:
 ```ts
-    UserRepo.onIndex.emailIndex.find({ email: 'example@email.com'}).execute()
-    UserRepo.onIndex.emailIndex.find().allResults().execute()
+    UserRepo.onIndex.emailIndex.find({ email: 'example@email.com'}).execute() // this will turn into a Query operation
+    UserRepo.onIndex.emailIndex.find().allResults().execute() // this will turn into a Scan operation
 ```
 
+Remember that [Dynamo only allows Scan and Query operations on indexes](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SQLtoNoSQL.Indexes.QueryAndScan.html)
 If you have multiple indexes, you can declare them just by chaining your declaration (but don't forget that Dynamo let's you declare up to [5 indexes per table](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html#limits-secondary-indexes)).
 
 ```ts
@@ -504,6 +505,35 @@ export const UserRepo = typeDynamo.define(User, {
 
 **IMPORTANT**: Index names must be camel case in order to TypeDynamo preserve types. 
 * Explanation: It is not possible to do something like that ```UserRepo.onIndex['email-index']``` without losing types due to a TypeScript limitation.   
+
+In many use cases, your indexes will have both partition key and sort key, and you will want query your data by specifying the partition key and applying some condition on the sort key. This is totally possible on TypeDynamo:
+```ts
+class Album {
+    id: string
+    name: string
+    createdAt: number // timestamp in ms    
+    authorId: string
+} 
+
+const AlbumRepo = typeDynamo.define(Album, {
+  tableName: 'AlbumTable',
+  partitionKey: 'id'
+}).withGlobalIndex({
+  indexName: 'authorIndex',
+  partitionKey: 'authorId',
+  sortKey: 'createdAt',
+  projectionType: 'ALL',
+}).getInstance()
+
+const getAuthorAlbumsInLastYear = (authorId: string) => {
+  const lastYear = new Date(2017).getTime()
+  return AlbumRepo.onIndex.authorIndex
+    .find({ authorId })
+    .withSortKeyCondition(isGreaterThan(lastYear))
+    .allResults()
+    .execute()
+}
+```
 
 ## Examples
 
