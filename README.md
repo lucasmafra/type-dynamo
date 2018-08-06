@@ -32,6 +32,7 @@ Some of TypeDynamo features:
       * [Writing new data](#writing-new-data)
       * [Updating data](#updating-data)
       * [Deleting data](#deleting-data)
+ * [Indexes](#indexes)      
  * [Examples](#examples)             
 
 
@@ -112,7 +113,7 @@ export class User {
 export const UserRepo = typeDynamo.define(User, {
   tableName: 'UserTable',
   partitionKey: 'id'
-})
+}).getInstance()
 ```
 
 ... and that's all! You're ready to start querying and writing data to Dynamo!
@@ -239,7 +240,7 @@ export const UserOrderRepo = typeDynamo.define(User, {
   tableName: 'UserTable',
   partitionKey: 'userId',
   sortKey: 'orderId' 
-})
+}).getInstance()
 ```
 
 ...then you have `type PartitionKey = { userId: string }`, `type SortKey = { orderId: string }` and `type Key = { userId: string, orderId: string }`. This way, TypeDynamo can know that when you call *find*() like `UserOrderRepo.find({ userId: '1', orderId: 'abc'})` it must make a GetItem request, since you are getting a specific item from the table. But if you're calling *find()* like `UserOrderRepo.find({ userId: '1'})` you're actually making a query, because there could be more than one item in the table with this userId. So it will look for every item in the table with this userId and return the matched results.
@@ -411,6 +412,31 @@ Just like *find()* and *save()*, the *delete()* method has a workaround for Dyna
 about deleting more items than DynamoDB actually supports.
 
 **Note**: When deleting many items at once, TypeDynamo can't return the deleted items from the table, since DynamoDB doesn't support it. Also, DynamoDB only supports specifying conditions to single delete operations, so when you call TypeDynamo *delete()* method passing more than one item, you can't specify a delete condition.
+
+## Indexes
+TypeDynamo also supports [Dynamo Indexes](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SQLtoNoSQL.Indexes.html). You can declare indexes very straightforward:
+
+```ts
+// User.ts
+import { typeDynamo } from './dynamo.config'
+
+export class User {
+  id: string,
+  name: string,
+  email: string,
+  age: number
+}
+
+export const UserRepo = typeDynamo.define(User, {
+  tableName: 'UserTable',
+  partitionKey: 'id'
+}).withGlobalIndex({
+  indexName: 'emailIndex',
+  partitionKey: 'email',
+  projectionType: 'ALL'  
+}).getInstance()
+```
+   
 
 ## Examples
 

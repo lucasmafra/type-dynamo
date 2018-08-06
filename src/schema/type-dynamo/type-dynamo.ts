@@ -51,7 +51,7 @@ export class TypeDynamo {
             partitionKey: PartitionKey,
             sortKey: SortKey,
         },
-    ): DynamoTableWithCompositeKey<Table, Pick<Table, PartitionKey>, Pick<Table, SortKey>>
+    ): TypeDynamoDefineTableCompositeKey<Table, PartitionKey, SortKey>
 
     public define<
         Table,
@@ -62,13 +62,13 @@ export class TypeDynamo {
             tableName: string,
             partitionKey: PartitionKey,
         },
-    ): DynamoTableWithSimpleKey<Table, Pick<Table, PartitionKey>>
+    ): TypeDynamoDefineTableSimpleKey<Table, PartitionKey>
 
     public define(table: any, schema: any) {
         if (schema.sortKey !== undefined) {
-            return new TypeDynamoDefineTableCompositeKey(this.dynamoPromise, schema).getInstance()
+            return new TypeDynamoDefineTableCompositeKey(this.dynamoPromise, schema).getInstance() as any
         }
-        return new TypeDynamoDefineTableSimpleKey(this.dynamoPromise, schema).getInstance()
+        return new TypeDynamoDefineTableSimpleKey(this.dynamoPromise, schema).getInstance() as any
     }
 
 }
