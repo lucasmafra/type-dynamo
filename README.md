@@ -437,6 +437,68 @@ export const UserRepo = typeDynamo.define(User, {
 }).getInstance()
 ```
    
+Now, you can make operations upon indexes just like that:
+```ts
+    UserRepo.onIndex.emailIndex.find({ email: 'example@email.com'}).execute()
+```
+
+If you have multiple indexes, you can declare them just by chaining your declaration (but don't forget that Dynamo let's you declare up to [5 indexes per table](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html#limits-secondary-indexes)).
+
+```ts
+export const UserRepo = typeDynamo.define(User, {
+  tableName: 'UserTable',
+  partitionKey: 'id'
+}).withGlobalIndex({
+  indexName: 'emailIndex',
+  partitionKey: 'email',
+  projectionType: 'ALL'  
+}).withGlobalIndex({
+  indexName: 'nameIndex',
+  partitionKey: 'name',
+  projectionType: 'KEYS_ONLY'
+}).getInstance()
+
+// both works fine
+UserRepo.onIndex.emailIndex.find({ email: 'example@email.com'}).execute()
+UserRepo.onIndex.nameIndex.find({ name: 'John Doe'}).execute()
+```
+Dynamo requires a [projection type](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Projection.html) on every index you declare. TypeDynamo supports all 3 types of projection (KEYS_ONLY, ALL and INCLUDE) and adjust the index type according to your projection.
+
+Example:
+
+```ts
+export const UserRepo = typeDynamo.define(User, {
+  tableName: 'UserTable',
+  partitionKey: 'id'
+}).withGlobalIndex({
+  indexName: 'emailIndex',
+  partitionKey: 'email',
+  projectionType: 'ALL'  
+}).withGlobalIndex({
+  indexName: 'nameIndex',
+  partitionKey: 'name',
+  projectionType: 'KEYS_ONLY'
+}).getInstance()
+
+const { data: user } = await UserRepo.onIndex.emailIndex.find({ email: 'example@email.com'}).execute()
+console.log(user.id, user.name, user.email, user.age) // compiles ok
+
+const { data: user } = await UserRepo.onIndex.nameIndex.find({ name: 'John Doe'}).execute()
+console.log(user.id, user.name, user.email, user.age) // causes a compile error since nameIndex has projection type KEYS_ONLY
+
+```
+
+PS: When declaring projection_type = INCLUDE, you must specify the 'attributes' option:
+```ts
+export const UserRepo = typeDynamo.define(User, {
+  tableName: 'UserTable',
+  partitionKey: 'id'
+}).withGlobalIndex({
+  indexName: 'emailIndex',
+  partitionKey: 'email',
+  projectionType: 'INCLUDE',
+  attributes: ['age']  
+}).getInstance()
 
 ## Examples
 
