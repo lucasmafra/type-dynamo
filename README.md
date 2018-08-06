@@ -414,6 +414,6 @@ about deleting more items than DynamoDB actually supports.
 
 ## Examples
 
-- [Serverless](./serverless-todo-application)
+- [Serverless](https://github.com/lucasmafra/type-dynamo-examples/tree/master/serverless-todo-application)
 - GraphQL Yoga - coming soon
 - Express - coming soon
