@@ -502,6 +502,9 @@ export const UserRepo = typeDynamo.define(User, {
 }).getInstance()
 ```
 
+**IMPORTANT**: Index names must be camel case in order to TypeDynamo preserve types. 
+* Explanation: It is not possible to do something like that ```UserRepo.onIndex['email-index']``` without losing types due to a TypeScript limitation.   
+
 ## Examples
 
 - [Serverless](https://github.com/lucasmafra/type-dynamo-examples/tree/master/serverless-todo-application)
