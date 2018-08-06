@@ -440,6 +440,7 @@ export const UserRepo = typeDynamo.define(User, {
 Now, you can make operations upon indexes just like that:
 ```ts
     UserRepo.onIndex.emailIndex.find({ email: 'example@email.com'}).execute()
+    UserRepo.onIndex.emailIndex.find().allResults().execute()
 ```
 
 If you have multiple indexes, you can declare them just by chaining your declaration (but don't forget that Dynamo let's you declare up to [5 indexes per table](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html#limits-secondary-indexes)).
@@ -499,6 +500,7 @@ export const UserRepo = typeDynamo.define(User, {
   projectionType: 'INCLUDE',
   attributes: ['age']  
 }).getInstance()
+```
 
 ## Examples
 
