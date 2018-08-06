@@ -31,7 +31,8 @@ Some of TypeDynamo features:
       * [Querying data](#querying-data)
       * [Writing new data](#writing-new-data)
       * [Updating data](#updating-data)
-      * [Deleting data](#deleting-data)    
+      * [Deleting data](#deleting-data)
+ * [Examples](#examples)             
 
 
 ## Instalation
@@ -410,3 +411,9 @@ Just like *find()* and *save()*, the *delete()* method has a workaround for Dyna
 about deleting more items than DynamoDB actually supports.
 
 **Note**: When deleting many items at once, TypeDynamo can't return the deleted items from the table, since DynamoDB doesn't support it. Also, DynamoDB only supports specifying conditions to single delete operations, so when you call TypeDynamo *delete()* method passing more than one item, you can't specify a delete condition.
+
+## Examples
+
+- [Serverless](./serverless-todo-application)
+- GraphQL Yoga - coming soon
+- Express - coming soon
