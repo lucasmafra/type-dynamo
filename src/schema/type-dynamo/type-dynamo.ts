@@ -1,6 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
 import DynamoPromise from '../../database-operations/dynamo-to-promise'
-import { DynamoTableWithCompositeKey, DynamoTableWithSimpleKey } from '../../schema/dynamo-table'
 import { TypeDynamoDefineTableCompositeKey, TypeDynamoDefineTableSimpleKey } from './define-table'
 const AmazonDaxClient = require('amazon-dax-client')
 
@@ -66,9 +65,9 @@ export class TypeDynamo {
 
     public define(table: any, schema: any) {
         if (schema.sortKey !== undefined) {
-            return new TypeDynamoDefineTableCompositeKey(this.dynamoPromise, schema).getInstance() as any
+            return new TypeDynamoDefineTableCompositeKey(this.dynamoPromise, schema)
         }
-        return new TypeDynamoDefineTableSimpleKey(this.dynamoPromise, schema).getInstance() as any
+        return new TypeDynamoDefineTableSimpleKey(this.dynamoPromise, schema)
     }
 
 }
