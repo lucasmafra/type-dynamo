@@ -1,1 +1,1 @@
-glo
+declare var context: any
