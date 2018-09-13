@@ -13,7 +13,7 @@
     "prepare": "npm run build",
     "docker": "docker-compose up",
     "playground": "ts-node playground/index.ts",
-    "test": "jest",
+    "test": "jest --collectCoverage",
     "test:watch": "jest --watch"
   },
   "jest": {
