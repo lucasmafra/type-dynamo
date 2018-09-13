@@ -12,6 +12,7 @@
       "no-empty-interface": false,
       "max-classes-per-file": false,
       "no-console": false,
+      "max-line-length": [true, 80],
       "variable-name": false,
       "unified-signatures": false,
       "forin": false,
