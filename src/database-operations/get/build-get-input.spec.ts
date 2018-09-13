@@ -1,5 +1,4 @@
 import { buildGetInput } from './build-get-input'
-import { get } from './get'
 
 describe('buildGetInput', () => {
   const schema = { schema: { tableName: 'DummyTable' }, key: { id: '1' } }
@@ -15,6 +14,7 @@ describe('buildGetInput', () => {
     })
   })
 
+  // @ts-ignore
   context('when withAttributes option is present', () => {
     const withAttributes = {
       attributes: ['#id', '#name', '#email'],
