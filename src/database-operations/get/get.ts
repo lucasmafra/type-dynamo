@@ -5,9 +5,9 @@ export interface GetResult<TableModel, KeySchema> {
   data: TableModel
 }
 
-export async function get<Entity, KeySchema>(
+export const get = async <Entity, KeySchema>(
   getInput: DynamoDB.GetItemInput, dynamoClient: DynamoToPromise,
-): Promise<GetResult<Entity, KeySchema>> {
+): Promise<GetResult<Entity, KeySchema>> => {
   const getOutput = await dynamoClient.getItem(getInput)
   if (!getOutput.Item) {
     throw new Error('ItemNotFound')

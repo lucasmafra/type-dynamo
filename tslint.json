@@ -18,7 +18,8 @@
       "forin": false,
       "prefer-for-of": false,
       "no-require-imports": false,
-      "no-var-requires": false
+      "no-var-requires": false,
+      "no-unused-variable": true
     },
     "rulesDirectory": []
 }

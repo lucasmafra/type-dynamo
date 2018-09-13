@@ -1,7 +1,6 @@
 import { DynamoDB } from 'aws-sdk'
 import { WithAttributes } from '../../chaining/common'
 import { Get } from '../../chaining/find/get/get'
-import { EntitySchema } from '../../schema'
 import { buildKey, projectionExpression } from '../helpers'
 
 export function buildGetInput<KeySchema>(
