@@ -13,8 +13,19 @@
     "prepare": "npm run build",
     "docker": "docker-compose up",
     "playground": "ts-node playground/index.ts",
-    "test": "mocha -r ts-node/register src/**/*.spec.ts",
-    "cli": "npm run build && node dist/cli.js"
+    "cli": "npm run build && node dist/cli.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "jest": {
+    "testRegex": "(spec/.*|(\\.|/)(test|spec))\\.ts$",
+    "transform": {
+      ".(ts)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ]
   },
   "author": "lucasmafra",
   "license": "ISC",
