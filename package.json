@@ -19,11 +19,14 @@
   "jest": {
     "testRegex": "(spec/.*|(\\.|/)(test|spec))\\.ts$",
     "transform": {
-      ".(ts)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+      ".(ts)": "ts-jest"
     },
     "moduleFileExtensions": [
       "ts",
       "js"
+    ],
+    "setupFiles": [
+      "jest-plugin-context/setup"
     ]
   },
   "author": "lucasmafra",
@@ -40,6 +43,7 @@
     "@types/lodash": "^4.14.105",
     "@types/node": "^8.0.47",
     "jest": "^23.6.0",
+    "jest-plugin-context": "^2.9.0",
     "ts-jest": "^23.1.4",
     "ts-node": "^5.0.0",
     "tslint": "^5.11.0",
