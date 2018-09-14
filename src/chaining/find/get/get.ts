@@ -1,4 +1,4 @@
-import { GetResult} from '../../../database-operations/get'
+import { IGetResult } from '../../../database-operations/get'
 import { EntitySchema } from '../../../schema'
 import { Chaining } from '../../common'
 import { GetChainingKind } from './'
@@ -33,7 +33,7 @@ export class DynamoGet<
         )
     }
 
-    public execute() {
+    public execute(): Promise<IGetResult<Entity, KeySchema>> {
         return execute<Entity, KeySchema>(this._stack)
     }
 

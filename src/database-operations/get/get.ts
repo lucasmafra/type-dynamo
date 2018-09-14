@@ -1,19 +1,50 @@
 import { DynamoDB } from 'aws-sdk'
-import DynamoToPromise from '../dynamo-to-promise'
+import { WithAttributes } from '../../chaining/common'
+import { Get as IGet } from '../../chaining/find/get/get'
+import { buildKey, projectionExpression } from '../helpers'
 
-export interface GetResult<TableModel, KeySchema> {
+export interface IGetResult<TableModel, KeySchema> {
   data: TableModel
 }
 
-export const get = async <Entity, KeySchema>(
-  getInput: DynamoDB.GetItemInput, dynamoClient: DynamoToPromise,
-): Promise<GetResult<Entity, KeySchema>> => {
-  const getOutput = await dynamoClient.getItem(getInput)
-  if (!getOutput.Item) {
-    throw new Error('ItemNotFound')
+export interface IGetOptions {
+  withAttributes?: WithAttributes
+}
+
+export class Get<Entity, KeySchema> {
+  public input: IGet<KeySchema>
+
+  public constructor(input: IGet<KeySchema>) {
+    this.input = input
   }
-  const result: GetResult<Entity, KeySchema> = {
-    data: getOutput.Item as any,
+
+  public execute = async (
+    options: IGetOptions = {},
+  ): Promise<IGetResult<Entity, KeySchema>> => {
+    const { schema: { dynamoPromise: dynamoClient } } = this.input
+    const dynamoGetInput = this.buildDynamoGetInput(options)
+    const getOutput = await dynamoClient.getItem(dynamoGetInput)
+    if (!getOutput.Item) {
+      throw new Error('ItemNotFound')
+    }
+    return {
+      data: getOutput.Item as any,
+    }
   }
-  return result
+
+  private buildDynamoGetInput = (options: IGetOptions) => {
+    const { withAttributes } = options
+    const dynamoInput: DynamoDB.GetItemInput = {
+      TableName: this.input.schema.tableName,
+      Key: buildKey(this.input.key),
+    }
+    if (withAttributes) {
+      dynamoInput.ProjectionExpression = projectionExpression(
+        withAttributes.attributes,
+      )
+      dynamoInput.ExpressionAttributeNames = withAttributes.
+        expressionAttributeNames
+    }
+    return dynamoInput
+  }
 }

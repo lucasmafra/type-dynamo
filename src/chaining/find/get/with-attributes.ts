@@ -1,5 +1,4 @@
-import { GetResult} from '../../../database-operations/get'
-import { randomGenerator } from '../../../expressions/random-generator'
+import { IGetResult } from '../../../database-operations/get'
 import { Chaining, CommonWithAttributes } from '../../common'
 import { GetChainingKind } from './'
 import { execute } from './execute'
@@ -16,8 +15,7 @@ export class DynamoGetWithAttributes<
         super(attributes, currentStack)
     }
 
-    public execute() {
+    public execute(): Promise<IGetResult<Entity, KeySchema>> {
         return execute<Entity, KeySchema>(this._stack)
     }
-
 }
