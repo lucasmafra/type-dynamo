@@ -1,40 +1,38 @@
-import { IGetResult } from '../../../database-operations/get'
+import { Get, IGetResult } from '../../../database-operations/get'
 import { EntitySchema } from '../../../schema'
 import { Chaining } from '../../common'
 import { GetChainingKind } from './'
-import { execute } from './execute'
+import { Executor } from './execute'
 import { DynamoGetWithAttributes } from './with-attributes'
 
 export type GetType = 'get'
 
-export interface Get<KeySchema> {
-    schema: EntitySchema,
-    key: KeySchema,
+export interface IGetInput<KeySchema> {
+  schema: EntitySchema,
+  key: KeySchema,
 }
 
-export class DynamoGet<
-    Entity,
-    KeySchema
-> extends Chaining<GetChainingKind> {
+export class DynamoGet<Entity,
+  KeySchema> extends Chaining<GetChainingKind> {
 
-    protected _get: Get<KeySchema>
+  protected _get: IGetInput<KeySchema>
 
-    constructor(
-        get: Get<KeySchema>,
-    ) {
-        super('get')
-        this._get = get
-        this._stack.push(this)
-    }
+  constructor(
+    get: IGetInput<KeySchema>,
+  ) {
+    super('get')
+    this._get = get
+    this._stack.push(this)
+  }
 
-    public withAttributes<K extends keyof Entity>(attributes: K[]) {
-        return new DynamoGetWithAttributes<Pick<Entity, K>, KeySchema>(
-            attributes, this._stack,
-        )
-    }
+  public withAttributes<K extends keyof Entity>(attributes: K[]) {
+    return new DynamoGetWithAttributes<Pick<Entity, K>, KeySchema>(
+      attributes, this._stack,
+    )
+  }
 
-    public execute(): Promise<IGetResult<Entity, KeySchema>> {
-        return execute<Entity, KeySchema>(this._stack)
-    }
-
+  public execute(): Promise<IGetResult<Entity, KeySchema>> {
+    const get = new Get<Entity, KeySchema>()
+    return new Executor<Entity, KeySchema>(get).execute(this._stack)
+  }
 }

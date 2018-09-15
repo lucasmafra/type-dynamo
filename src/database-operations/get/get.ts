@@ -1,28 +1,22 @@
 import { DynamoDB } from 'aws-sdk'
 import { WithAttributes } from '../../chaining/common'
-import { Get as IGet } from '../../chaining/find/get/get'
+import { IGetInput as IGet } from '../../chaining/find/get/get'
 import { buildKey, projectionExpression } from '../helpers'
 
-export interface IGetResult<TableModel, KeySchema> {
-  data: TableModel
+export interface IGetResult<Model, KeySchema> {
+  data: Model
 }
 
 export interface IGetOptions {
   withAttributes?: WithAttributes
 }
 
-export class Get<Entity, KeySchema> {
-  public input: IGet<KeySchema>
-
-  public constructor(input: IGet<KeySchema>) {
-    this.input = input
-  }
-
+export class Get<Model, KeySchema> {
   public execute = async (
-    options: IGetOptions = {},
-  ): Promise<IGetResult<Entity, KeySchema>> => {
-    const { schema: { dynamoPromise: dynamoClient } } = this.input
-    const dynamoGetInput = this.buildDynamoGetInput(options)
+    input: IGet<KeySchema>, options: IGetOptions = {},
+  ): Promise<IGetResult<Model, KeySchema>> => {
+    const { schema: { dynamoPromise: dynamoClient } } = input
+    const dynamoGetInput = this.buildDynamoGetInput(input, options)
     const getOutput = await dynamoClient.getItem(dynamoGetInput)
     if (!getOutput.Item) {
       throw new Error('ItemNotFound')
@@ -32,11 +26,13 @@ export class Get<Entity, KeySchema> {
     }
   }
 
-  private buildDynamoGetInput = (options: IGetOptions) => {
+  private buildDynamoGetInput = (
+    input: IGet<KeySchema>, options: IGetOptions,
+  ) => {
     const { withAttributes } = options
     const dynamoInput: DynamoDB.GetItemInput = {
-      TableName: this.input.schema.tableName,
-      Key: buildKey(this.input.key),
+      TableName: input.schema.tableName,
+      Key: buildKey(input.key),
     }
     if (withAttributes) {
       dynamoInput.ProjectionExpression = projectionExpression(

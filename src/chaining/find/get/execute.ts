@@ -1,26 +1,34 @@
 import { Get, IGetResult } from '../../../database-operations/get'
 import { Chaining, WithAttributes } from '../../common'
 import { GetChainingKind } from './'
-import { Get as IGet } from './get'
+import { IGetInput as IGet } from './get'
 
-const extractFromStack = <KeySchema>(stack: Array<Chaining<GetChainingKind>>): {
-  getMetadata: IGet<KeySchema>,
-  withAttributes?: WithAttributes,
-} => {
-  const getMetadata = (stack[0] as any)._get
-  let withAttributes: WithAttributes | undefined
-  for (const current of stack) {
-    switch ((current as any)._kind) {
-      case 'withAttributes':
-        withAttributes = (current as any)._withAttributes
-    }
+export class Executor<Model, KeySchema> {
+  public get: Get<Model, KeySchema>
+
+  public constructor(get: Get<Model, KeySchema>) {
+    this.get = get
   }
-  return { getMetadata, withAttributes }
-}
 
-export const execute = <Entity, KeySchema>(
-  stack: Array<Chaining<GetChainingKind>>,
-): Promise<IGetResult<Entity, KeySchema>> => {
-  const {getMetadata, withAttributes} = extractFromStack<KeySchema>(stack)
-  return new Get<Entity, KeySchema>(getMetadata).execute({withAttributes})
+  public execute(
+    stack: Array<Chaining<GetChainingKind>>,
+  ): Promise<IGetResult<Model, KeySchema>> {
+    const { getInput, withAttributes } = this.extractFromStack(stack)
+    return this.get.execute(getInput, { withAttributes })
+  }
+
+  private extractFromStack(stack: Array<Chaining<GetChainingKind>>): {
+    getInput: IGet<KeySchema>,
+    withAttributes?: WithAttributes,
+  } {
+    const getInput = (stack[0] as any)._get
+    let withAttributes: WithAttributes | undefined
+    for (const current of stack) {
+      switch ((current as any)._kind) {
+        case 'withAttributes':
+          withAttributes = (current as any)._withAttributes
+      }
+    }
+    return { getInput, withAttributes }
+  }
 }
