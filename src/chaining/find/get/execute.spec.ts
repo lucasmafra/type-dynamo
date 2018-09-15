@@ -5,15 +5,13 @@ import { DynamoGet, GetChainingKind } from './index'
 import { DynamoGetWithAttributes } from './with-attributes'
 import anything = jasmine.anything
 
-jest.mock('../../../database-operations/get')
-
 interface IBankAccountModel { accountId: number, runningBalance: number }
 interface IBankAccountKeySchema { accountId: number }
 
 const input: IGet<IBankAccountKeySchema> = {
-  schema: { tableName: 'BankAccountTable', dynamoPromise: undefined as any },
   key: { accountId: 1 },
-}
+  schema: { tableName: 'BankAccountTable' },
+} as any
 
 let stack: Array<Chaining<GetChainingKind>>
 
