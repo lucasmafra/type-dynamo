@@ -439,7 +439,7 @@ export const UserRepo = typeDynamo.define(User, {
    
 Now, you can make operations upon indexes just like that:
 ```ts
-    UserRepo.onIndex.emailIndex.find({ email: 'example@email.com'}).execute() // TypeDynamo will turn this into a Query operation behind the scenes
+    UserRepo.onIndex.emailIndex.find({ email: 'example@email.com'}).allResults().execute() // TypeDynamo will turn this into a Query operation behind the scenes
     UserRepo.onIndex.emailIndex.find().allResults().execute() // TypeDynamo will turn this into a Scan operation behind the scenes
 ```
 
@@ -462,8 +462,8 @@ export const UserRepo = typeDynamo.define(User, {
 }).getInstance()
 
 // both works fine
-UserRepo.onIndex.emailIndex.find({ email: 'example@email.com'}).execute()
-UserRepo.onIndex.nameIndex.find({ name: 'John Doe'}).execute()
+UserRepo.onIndex.emailIndex.find({ email: 'example@email.com'}).allResults().execute()
+UserRepo.onIndex.nameIndex.find({ name: 'John Doe'}).allResults().execute()
 ```
 Dynamo requires a [projection type](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Projection.html) on every index you declare. TypeDynamo supports all 3 types of projection (KEYS_ONLY, ALL and INCLUDE) and adjust the index type according to your projection.
 
@@ -483,10 +483,10 @@ export const UserRepo = typeDynamo.define(User, {
   projectionType: 'KEYS_ONLY'
 }).getInstance()
 
-const { data: user } = await UserRepo.onIndex.emailIndex.find({ email: 'example@email.com'}).execute()
+const { data: [user] } = await UserRepo.onIndex.emailIndex.find({ email: 'example@email.com'}).allResults().execute()
 console.log(user.id, user.name, user.email, user.age) // compiles ok
 
-const { data: user } = await UserRepo.onIndex.nameIndex.find({ name: 'John Doe'}).execute()
+const { data: [user] } = await UserRepo.onIndex.nameIndex.find({ name: 'John Doe'}).allResults().execute()
 console.log(user.id, user.name, user.email, user.age) // causes a compile error since nameIndex has projection type KEYS_ONLY
 
 ```
