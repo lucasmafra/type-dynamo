@@ -19,5 +19,4 @@ export class DynamoGetWithAttributes<
     public execute() {
         return execute<Entity, KeySchema>(this._stack)
     }
-
 }
