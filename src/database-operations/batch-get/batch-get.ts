@@ -42,6 +42,7 @@ export class BatchGet<Model, KeySchema> {
     }, new Array<KeySchema[]>([]))
   }
 
+  // TODO error handling and back-off algorithm
   private async batchRequest(
     tableName: string,
     keys: KeySchema[],
