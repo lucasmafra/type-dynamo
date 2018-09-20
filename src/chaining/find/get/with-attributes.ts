@@ -1,20 +1,21 @@
 import { Get, IGetResult } from '../../../database-operations/get'
-import { Chaining, CommonWithAttributes } from '../../common'
-import { GetChainingKind } from './'
-import { Executor } from './execute'
+import { Chaining } from '../../common'
+import { GetChaining } from './'
 
-export class DynamoGetWithAttributes<Entity,
-  KeySchema> extends CommonWithAttributes<GetChainingKind> {
+export class DynamoGetWithAttributes<Entity, KeySchema>
+  extends Chaining<GetChaining> {
+
+  protected withAttributes: string[]
 
   constructor(
     attributes: string[],
-    currentStack: Array<Chaining<GetChainingKind>>,
+    currentStack: Array<Chaining<GetChaining>>,
   ) {
-    super(attributes, currentStack)
+    super('withAttributes', currentStack, attributes)
   }
 
   public execute(): Promise<IGetResult<Entity, KeySchema>> {
-    const get = new Get<Entity, KeySchema>()
-    return new Executor<Entity, KeySchema>(get).execute(this._stack)
+    const { get, withAttributes } = this.extractFromStack()
+    return new Get<Entity, KeySchema>().execute(get, withAttributes)
   }
 }

@@ -1,19 +1,23 @@
 import { DynamoDB } from 'aws-sdk'
-import { WithAttributes } from '../../chaining/common'
-import { IGetInput as IGet } from '../../chaining/find/get/get'
-import { buildKey, projectionExpression } from '../helpers'
+import { EntitySchema } from '../schema/index'
+import { WithAttributes } from './helpers/with-attributes'
+
+export interface IGetInput<KeySchema> {
+  schema: EntitySchema,
+  key: KeySchema,
+}
+
+export interface IGetOptions {
+  withAttributes?: string[]
+}
 
 export interface IGetResult<Model, KeySchema> {
   data: Model
 }
 
-export interface IGetOptions {
-  withAttributes?: WithAttributes
-}
-
 export class Get<Model, KeySchema> {
   public execute = async (
-    input: IGet<KeySchema>, options: IGetOptions = {},
+    input: IGetInput<KeySchema>, options: IGetOptions = {},
   ): Promise<IGetResult<Model, KeySchema>> => {
     const { schema: { dynamoPromise: dynamoClient } } = input
     const dynamoGetInput = this.buildDynamoGetInput(input, options)
@@ -27,19 +31,20 @@ export class Get<Model, KeySchema> {
   }
 
   private buildDynamoGetInput = (
-    input: IGet<KeySchema>, options: IGetOptions,
+    input: IGetInput<KeySchema>, options: IGetOptions,
   ) => {
     const { withAttributes } = options
     const dynamoInput: DynamoDB.GetItemInput = {
       TableName: input.schema.tableName,
-      Key: buildKey(input.key),
+      Key: DynamoDB.Converter.marshall(input.key),
     }
     if (withAttributes) {
-      dynamoInput.ProjectionExpression = projectionExpression(
-        withAttributes.attributes,
-      )
-      dynamoInput.ExpressionAttributeNames = withAttributes.
-        expressionAttributeNames
+      const {
+        ProjectionExpression,
+        ExpressionAttributeNames,
+      } = new WithAttributes().build(withAttributes)
+      dynamoInput.ProjectionExpression = ProjectionExpression
+      dynamoInput.ExpressionAttributeNames = ExpressionAttributeNames
     }
     return dynamoInput
   }

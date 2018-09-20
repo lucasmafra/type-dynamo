@@ -1,4 +1,4 @@
-import { BatchGetResult } from '../../../database-operations/batch-get'
+import { IBatchGetResult } from '../../../database-operations/batch-get'
 import { randomGenerator } from '../../../expressions/random-generator'
 import { Chaining, CommonWithAttributes } from '../../common'
 import { BatchGetChainingKind } from './'

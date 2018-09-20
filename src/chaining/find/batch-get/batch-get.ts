@@ -1,4 +1,4 @@
-import { BatchGetResult } from '../../../database-operations/batch-get'
+import { IBatchGetResult } from '../../../database-operations/batch-get'
 import { EntitySchema } from '../../../schema'
 import { Chaining } from '../../common'
 import { BatchGetChainingKind } from './'

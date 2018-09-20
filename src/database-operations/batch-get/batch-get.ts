@@ -1,95 +1,113 @@
 import { AWSError, DynamoDB } from 'aws-sdk'
-import { merge } from 'lodash'
+import { EntitySchema } from '../../schema'
 import DynamoToPromise from '../dynamo-to-promise'
-import { timeoutPromise } from '../helpers'
-import { deepClone } from '../helpers'
-const marshalItem = require('dynamodb-marshaler').marshalItem
+import { WithAttributes } from '../helpers/with-attributes'
 
-const BATCH_GET_LIMIT = 100 // items
-const INITIAL_BACKOFF = 50 // ms
-const MAX_BACKOFF = 1000 // ms
-
-export interface BatchGetResult<TableModel, KeySchema> {
-    data: TableModel[]
+export interface IBatchGetInput<KeySchema> {
+  schema: EntitySchema,
+  keys: KeySchema[],
 }
 
-const segmentBatchGetInputs = (batchGetInput: DynamoDB.BatchGetItemInput) => {
-    const RequestItems = deepClone(batchGetInput.RequestItems) as DynamoDB.BatchGetRequestMap
-    const tableName = Object.keys(RequestItems)[0]
-    const segments = new Array<DynamoDB.BatchGetItemInput>()
-    do {
-        const segment = deepClone(batchGetInput) as DynamoDB.BatchGetItemInput
-        segment.RequestItems[tableName].Keys = RequestItems[tableName].Keys.slice(0, BATCH_GET_LIMIT)
-        segments.push(segment)
-        if (RequestItems[tableName].Keys.length > BATCH_GET_LIMIT) {
-            RequestItems[tableName].Keys = RequestItems[tableName].Keys.slice(
-                BATCH_GET_LIMIT, RequestItems[tableName].Keys.length,
-            )
-        } else {
-            RequestItems[tableName].Keys = []
-        }
-    } while (RequestItems[tableName].Keys.length)
-    return segments
+export interface IBatchGetOptions {
+  withAttributes?: string[]
 }
 
-const singleBatchGet = async <Entity, KeySchema> (
-    batchGetInput: DynamoDB.BatchGetItemInput,
-    dynamoPromise: DynamoToPromise,
-) => {
-    const tableName =  Object.keys(batchGetInput.RequestItems)[0]
-    try {
-        const batchGetOutput = await dynamoPromise.batchGet(batchGetInput)
-        if (batchGetOutput.UnprocessedKeys && Object.keys(batchGetOutput.UnprocessedKeys).length) {
-            batchGetInput.RequestItems[tableName].Keys =
-                batchGetOutput.UnprocessedKeys[tableName].Keys.map( (key) => (
-                    marshalItem(key)
-                ))
-            return { batchGetOutput, batchGetInput }
-        }
-        return { batchGetOutput, batchGetInput: undefined }
-    } catch (err) {
-        if ((err as AWSError).code === 'ProvisionedThroughputExceededException') {
-            return { batchGetInput, batchGetOutput: undefined }
-        } else {
-            throw new Error('UnknownError')
-        }
+export interface IBatchGetResult<Model, KeySchema> {
+  data: Model[]
+}
+
+export class BatchGet<Model, KeySchema> {
+  public async execute(
+    input: IBatchGetInput<KeySchema>,
+    options: IBatchGetOptions = {},
+  ): Promise<IBatchGetResult<Model, KeySchema>> {
+    const { schema: { dynamoPromise: dynamoClient, tableName }, keys } = input
+    const chunks = this.groupKeysInChunks(keys)
+    const batchRequests = chunks.map((chunk) => this.batchRequest(
+      tableName, chunk, dynamoClient, options),
+    )
+    return this.resolveBatchRequests(batchRequests)
+  }
+
+  private groupKeysInChunks(keys: KeySchema[]) {
+    let index = 0
+    const MAX_ITEMS_PER_BATCH = 100
+    return keys.reduce((acc, key) => {
+      if (acc[index].length < MAX_ITEMS_PER_BATCH) {
+        index++
+        acc[index] = acc[index] || new Array<KeySchema>()
+      }
+      acc[index].push(key)
+      return acc
+    }, new Array<KeySchema[]>([]))
+  }
+
+  private async batchRequest(
+    tableName: string,
+    keys: KeySchema[],
+    dynamoClient: DynamoToPromise,
+    options: IBatchGetOptions,
+  ): Promise<IBatchGetResult<Model, KeySchema>> {
+    const data = new Array<Model>()
+    const dynamoBatchGetInput = this.buildDynamoBatchGetInput(
+      tableName, keys, options,
+    )
+    let {
+      Responses, UnprocessedKeys,
+    } = await dynamoClient.batchGet(dynamoBatchGetInput)
+    if (Responses) {
+      data.push(...Responses[tableName].map(
+        (item) => DynamoDB.Converter.unmarshall(item),
+      ) as any)
     }
-}
+    while (UnprocessedKeys) {
+      const nextInput = {RequestItems: UnprocessedKeys}
+      const nextCall = await dynamoClient.batchGet(nextInput)
+      Responses = nextCall.Responses
+      UnprocessedKeys = nextCall.UnprocessedKeys
+      if (Responses) {
+        data.push(...Responses[tableName].map(
+          (item) => DynamoDB.Converter.unmarshall(item),
+        ) as any)
+      }
+    }
+    return { data }
+  }
 
-const mergeArray = (arr1: any[], arr2: any[]) => {
-    let arrMerge = new Array()
-    arrMerge = arrMerge.concat(arr1)
-    arrMerge = arrMerge.concat(arr2)
-    return arrMerge
-}
+  private buildDynamoBatchGetInput(
+    tableName: string,
+    keys: KeySchema[],
+    options: IBatchGetOptions,
+  ) {
+    const dynamoBatchGetInput: DynamoDB.BatchGetItemInput = {
+      RequestItems: {
+        [tableName]: {
+          Keys: keys.map((key) => DynamoDB.Converter.marshall(key)),
+        },
+      },
+    }
+    if (options.withAttributes) {
+      const {
+        ProjectionExpression, ExpressionAttributeNames,
+      } = new WithAttributes().build(options.withAttributes)
 
-const initalizeAcc = (tableName: string, batchGetInput: DynamoDB.BatchGetItemInput) => {
-    const clone = deepClone(batchGetInput) as DynamoDB.BatchGetItemInput
-    clone.RequestItems[tableName].Keys = []
-    return clone
-}
-export async function batchGet<
-    Entity, KeySchema
->(
-    tableName: string, batchGetInput: DynamoDB.BatchGetItemInput, dynamoPromise: DynamoToPromise,
-): Promise<BatchGetResult<Entity, KeySchema>> {
-    let unprocessed = batchGetInput
-    let partial = new Array<Entity>()
-    do {
-        const segments = segmentBatchGetInputs(unprocessed)
-        const batchGets = segments.map( (segment) => singleBatchGet<Entity, KeySchema>(
-            segment, dynamoPromise,
-        ))
-        unprocessed = (await Promise.all(batchGets)).reduce((acc, current) => {
-            if (current.batchGetInput) {
-                acc!.RequestItems[tableName].Keys =
-                    mergeArray(acc!.RequestItems[tableName].Keys, current.batchGetInput.RequestItems[tableName].Keys)
-            }
-            if (current.batchGetOutput && current.batchGetOutput.Responses) {
-                partial = partial.concat(current.batchGetOutput.Responses[tableName] as any)
-            }
-            return acc
-        }, initalizeAcc(tableName, batchGetInput))!
-    } while (unprocessed.RequestItems[tableName].Keys.length)
-    return { data: partial }
+      dynamoBatchGetInput.RequestItems[tableName]
+        .ProjectionExpression = ProjectionExpression
+
+      dynamoBatchGetInput.RequestItems[tableName]
+        .ExpressionAttributeNames = ExpressionAttributeNames
+    }
+    return dynamoBatchGetInput
+  }
+
+  private async resolveBatchRequests(
+    requests: Array<Promise<IBatchGetResult<Model, KeySchema>>>,
+  ): Promise<IBatchGetResult<Model, KeySchema>> {
+    const data = []
+    for (const request of requests) {
+      const { data: partialResult } = await request
+      data.push(...partialResult)
+    }
+    return { data }
+  }
 }
