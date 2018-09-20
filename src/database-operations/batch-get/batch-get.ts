@@ -33,7 +33,7 @@ export class BatchGet<Model, KeySchema> {
     let index = 0
     const MAX_ITEMS_PER_BATCH = 100
     return keys.reduce((acc, key) => {
-      if (acc[index].length < MAX_ITEMS_PER_BATCH) {
+      if (acc[index].length === MAX_ITEMS_PER_BATCH) {
         index++
         acc[index] = acc[index] || new Array<KeySchema>()
       }
