@@ -192,7 +192,7 @@ describe('BatchGet', () => {
     })
   })
 
-  context('when a unhandled error is thrown', () => {
+  context('when Dynamo throws an unhandled error', () => {
     beforeEach(() => {
       dynamoClient.batchGet.mockImplementationOnce(() => {
         throw new Error('Unknown error')
