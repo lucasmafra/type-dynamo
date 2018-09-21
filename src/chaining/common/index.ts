@@ -1,16 +1,21 @@
+import DynamoClient from '../../database-operations/dynamo-client'
+
 export abstract class Chaining<ChainingKind> {
 
   protected kind: ChainingKind
   protected stack: Array<Chaining<ChainingKind>>
+  protected dynamoClient: DynamoClient
   protected input?: any
 
   constructor(
     kind: ChainingKind,
+    dynamoClient: DynamoClient,
     currentStack?: Array<Chaining<ChainingKind>>,
     input?: any,
   ) {
     this.stack = currentStack || []
     this.kind = kind
+    this.dynamoClient = dynamoClient
     this.input = input
     this.stack.push(this)
   }

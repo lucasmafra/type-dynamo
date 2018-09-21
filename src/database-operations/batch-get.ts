@@ -1,10 +1,10 @@
 import { AWSError, DynamoDB } from 'aws-sdk'
-import { EntitySchema } from '../schema'
 import DynamoClient from './dynamo-client'
+import { timeout } from './helpers/timeout'
 import { WithAttributes } from './helpers/with-attributes'
 
 export interface IBatchGetInput<KeySchema> {
-  schema: EntitySchema,
+  tableName: string,
   keys: KeySchema[],
 }
 
@@ -17,14 +17,19 @@ export interface IBatchGetResult<Model> {
 }
 
 export class BatchGet<Model, KeySchema> {
+  public dynamoClient: DynamoClient
+
+  public constructor(dynamoClient: DynamoClient) {
+    this.dynamoClient = dynamoClient
+  }
+
   public async execute(
     input: IBatchGetInput<KeySchema>,
     options: IBatchGetOptions = {},
   ): Promise<IBatchGetResult<Model>> {
-    const { schema: { dynamoPromise: dynamoClient, tableName }, keys } = input
-    const chunks = this.groupKeysInChunks(keys)
+    const chunks = this.groupKeysInChunks(input.keys)
     const batchRequests = chunks.map((chunk) => this.batchRequest(
-      tableName, chunk, dynamoClient, options),
+      { tableName: input.tableName, keys: chunk }, options),
     )
     return this.resolveBatchRequests(batchRequests)
   }
@@ -42,32 +47,29 @@ export class BatchGet<Model, KeySchema> {
     }, new Array<KeySchema[]>([]))
   }
 
-  // TODO error handling and back-off algorithm
   private async batchRequest(
-    tableName: string,
-    keys: KeySchema[],
-    dynamoClient: DynamoClient,
+    input: IBatchGetInput<KeySchema>,
     options: IBatchGetOptions,
   ): Promise<IBatchGetResult<Model>> {
     const data = new Array<Model>()
     const dynamoBatchGetInput = this.buildDynamoBatchGetInput(
-      tableName, keys, options,
+      input, options,
     )
     let {
       Responses, UnprocessedKeys,
-    } = await dynamoClient.batchGet(dynamoBatchGetInput)
+    } = await this.dynamoClient.batchGet(dynamoBatchGetInput)
     if (Responses) {
-      data.push(...Responses[tableName].map(
+      data.push(...Responses[input.tableName].map(
         (item) => DynamoDB.Converter.unmarshall(item),
       ) as any)
     }
     while (UnprocessedKeys) {
       const nextInput = {RequestItems: UnprocessedKeys}
-      const nextCall = await dynamoClient.batchGet(nextInput)
+      const nextCall = await this.dynamoClient.batchGet(nextInput)
       Responses = nextCall.Responses
       UnprocessedKeys = nextCall.UnprocessedKeys
       if (Responses) {
-        data.push(...Responses[tableName].map(
+        data.push(...Responses[input.tableName].map(
           (item) => DynamoDB.Converter.unmarshall(item),
         ) as any)
       }
@@ -76,14 +78,13 @@ export class BatchGet<Model, KeySchema> {
   }
 
   private buildDynamoBatchGetInput(
-    tableName: string,
-    keys: KeySchema[],
+    input: IBatchGetInput<KeySchema>,
     options: IBatchGetOptions,
   ) {
     const dynamoBatchGetInput: DynamoDB.BatchGetItemInput = {
       RequestItems: {
-        [tableName]: {
-          Keys: keys.map((key) => DynamoDB.Converter.marshall(key)),
+        [input.tableName]: {
+          Keys: input.keys.map((key) => DynamoDB.Converter.marshall(key)),
         },
       },
     }
@@ -92,10 +93,10 @@ export class BatchGet<Model, KeySchema> {
         ProjectionExpression, ExpressionAttributeNames,
       } = new WithAttributes().build(options.withAttributes)
 
-      dynamoBatchGetInput.RequestItems[tableName]
+      dynamoBatchGetInput.RequestItems[input.tableName]
         .ProjectionExpression = ProjectionExpression
 
-      dynamoBatchGetInput.RequestItems[tableName]
+      dynamoBatchGetInput.RequestItems[input.tableName]
         .ExpressionAttributeNames = ExpressionAttributeNames
     }
     return dynamoBatchGetInput
@@ -117,6 +118,7 @@ export class BatchGet<Model, KeySchema> {
         } catch (err) {
           switch ((err as AWSError).code) {
             case 'ProvisionedThroughputExceededException':
+              await timeout(currentBackoff)
               currentBackoff *= 2
               break
             default:

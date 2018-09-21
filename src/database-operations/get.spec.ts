@@ -15,13 +15,13 @@ const dynamoClient = {
 }
 
 const input: IGetInput<IUserKeySchema> = {
-  schema: { tableName: 'DummyTable', dynamoPromise: dynamoClient as any },
+  tableName: 'DummyTable',
   key: { id: '1' },
 }
 
 describe('Get', () => {
   beforeEach(() => {
-    get = new Get()
+    get = new Get(dynamoClient as any)
     dynamoClient.getItem.mockClear()
   })
 

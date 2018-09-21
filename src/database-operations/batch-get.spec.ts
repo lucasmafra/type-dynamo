@@ -21,13 +21,13 @@ const dynamoClient = {
 }
 
 const input: IBatchGetInput<IUserKeySchema> = {
-  schema: { tableName: 'UserTable', dynamoPromise: dynamoClient as any },
+  tableName: 'UserTable',
   keys: [{ id: '1' }, { id: '2' }, { id: '3' }],
 }
 
 describe('BatchGet', () => {
   beforeEach(() => {
-    batchGet = new BatchGet<IUserModel, IUserKeySchema>()
+    batchGet = new BatchGet<IUserModel, IUserKeySchema>(dynamoClient as any)
     dynamoClient.batchGet.mockClear()
   })
 
