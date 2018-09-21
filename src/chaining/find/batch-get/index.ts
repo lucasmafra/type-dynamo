@@ -1,6 +1,3 @@
-import { WithAttributesType } from '../../common'
-import { BatchGetType } from './batch-get'
-
-export type BatchGetChainingKind = BatchGetType | WithAttributesType
+export type BatchGetChaining = 'batchGet' | 'withAttributes'
 
 export { DynamoBatchGet } from './batch-get'

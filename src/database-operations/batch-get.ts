@@ -12,7 +12,7 @@ export interface IBatchGetOptions {
   withAttributes?: string[]
 }
 
-export interface IBatchGetResult<Model, KeySchema> {
+export interface IBatchGetResult<Model> {
   data: Model[]
 }
 
@@ -20,7 +20,7 @@ export class BatchGet<Model, KeySchema> {
   public async execute(
     input: IBatchGetInput<KeySchema>,
     options: IBatchGetOptions = {},
-  ): Promise<IBatchGetResult<Model, KeySchema>> {
+  ): Promise<IBatchGetResult<Model>> {
     const { schema: { dynamoPromise: dynamoClient, tableName }, keys } = input
     const chunks = this.groupKeysInChunks(keys)
     const batchRequests = chunks.map((chunk) => this.batchRequest(
@@ -48,7 +48,7 @@ export class BatchGet<Model, KeySchema> {
     keys: KeySchema[],
     dynamoClient: DynamoClient,
     options: IBatchGetOptions,
-  ): Promise<IBatchGetResult<Model, KeySchema>> {
+  ): Promise<IBatchGetResult<Model>> {
     const data = new Array<Model>()
     const dynamoBatchGetInput = this.buildDynamoBatchGetInput(
       tableName, keys, options,
@@ -102,8 +102,8 @@ export class BatchGet<Model, KeySchema> {
   }
 
   private async resolveBatchRequests(
-    requests: Array<Promise<IBatchGetResult<Model, KeySchema>>>,
-  ): Promise<IBatchGetResult<Model, KeySchema>> {
+    requests: Array<Promise<IBatchGetResult<Model>>>,
+  ): Promise<IBatchGetResult<Model>> {
     const data = []
     for (const request of requests) {
       let currentBackoff = 100

@@ -1,4 +1,4 @@
-import { Get, IGetResult } from '../../../database-operations/get'
+import { Get, IGetResult } from '../../../database-operations'
 import { Chaining } from '../../common'
 import { GetChaining } from './'
 

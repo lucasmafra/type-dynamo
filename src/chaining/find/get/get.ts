@@ -1,12 +1,10 @@
-import { Get, IGetInput, IGetResult } from '../../../database-operations/get'
+import { Get, IGetInput, IGetResult } from '../../../database-operations'
 import { Chaining } from '../../common'
 import { GetChaining } from './index'
 import { DynamoGetWithAttributes } from './with-attributes'
 
 export class DynamoGet<Entity,
   KeySchema> extends Chaining<GetChaining> {
-
-  protected input: IGetInput<KeySchema>
 
   constructor(input: IGetInput<KeySchema>) {
     super('get', [], input)

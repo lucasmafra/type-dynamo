@@ -1,22 +1,21 @@
-import { IBatchGetResult } from '../../../database-operations/batch-get'
-import { randomGenerator } from '../../../expressions/random-generator'
-import { Chaining, CommonWithAttributes } from '../../common'
+import { BatchGet, IBatchGetResult } from '../../../database-operations'
+import { Chaining } from '../../common'
 import { BatchGetChainingKind } from './'
-import { execute } from './execute'
 
-export class DynamoGetWithAttributes<
-    Entity,
-    KeySchema
-> extends CommonWithAttributes<BatchGetChainingKind> {
+export class DynamoBatchGetWithAttributes<Model,
+  KeySchema> extends Chaining<BatchGetChainingKind> {
 
-    constructor(
-        attributes: string[],
-        currentStack: Array<Chaining<BatchGetChainingKind>>,
-    ) {
-        super(attributes, currentStack)
-    }
+  constructor(
+    attributes: string[],
+    currentStack: Array<Chaining<BatchGetChainingKind>>,
+  ) {
+    super('withAttributes', currentStack, attributes)
+  }
 
-    public execute() {
-        return execute<Entity, KeySchema>(this._stack)
-    }
+  public execute(): Promise<IBatchGetResult<Model>> {
+    const {batchGet, withAttributes} = this.extractFromStack()
+    return new BatchGet<Model, KeySchema>().execute(
+      batchGet, {withAttributes},
+    )
+  }
 }

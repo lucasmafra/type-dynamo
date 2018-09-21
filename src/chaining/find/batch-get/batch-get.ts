@@ -1,40 +1,30 @@
-import { IBatchGetResult } from '../../../database-operations/batch-get'
-import { EntitySchema } from '../../../schema'
+import {
+  BatchGet,
+  IBatchGetInput,
+  IBatchGetResult,
+} from '../../../database-operations'
 import { Chaining } from '../../common'
-import { BatchGetChainingKind } from './'
-import { execute } from './execute'
-import { DynamoGetWithAttributes } from './with-attributes'
+import { BatchGetChaining } from './'
+import { DynamoBatchGetWithAttributes } from './with-attributes'
 
-export type BatchGetType = 'batchGet'
+export class DynamoBatchGet<Model,
+  KeySchema> extends Chaining<BatchGetChaining> {
 
-export interface BatchGet<KeySchema> {
-    schema: EntitySchema,
-    keys: KeySchema[],
-}
+  constructor(
+    input: IBatchGetInput<KeySchema>,
+  ) {
+    super('batchGet', [], input)
+  }
 
-export class DynamoBatchGet<
-    Entity,
-    KeySchema
-> extends Chaining<BatchGetChainingKind> {
+  public withAttributes<K extends keyof Model>(attributes: K[]) {
+    return new DynamoBatchGetWithAttributes<Pick<Model, K>, KeySchema>(
+      attributes, this.stack,
+    )
+  }
 
-    protected _batchGet: BatchGet<KeySchema>
-
-    constructor(
-        batchGet: BatchGet<KeySchema>,
-    ) {
-        super('batchGet')
-        this._batchGet = batchGet
-        this._stack.push(this)
-    }
-
-    public withAttributes<K extends keyof Entity>(attributes: K[]) {
-        return new DynamoGetWithAttributes<Pick<Entity, K>, KeySchema>(
-            attributes, this._stack,
-        )
-    }
-
-    public execute() {
-        return execute<Entity, KeySchema>(this._stack)
-    }
+  public execute(): Promise<IBatchGetResult<Model>> {
+    const { batchGet } = this.extractFromStack()
+    return new BatchGet<Model, KeySchema>().execute(batchGet)
+  }
 
 }
