@@ -106,8 +106,24 @@ export class BatchGet<Model, KeySchema> {
   ): Promise<IBatchGetResult<Model, KeySchema>> {
     const data = []
     for (const request of requests) {
-      const { data: partialResult } = await request
-      data.push(...partialResult)
+      let currentBackoff = 100
+      const backoffLimit = 1000
+      let requestSucceeded = false
+      while (currentBackoff < backoffLimit && !requestSucceeded) {
+        try {
+          const { data: partialResult } = await request
+          data.push(...partialResult)
+          requestSucceeded = true
+        } catch (err) {
+          switch ((err as AWSError).code) {
+            case 'ProvisionedThroughputExceededException':
+              currentBackoff *= 2
+              break
+            default:
+              throw err
+          }
+        }
+      }
     }
     return { data }
   }

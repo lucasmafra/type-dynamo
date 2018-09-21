@@ -1,4 +1,4 @@
-import { DynamoDB } from 'aws-sdk'
+import { AWSError, DynamoDB } from 'aws-sdk'
 import { IBatchGetInput } from './batch-get'
 import { BatchGet } from './batch-get'
 import anything = jasmine.anything
@@ -171,6 +171,36 @@ describe('BatchGet', () => {
       expect(dynamoClient.batchGet.mock.calls[1][0]
         .RequestItems.UserTable.Keys.length,
       ).toBe(50)
+    })
+  })
+
+  context('when provisioned throughput is exceeded', () => {
+    beforeEach(() => {
+      dynamoClient.batchGet.mockImplementationOnce(() => {
+        const error: AWSError = {
+          code: 'ProvisionedThroughputExceededException',
+          message: 'Provisioned throughput was exceeded',
+          statusCode: 400,
+        } as any
+        throw error
+      })
+    })
+
+    it('tries again using a back-off algorithm', async () => {
+      await batchGet.execute(input)
+      expect(dynamoClient.batchGet).toHaveBeenCalledTimes(2)
+    })
+  })
+
+  context('when a unhandled error is thrown', () => {
+    beforeEach(() => {
+      dynamoClient.batchGet.mockImplementationOnce(() => {
+        throw new Error('Unknown error')
+      })
+    })
+
+    it('throws the unhandled error ', async () => {
+      expect(batchGet.execute(input)).rejects.toThrow('Unknown error')
     })
   })
 })
