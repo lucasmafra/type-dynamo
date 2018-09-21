@@ -53,6 +53,7 @@ describe('BatchGet', () => {
     })
   })
 
+  // @ts-ignore
   context('when dynamoClient returns no response', () => {
     beforeEach(() => {
       dynamoClient.batchGet.mockImplementationOnce(() => ({
@@ -65,6 +66,7 @@ describe('BatchGet', () => {
     })
   })
 
+  // @ts-ignore
   context('when withAttributes option is passed', () => {
     it('only asks dynamoClient for the given attributes', async () => {
       await batchGet.execute(input, { withAttributes: ['id'] })
@@ -79,6 +81,7 @@ describe('BatchGet', () => {
     })
   })
 
+  // @ts-ignore
   context('when dynamoClient returns unprocessed items', () => {
     beforeEach(() => {
       dynamoClient.batchGet.mockImplementationOnce(() => ({
@@ -152,6 +155,7 @@ describe('BatchGet', () => {
     })
   })
 
+  // @ts-ignore
   context('when more than 100 items are requested at once', () => {
     const generateArrayOfIds = (size: number) => [
       ...Array(size).keys()].map(
@@ -174,6 +178,7 @@ describe('BatchGet', () => {
     })
   })
 
+  // @ts-ignore
   context('when provisioned throughput is exceeded', () => {
     beforeEach(() => {
       dynamoClient.batchGet.mockImplementationOnce(() => {
@@ -192,6 +197,7 @@ describe('BatchGet', () => {
     })
   })
 
+  // @ts-ignore
   context('when Dynamo throws an unhandled error', () => {
     beforeEach(() => {
       dynamoClient.batchGet.mockImplementationOnce(() => {

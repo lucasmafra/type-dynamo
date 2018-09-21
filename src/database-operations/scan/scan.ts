@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk'
 import { Omit } from '../../helpers'
-import DynamoToPromise from '../dynamo-to-promise'
+import DynamoClient from '../dynamo-to-promise'
 import { buildExclusiveStartKey } from '../helpers'
 
 export interface ScanResult<TableModel, KeySchema> {
@@ -11,7 +11,7 @@ export interface ScanResult<TableModel, KeySchema> {
 export async function scanPaginate<
     Entity, KeySchema
 >(
-    scanInput: DynamoDB.ScanInput, dynamoPromise: DynamoToPromise,
+    scanInput: DynamoDB.ScanInput, dynamoPromise: DynamoClient,
 ): Promise<ScanResult<Entity, KeySchema>> {
     const scanOutput = await dynamoPromise.scan(scanInput)
     const result: ScanResult<Entity, KeySchema> = {
@@ -24,7 +24,7 @@ export async function scanPaginate<
 export async function scanAllResults<
     Entity, KeySchema
 >(
-    scanInput: DynamoDB.ScanInput, dynamoPromise: DynamoToPromise,
+    scanInput: DynamoDB.ScanInput, dynamoPromise: DynamoClient,
 ): Promise<Omit<ScanResult<Entity, KeySchema>, 'lastKey'>> {
     let lastKey
     const result: ScanResult<Entity, KeySchema> = {} as any

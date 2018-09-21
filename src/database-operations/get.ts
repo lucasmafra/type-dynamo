@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import { EntitySchema } from '../schema/index'
+import { EntitySchema } from '../schema'
 import { WithAttributes } from './helpers/with-attributes'
 
 export interface IGetInput<KeySchema> {

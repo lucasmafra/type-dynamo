@@ -1,7 +1,7 @@
 import { AWSError, DynamoDB } from 'aws-sdk'
-import { EntitySchema } from '../../schema'
-import DynamoToPromise from '../dynamo-to-promise'
-import { WithAttributes } from '../helpers/with-attributes'
+import { EntitySchema } from '../schema'
+import DynamoClient from './dynamo-client'
+import { WithAttributes } from './helpers/with-attributes'
 
 export interface IBatchGetInput<KeySchema> {
   schema: EntitySchema,
@@ -46,7 +46,7 @@ export class BatchGet<Model, KeySchema> {
   private async batchRequest(
     tableName: string,
     keys: KeySchema[],
-    dynamoClient: DynamoToPromise,
+    dynamoClient: DynamoClient,
     options: IBatchGetOptions,
   ): Promise<IBatchGetResult<Model, KeySchema>> {
     const data = new Array<Model>()

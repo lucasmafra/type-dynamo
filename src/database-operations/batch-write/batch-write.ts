@@ -1,6 +1,6 @@
 import { AWSError, DynamoDB } from 'aws-sdk'
 import { merge } from 'lodash'
-import DynamoToPromise from '../dynamo-to-promise'
+import DynamoClient from '../dynamo-to-promise'
 import { timeoutPromise } from '../helpers'
 import { deepClone } from '../helpers'
 const marshalItem = require('dynamodb-marshaler').marshalItem
@@ -34,7 +34,7 @@ const segmentBatchWriteInputs = (batchWriteInput: DynamoDB.BatchWriteItemInput) 
 
 const singleBatchWrite = async <Entity> (
     batchWriteInput: DynamoDB.BatchWriteItemInput,
-    dynamoPromise: DynamoToPromise,
+    dynamoPromise: DynamoClient,
 ) => {
     const tableName =  Object.keys(batchWriteInput.RequestItems)[0]
     try {
@@ -66,7 +66,7 @@ const mergeArray = (arr1: any[], arr2: any[]) => {
 export async function batchWrite<
     Entity
 >(
-    items: Entity[], batchWriteInput: DynamoDB.BatchWriteItemInput, dynamoPromise: DynamoToPromise,
+    items: Entity[], batchWriteInput: DynamoDB.BatchWriteItemInput, dynamoPromise: DynamoClient,
 ): Promise<BatchWriteResult<Entity>> {
     let unprocessed = batchWriteInput
     const tableName = Object.keys(unprocessed.RequestItems)[0]
