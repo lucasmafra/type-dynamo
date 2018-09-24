@@ -1,25 +1,23 @@
 import { DynamoDB } from 'aws-sdk'
+import { IHelpers } from '../helpers'
 import DynamoClient from './dynamo-client'
-import { WithAttributes } from './helpers/with-attributes'
 
-export interface IGetInput<KeySchema> {
-  tableName: string,
-  key: KeySchema,
-}
+export interface IGetInput<KeySchema> { tableName: string, key: KeySchema }
 
-export interface IGetOptions {
-  withAttributes?: string[]
-}
+export interface IGetOptions { withAttributes?: string[] }
 
-export interface IGetResult<Model, KeySchema> {
-  data: Model
-}
+export interface IGetResult<Model, KeySchema> { data: Model }
 
 export class Get<Model, KeySchema> {
-  public dynamoClient: DynamoClient
+  private dynamoClient: DynamoClient
+  private helpers: IHelpers
 
-  public constructor(dynamoClient: DynamoClient) {
+  public constructor(
+    dynamoClient: DynamoClient,
+    helpers: IHelpers,
+  ) {
     this.dynamoClient = dynamoClient
+    this.helpers = helpers
   }
 
   public execute = async (
@@ -27,12 +25,10 @@ export class Get<Model, KeySchema> {
   ): Promise<IGetResult<Model, KeySchema>> => {
     const dynamoGetInput = this.buildDynamoGetInput(input, options)
     const getOutput = await this.dynamoClient.getItem(dynamoGetInput)
-    if (!getOutput.Item) {
-      throw new Error('ItemNotFound')
-    }
-    return {
-      data: getOutput.Item as any,
-    }
+
+    if (!getOutput.Item) { throw new Error('ItemNotFound') }
+
+    return { data: getOutput.Item as any }
   }
 
   private buildDynamoGetInput = (
@@ -44,12 +40,11 @@ export class Get<Model, KeySchema> {
       Key: DynamoDB.Converter.marshall(input.key),
     }
     if (withAttributes) {
-      const {
-        ProjectionExpression,
-        ExpressionAttributeNames,
-      } = new WithAttributes().build(withAttributes)
-      dynamoInput.ProjectionExpression = ProjectionExpression
-      dynamoInput.ExpressionAttributeNames = ExpressionAttributeNames
+      const { projectionExpression, expressionAttributeNames } = this.helpers.
+        withAttributesGenerator.generateExpression(withAttributes)
+
+      dynamoInput.ProjectionExpression = projectionExpression
+      dynamoInput.ExpressionAttributeNames = expressionAttributeNames
     }
     return dynamoInput
   }

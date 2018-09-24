@@ -1,4 +1,4 @@
-import { randomGenerator } from '../../../expressions/random-generator'
+import { randomGenerator } from '../../../helpers/random-generator'
 import { Chaining, CommonWithAttributes } from '../../common'
 import { ScanChainingKind } from './'
 import { DynamoScanAllResults } from './all-results'

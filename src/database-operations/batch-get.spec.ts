@@ -20,6 +20,11 @@ const dynamoClient = {
   })),
 }
 
+const helpers = {
+  timeout: { wait: jest.fn() },
+  withAttributesGenerator: { generateExpression: jest.fn() },
+}
+
 const input: IBatchGetInput<IUserKeySchema> = {
   tableName: 'UserTable',
   keys: [{ id: '1' }, { id: '2' }, { id: '3' }],
@@ -27,7 +32,9 @@ const input: IBatchGetInput<IUserKeySchema> = {
 
 describe('BatchGet', () => {
   beforeEach(() => {
-    batchGet = new BatchGet<IUserModel, IUserKeySchema>(dynamoClient as any)
+    batchGet = new BatchGet<IUserModel, IUserKeySchema>(
+      dynamoClient as any, helpers as any,
+    )
     dynamoClient.batchGet.mockClear()
   })
 
@@ -68,13 +75,22 @@ describe('BatchGet', () => {
 
   // @ts-ignore
   context('when withAttributes option is passed', () => {
+    const withAttributes = ['id', 'email']
+
+    beforeEach(() => {
+      helpers.withAttributesGenerator.generateExpression
+        .mockImplementationOnce(() => ({
+          expressionAttributeNames: { '#id': 'id', '#email': 'email' },
+          projectionExpression: '#id,#email',
+        }))
+    })
     it('only asks dynamoClient for the given attributes', async () => {
-      await batchGet.execute(input, { withAttributes: ['id'] })
+      await batchGet.execute(input, { withAttributes })
       expect(dynamoClient.batchGet.mock.calls[0][0]).toMatchObject({
         RequestItems: {
           UserTable: {
-            ProjectionExpression: anything(),
-            ExpressionAttributeNames: anything(),
+            ProjectionExpression: '#id,#email',
+            ExpressionAttributeNames: { '#id': 'id', '#email': 'email' },
           },
         },
       })

@@ -5,7 +5,7 @@ import {
     BeginsWith, ComparisonOperator, Contains, FunctionOperator, IsBetween, IsEqualTo,
     IsGreaterOrEqualTo, IsGreaterThan, IsIn, IsLessOrEqualTo, IsLessThan, IsNotEqualTo, Operator,
  } from './operator'
-import { randomGenerator } from './random-generator'
+import { randomGenerator } from '../helpers/random-generator'
 import { resolveExpression } from './resolve-expression'
 
 export function condition(expression: ConditionExpression | MatchExpression | NotExpression): ConditionExpression {

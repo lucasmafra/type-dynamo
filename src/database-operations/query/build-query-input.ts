@@ -3,7 +3,7 @@ import { Filter, Paginate, WithAttributes } from '../../chaining/common'
 import { WithOptions } from '../../chaining/find/query/with-options'
 import { WithSortKeyCondition  } from '../../chaining/find/query/with-sort-key-condition'
 import Expression from '../../expressions/expression'
-import { randomGenerator } from '../../expressions/random-generator'
+import { randomGenerator } from '../../helpers/random-generator'
 import { ResolvedExpression, resolveExpression } from '../../expressions/resolve-expression'
 import { EntitySchema } from '../../schema'
 import {

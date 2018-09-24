@@ -1,7 +1,6 @@
 import { AWSError, DynamoDB } from 'aws-sdk'
+import { IHelpers } from '../helpers'
 import DynamoClient from './dynamo-client'
-import { timeout } from './helpers/timeout'
-import { WithAttributes } from './helpers/with-attributes'
 
 export interface IBatchGetInput<KeySchema> {
   tableName: string,
@@ -17,10 +16,12 @@ export interface IBatchGetResult<Model> {
 }
 
 export class BatchGet<Model, KeySchema> {
-  public dynamoClient: DynamoClient
+  private dynamoClient: DynamoClient
+  private helpers: IHelpers
 
-  public constructor(dynamoClient: DynamoClient) {
+  public constructor(dynamoClient: DynamoClient, helpers: IHelpers) {
     this.dynamoClient = dynamoClient
+    this.helpers = helpers
   }
 
   public async execute(
@@ -89,15 +90,14 @@ export class BatchGet<Model, KeySchema> {
       },
     }
     if (options.withAttributes) {
-      const {
-        ProjectionExpression, ExpressionAttributeNames,
-      } = new WithAttributes().build(options.withAttributes)
+      const { projectionExpression, expressionAttributeNames } = this.helpers
+        .withAttributesGenerator.generateExpression(options.withAttributes)
 
       dynamoBatchGetInput.RequestItems[input.tableName]
-        .ProjectionExpression = ProjectionExpression
+        .ProjectionExpression = projectionExpression
 
       dynamoBatchGetInput.RequestItems[input.tableName]
-        .ExpressionAttributeNames = ExpressionAttributeNames
+        .ExpressionAttributeNames = expressionAttributeNames
     }
     return dynamoBatchGetInput
   }
@@ -118,7 +118,7 @@ export class BatchGet<Model, KeySchema> {
         } catch (err) {
           switch ((err as AWSError).code) {
             case 'ProvisionedThroughputExceededException':
-              await timeout(currentBackoff)
+              await this.helpers.timeout.wait(currentBackoff)
               currentBackoff *= 2
               break
             default:

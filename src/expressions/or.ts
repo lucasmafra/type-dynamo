@@ -3,7 +3,7 @@ import Expression from './expression'
 import MatchExpression from './match'
 import NotExpression from './not'
 import { ComparisonOperator, Operator } from './operator'
-import { randomGenerator } from './random-generator'
+import { randomGenerator } from '../helpers/random-generator'
 
 export default class OrExpression extends Expression {
 

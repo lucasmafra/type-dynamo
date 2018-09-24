@@ -3,7 +3,7 @@ import {
     BeginsWith, IsBetween, IsEqualTo, IsGreaterOrEqualTo, IsGreaterThan, IsLessOrEqualTo, IsLessThan,
     Operator,
  } from '../../../expressions/operator'
-import { randomGenerator } from '../../../expressions/random-generator'
+import { randomGenerator } from '../../../helpers/random-generator'
 import { EntitySchema } from '../../../schema'
 import { Chaining } from '../../common'
 import { QueryChainingKind } from './'

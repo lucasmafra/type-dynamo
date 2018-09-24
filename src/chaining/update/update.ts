@@ -1,6 +1,6 @@
 import { UpdateResult } from '../../database-operations/update'
 import Expression from '../../expressions/expression'
-import { randomGenerator } from '../../expressions/random-generator'
+import { randomGenerator } from '../../helpers/random-generator'
 import { ResolvedExpression } from '../../expressions/resolve-expression'
 import { Diff, Omit } from '../../helpers'
 import { EntitySchema } from '../../schema'

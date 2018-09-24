@@ -1,5 +1,5 @@
 import { WithSortKeyCondition  } from '../chaining/find/query/with-sort-key-condition'
-import { randomGenerator } from '../expressions/random-generator'
+import { randomGenerator } from '../helpers/random-generator'
 
 export function buildExclusiveStartKey<KeySchema>(lastKey: KeySchema) {
     let result = {}
