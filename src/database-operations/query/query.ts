@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import { Omit } from '../../helpers'
+import { IHelpers, Omit } from '../../helpers'
 import DynamoClient from '../dynamo-client'
 import { buildExclusiveStartKey } from '../helpers'
 
@@ -42,10 +42,12 @@ export interface IQueryInput<PartitionKey> {
 }
 
 export class Query<Model, PartitionKey> {
-  public dynamoClient: DynamoClient
+  private dynamoClient: DynamoClient
+  private helpers: IHelpers
 
-  public constructor(dynamoClient: DynamoClient) {
+  public constructor(dynamoClient: DynamoClient, helpers: IHelpers) {
     this.dynamoClient = dynamoClient
+    this.helpers = helpers
   }
 
   public async execute(input: IQueryInput<PartitionKey>) {
@@ -58,6 +60,8 @@ export class Query<Model, PartitionKey> {
   ): DynamoDB.QueryInput {
     return {
       TableName: input.tableName,
+      ExpressionAttributeNames: this.helpers.expressionAttributeNamesGenerator.generateExpression(Object.keys(input.partitionKey)),
+      ExpressionAttributeValues: this.helpers.expressionAttributeValuesGenerator.generateExpression(input.partitionKey[Object.keys(input.partitionKey)[0]]),
     }
   }
 }
