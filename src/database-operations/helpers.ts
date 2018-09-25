@@ -1,4 +1,4 @@
-import { WithSortKeyCondition  } from '../chaining/find/query/with-sort-key-condition'
+import { IWithSortKeyCondition  } from '../chaining/find/query/with-sort-key-condition'
 import { randomGenerator } from '../helpers/random-generator'
 
 export function buildExclusiveStartKey<KeySchema>(lastKey: KeySchema) {
@@ -60,7 +60,7 @@ export function mergeExpressionAttributeValues(...args: Array<{ [key: string]: {
 
 export function buildKeyConditionExpression<PartitionKey>(
     partitionKey: PartitionKey,
-    withSortKeyCondition?: WithSortKeyCondition,
+    withSortKeyCondition?: IWithSortKeyCondition,
 ) {
     let keyConditionExpression: string = ''
     let expressionAttributeNames = {}

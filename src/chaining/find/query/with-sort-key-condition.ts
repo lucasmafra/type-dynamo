@@ -3,6 +3,7 @@ import {
     BeginsWith, IsBetween, IsEqualTo, IsGreaterOrEqualTo, IsGreaterThan, IsLessOrEqualTo, IsLessThan,
     Operator,
  } from '../../../expressions/operator'
+import { IExpressionAttributeNames } from '../../../helpers/expression-attribute-names-generator'
 import { randomGenerator } from '../../../helpers/random-generator'
 import { EntitySchema } from '../../../schema'
 import { Chaining } from '../../common'
@@ -15,28 +16,12 @@ import { DynamoQueryWithOptions, WithOptions } from './with-options'
 
 export type WithSortKeyConditionType = 'withSortKeyCondition'
 
-export interface WithSortKeyCondition {
-    expression: string,
-    expressionAttributeNames: {
-        [key: string]: string,
-    },
-    expressionAttributeValues: {
-        [key: string]: {
-            [key: string]: string | number,
-        },
-    },
-}
-
-export type SortKeyConditionOperator =
-    BeginsWith | IsEqualTo | IsGreaterThan | IsLessThan | IsLessOrEqualTo | IsGreaterOrEqualTo
-    | IsBetween
-
 export class DynamoWithSortKeyCondition<
     Entity,
     KeySchema
 > extends Chaining<QueryChainingKind> {
 
-    private _withSortKeyCondition: WithSortKeyCondition
+    private _withSortKeyCondition: IWithSortKeyCondition
 
     constructor(
         schema: EntitySchema,

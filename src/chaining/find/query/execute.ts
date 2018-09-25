@@ -5,21 +5,21 @@ import { Chaining, Filter, Paginate, WithAttributes } from '../../common'
 import { QueryChainingKind } from './'
 import { Query } from './query'
 import { WithOptions } from './with-options'
-import { WithSortKeyCondition } from './with-sort-key-condition'
+import { IWithSortKeyCondition } from './with-sort-key-condition'
 
 function extractFromStack<KeySchema>(stack: Array<Chaining<QueryChainingKind>>): {
     query: {
         schema: EntitySchema,
         partitionKey: string,
     },
-    withSortKeyCondition?: WithSortKeyCondition,
+    withSortKeyCondition?: IWithSortKeyCondition,
     filter?: Filter,
     withAttributes?: WithAttributes,
     withOptions?: WithOptions,
     paginate?: Paginate<KeySchema>,
 } {
     const query = ((stack[0] as any)._query)
-    let withSortKeyCondition: WithSortKeyCondition | undefined
+    let withSortKeyCondition: IWithSortKeyCondition | undefined
     let filter: Filter | undefined
     let withAttributes: WithAttributes | undefined
     let withOptions: WithOptions | undefined

@@ -1,7 +1,7 @@
 import { DynamoDB } from 'aws-sdk'
 import { Filter, Paginate, WithAttributes } from '../../chaining/common'
 import { WithOptions } from '../../chaining/find/query/with-options'
-import { WithSortKeyCondition  } from '../../chaining/find/query/with-sort-key-condition'
+import { IWithSortKeyCondition  } from '../../chaining/find/query/with-sort-key-condition'
 import Expression from '../../expressions/expression'
 import { randomGenerator } from '../../helpers/random-generator'
 import { ResolvedExpression, resolveExpression } from '../../expressions/resolve-expression'
@@ -17,7 +17,7 @@ export function buildQueryInput<KeySchema>(
         schema: EntitySchema,
         partitionKey: string,
     },
-    withSortKeyCondition?: WithSortKeyCondition,
+    withSortKeyCondition?: IWithSortKeyCondition,
     filter?: Filter,
     withAttributes?: WithAttributes,
     withOptions?: WithOptions,
