@@ -1,4 +1,3 @@
-import { beginsWith, isGreaterThan } from '../expressions'
 import {
   KeyConditionExpressionGenerator,
 } from './key-condition-expression-generator'

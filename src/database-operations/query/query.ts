@@ -1,67 +1,110 @@
 import { DynamoDB } from 'aws-sdk'
-import { IHelpers, Omit } from '../../helpers'
+import { AttributeMap, QueryInput } from 'aws-sdk/clients/dynamodb'
+import { IHelpers } from '../../helpers'
 import DynamoClient from '../dynamo-client'
-import { buildExclusiveStartKey } from '../helpers'
 
-export interface QueryResult<TableModel, KeySchema> {
-  data: TableModel[]
+export interface IQueryInput<KeySchema, PartitionKey> {
+  tableName: string,
+  indexName?: string,
+  partitionKey: PartitionKey
+  pagination?: IQueryPaginationOptions<KeySchema>
+  allResults?: boolean
+}
+
+export interface IQueryResult<Model, KeySchema> {
+  data: Model[]
   lastKey?: KeySchema
 }
 
-export async function queryPaginate<Entity, KeySchema>(queryInput: DynamoDB.QueryInput, dynamoPromise: DynamoClient): Promise<QueryResult<Entity, KeySchema>> {
-  const queryOutput = await dynamoPromise.query(queryInput)
-  const result: QueryResult<Entity, KeySchema> = {
-    data: queryOutput.Items as any,
-    lastKey: queryOutput.LastEvaluatedKey as any,
-  }
-  return result
+export interface IQueryPaginationOptions<KeySchema> {
+  lastKey?: KeySchema,
+  limit: number
 }
 
-export async function queryAllResults<Entity, KeySchema>(
-  queryInput: DynamoDB.QueryInput, dynamoPromise: DynamoClient,
-): Promise<Omit<QueryResult<Entity, KeySchema>, 'lastKey'>> {
-  let lastKey
-  const result: QueryResult<Entity, KeySchema> = {} as any
-  do {
-    const queryOutput = await dynamoPromise.query(queryInput)
-    if (!result.data) {
-      result.data = new Array<Entity>()
-    }
-    result.data = result.data.concat(queryOutput.Items as any)
-    lastKey = queryOutput.LastEvaluatedKey
-    if (lastKey) {
-      queryInput.ExclusiveStartKey = buildExclusiveStartKey(lastKey)
-    }
-  } while (lastKey)
-  return result
-}
-
-export interface IQueryInput<PartitionKey> {
-  tableName: string,
-  partitionKey: PartitionKey
-}
-
-export class Query<Model, PartitionKey> {
+export class Query<Model, KeySchema, PartitionKey> {
   private dynamoClient: DynamoClient
   private helpers: IHelpers
+
+  private DEFAULT_PAGINATION_ITEMS = 100
 
   public constructor(dynamoClient: DynamoClient, helpers: IHelpers) {
     this.dynamoClient = dynamoClient
     this.helpers = helpers
   }
 
-  public async execute(input: IQueryInput<PartitionKey>) {
+  public async execute(
+    input: IQueryInput<KeySchema, PartitionKey>,
+  ): Promise<IQueryResult<Model, KeySchema>> {
     const dynamoQueryInput = this.buildDynamoQueryInput(input)
-    await this.dynamoClient.query(dynamoQueryInput)
+
+    const {
+      Items, LastEvaluatedKey,
+    } = await this.dynamoClient.query(dynamoQueryInput)
+
+    let lastKey
+
+    const result: IQueryResult<Model, KeySchema> = {
+      data: [],
+    }
+
+    if (Items) {
+      result.data = Items!.map(this.toModel)
+    }
+
+    if (LastEvaluatedKey) {
+      lastKey = this.parseLastKey(LastEvaluatedKey)
+      result.lastKey = lastKey
+    }
+
+    while (input.allResults === true && lastKey) {
+      input.partitionKey = lastKey
+      const nextDynamoQueryInput = this.buildDynamoQueryInput(input)
+      const nextResult = await this.dynamoClient.query(nextDynamoQueryInput)
+      lastKey = nextResult.LastEvaluatedKey ?
+        this.parseLastKey(nextResult.LastEvaluatedKey) :
+        undefined
+    }
+
+    return result
+  }
+
+  private parseLastKey(LastEvaluatedKey: DynamoDB.Key) {
+    return DynamoDB.Converter.unmarshall(LastEvaluatedKey) as any
   }
 
   private buildDynamoQueryInput(
-    input: IQueryInput<PartitionKey>,
+    input: IQueryInput<KeySchema, PartitionKey>,
   ): DynamoDB.QueryInput {
-    return {
+    const {
+      expressionAttributeValues: ExpressionAttributeValues,
+      expressionAttributeNames: ExpressionAttributeNames,
+      keyConditionExpression: KeyConditionExpression,
+    } = this.helpers.keyConditionExpressionGenerator
+      .generateExpression(input.partitionKey as any)
+
+    const queryInput: QueryInput = {
       TableName: input.tableName,
-      ExpressionAttributeNames: this.helpers.expressionAttributeNamesGenerator.generateExpression(Object.keys(input.partitionKey)),
-      ExpressionAttributeValues: this.helpers.expressionAttributeValuesGenerator.generateExpression(input.partitionKey[Object.keys(input.partitionKey)[0]]),
+      ExpressionAttributeValues,
+      ExpressionAttributeNames,
+      KeyConditionExpression,
+      Limit: input.pagination ?
+        input.pagination.limit : this.DEFAULT_PAGINATION_ITEMS,
     }
+
+    if (input.pagination && input.pagination.lastKey) {
+      queryInput.ExclusiveStartKey = DynamoDB.Converter.marshall(
+        input.pagination.lastKey as any,
+      )
+    }
+
+    if (input.indexName) {
+      queryInput.IndexName = input.indexName
+    }
+
+    return queryInput
+  }
+
+  private toModel(item: AttributeMap): Model {
+    return DynamoDB.Converter.unmarshall(item) as any
   }
 }

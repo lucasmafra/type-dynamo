@@ -5,6 +5,9 @@ import {
   ExpressionAttributeValuesGenerator,
 } from './expression-attribute-values-generator'
 import {
+  KeyConditionExpressionGenerator,
+} from './key-condition-expression-generator'
+import {
   ProjectionExpressionGenerator,
 } from './projection-expression-generator'
 import { RandomGenerator } from './random-generator'
@@ -17,5 +20,6 @@ export interface IHelpers {
   expressionAttributeValuesGenerator: ExpressionAttributeValuesGenerator,
   projectionExpressionGenerator: ProjectionExpressionGenerator,
   withAttributesGenerator: WithAttributesGenerator,
+  keyConditionExpressionGenerator: KeyConditionExpressionGenerator
   timeout: Timeout
 }

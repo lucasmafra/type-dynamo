@@ -1,4 +1,4 @@
-import { QueryResult } from '../../../database-operations/query'
+import { IQueryResult } from '../../../database-operations/query'
 import { Chaining, CommonPaginate, Paginate } from '../../common'
 import { QueryChainingKind } from './'
 import { executePaginate } from './execute'
