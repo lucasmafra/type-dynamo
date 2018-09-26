@@ -2,9 +2,11 @@ import { DynamoDB } from 'aws-sdk'
 import { IHelpers } from '../helpers'
 import DynamoClient from './dynamo-client'
 
-export interface IGetInput<KeySchema> { tableName: string, key: KeySchema }
-
-export interface IGetOptions { withAttributes?: string[] }
+export interface IGetInput<KeySchema> {
+  tableName: string
+  key: KeySchema
+  withAttributes?: string[]
+}
 
 export interface IGetResult<Model, KeySchema> { data: Model }
 
@@ -21,9 +23,9 @@ export class Get<Model, KeySchema> {
   }
 
   public execute = async (
-    input: IGetInput<KeySchema>, options: IGetOptions = {},
+    input: IGetInput<KeySchema>,
   ): Promise<IGetResult<Model, KeySchema>> => {
-    const dynamoGetInput = this.buildDynamoGetInput(input, options)
+    const dynamoGetInput = this.buildDynamoGetInput(input)
     const getOutput = await this.dynamoClient.getItem(dynamoGetInput)
 
     if (!getOutput.Item) { throw new Error('ItemNotFound') }
@@ -32,9 +34,9 @@ export class Get<Model, KeySchema> {
   }
 
   private buildDynamoGetInput = (
-    input: IGetInput<KeySchema>, options: IGetOptions,
+    input: IGetInput<KeySchema>
   ) => {
-    const { withAttributes } = options
+    const { withAttributes } = input
     const dynamoInput: DynamoDB.GetItemInput = {
       TableName: input.tableName,
       Key: DynamoDB.Converter.marshall(input.key),

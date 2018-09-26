@@ -25,13 +25,14 @@ const helpers = {
   withAttributesGenerator: { generateExpression: jest.fn() },
 }
 
-const input: IBatchGetInput<IUserKeySchema> = {
-  tableName: 'UserTable',
-  keys: [{ id: '1' }, { id: '2' }, { id: '3' }],
-}
+let input: IBatchGetInput<IUserKeySchema>
 
 describe('BatchGet', () => {
   beforeEach(() => {
+    input = {
+      tableName: 'UserTable',
+      keys: [{ id: '1' }, { id: '2' }, { id: '3' }],
+    }
     batchGet = new BatchGet<IUserModel, IUserKeySchema>(
       dynamoClient as any, helpers as any,
     )
@@ -75,9 +76,8 @@ describe('BatchGet', () => {
 
   // @ts-ignore
   context('when withAttributes option is passed', () => {
-    const withAttributes = ['id', 'email']
-
     beforeEach(() => {
+      input.withAttributes = ['id', 'email']
       helpers.withAttributesGenerator.generateExpression
         .mockImplementationOnce(() => ({
           expressionAttributeNames: { '#id': 'id', '#email': 'email' },
@@ -85,7 +85,7 @@ describe('BatchGet', () => {
         }))
     })
     it('only asks dynamoClient for the given attributes', async () => {
-      await batchGet.execute(input, { withAttributes })
+      await batchGet.execute(input)
       expect(dynamoClient.batchGet.mock.calls[0][0]).toMatchObject({
         RequestItems: {
           UserTable: {

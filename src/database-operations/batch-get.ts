@@ -3,11 +3,8 @@ import { IHelpers } from '../helpers'
 import DynamoClient from './dynamo-client'
 
 export interface IBatchGetInput<KeySchema> {
-  tableName: string,
-  keys: KeySchema[],
-}
-
-export interface IBatchGetOptions {
+  tableName: string
+  keys: KeySchema[]
   withAttributes?: string[]
 }
 
@@ -26,11 +23,11 @@ export class BatchGet<Model, KeySchema> {
 
   public async execute(
     input: IBatchGetInput<KeySchema>,
-    options: IBatchGetOptions = {},
   ): Promise<IBatchGetResult<Model>> {
     const chunks = this.groupKeysInChunks(input.keys)
-    const batchRequests = chunks.map((chunk) => this.batchRequest(
-      { tableName: input.tableName, keys: chunk }, options),
+    const batchRequests = chunks.map((chunk) => () => this.batchRequest(
+      { ...input, keys: chunk },
+      ),
     )
     return this.resolveBatchRequests(batchRequests)
   }
@@ -50,12 +47,9 @@ export class BatchGet<Model, KeySchema> {
 
   private async batchRequest(
     input: IBatchGetInput<KeySchema>,
-    options: IBatchGetOptions,
   ): Promise<IBatchGetResult<Model>> {
     const data = new Array<Model>()
-    const dynamoBatchGetInput = this.buildDynamoBatchGetInput(
-      input, options,
-    )
+    const dynamoBatchGetInput = this.buildDynamoBatchGetInput(input)
     let {
       Responses, UnprocessedKeys,
     } = await this.dynamoClient.batchGet(dynamoBatchGetInput)
@@ -80,7 +74,6 @@ export class BatchGet<Model, KeySchema> {
 
   private buildDynamoBatchGetInput(
     input: IBatchGetInput<KeySchema>,
-    options: IBatchGetOptions,
   ) {
     const dynamoBatchGetInput: DynamoDB.BatchGetItemInput = {
       RequestItems: {
@@ -89,9 +82,9 @@ export class BatchGet<Model, KeySchema> {
         },
       },
     }
-    if (options.withAttributes) {
+    if (input.withAttributes) {
       const { projectionExpression, expressionAttributeNames } = this.helpers
-        .withAttributesGenerator.generateExpression(options.withAttributes)
+        .withAttributesGenerator.generateExpression(input.withAttributes)
 
       dynamoBatchGetInput.RequestItems[input.tableName]
         .ProjectionExpression = projectionExpression
@@ -103,7 +96,7 @@ export class BatchGet<Model, KeySchema> {
   }
 
   private async resolveBatchRequests(
-    requests: Array<Promise<IBatchGetResult<Model>>>,
+    requests: Array<() => Promise<IBatchGetResult<Model>>>,
   ): Promise<IBatchGetResult<Model>> {
     const data = []
     for (const request of requests) {
@@ -112,7 +105,7 @@ export class BatchGet<Model, KeySchema> {
       let requestSucceeded = false
       while (currentBackoff < backoffLimit && !requestSucceeded) {
         try {
-          const { data: partialResult } = await request
+          const { data: partialResult } = await request()
           data.push(...partialResult)
           requestSucceeded = true
         } catch (err) {

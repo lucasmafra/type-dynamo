@@ -24,13 +24,14 @@ const helpers = {
   withAttributesGenerator: {generateExpression: jest.fn()},
 }
 
-const input: IGetInput<IUserKeySchema> = {
-  tableName: 'DummyTable',
-  key: {id: '1'},
-}
+let input: IGetInput<IUserKeySchema>
 
 describe('Get', () => {
   beforeEach(() => {
+    input = {
+      tableName: 'DummyTable',
+      key: {id: '1'},
+    }
     get = new Get(dynamoClient as any, helpers as any)
     dynamoClient.getItem.mockClear()
   })
@@ -48,6 +49,7 @@ describe('Get', () => {
     const withAttributes = ['id', 'email']
 
     beforeEach(() => {
+      input.withAttributes = withAttributes
       helpers.withAttributesGenerator.generateExpression
         .mockImplementationOnce(() => ({
           expressionAttributeNames: {
@@ -58,7 +60,7 @@ describe('Get', () => {
     })
 
     it('calls dynamoClient with projection expression', () => {
-      get.execute(input, {withAttributes})
+      get.execute(input)
       expect(dynamoClient.getItem.mock.calls[0][0]).toMatchObject({
         ProjectionExpression: '#id, #email',
         ExpressionAttributeNames: {
