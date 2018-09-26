@@ -1,7 +1,7 @@
 import { DynamoDB } from 'aws-sdk'
 import { AttributeMap, QueryInput } from 'aws-sdk/clients/dynamodb'
-import { IHelpers } from '../../helpers'
-import DynamoClient from '../dynamo-client'
+import { IHelpers } from '../helpers/index'
+import DynamoClient from './dynamo-client'
 
 export interface IQueryInput<KeySchema, PartitionKey> {
   tableName: string,
@@ -124,6 +124,7 @@ export class Query<Model, KeySchema, PartitionKey> {
 
       queryInput.ProjectionExpression = projectionExpression
     }
+
     return queryInput
   }
 

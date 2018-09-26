@@ -79,6 +79,7 @@ describe('Query', () => {
     })
   })
 
+  // @ts-ignore
   context('when dynamoClient returns no item', () => {
     beforeEach(() => {
       dynamoClient.query.mockReset()
@@ -90,6 +91,7 @@ describe('Query', () => {
     })
   })
 
+  // @ts-ignore
   context('when dynamoClient returns LastEvaluatedKey', () => {
     beforeEach(() => {
       dynamoClient.query.mockReset()
@@ -114,6 +116,7 @@ describe('Query', () => {
     })
   })
 
+  // @ts-ignore
   context('when pagination options are passed', () => {
     beforeEach(() => {
       input.pagination = {
@@ -131,6 +134,7 @@ describe('Query', () => {
     })
   })
 
+  // @ts-ignore
   context('when allResults is set to true', () => {
     beforeEach(() => {
       input.allResults = true
@@ -198,6 +202,7 @@ describe('Query', () => {
     })
   })
 
+  // @ts-ignore
   context('when index name is passed', () => {
     beforeEach(() => {
       dynamoClient.query.mockClear()
@@ -212,18 +217,21 @@ describe('Query', () => {
     })
   })
 
+  // @ts-ignore
   context('when filter is passed', () => {
     it('calls dynamoClient with filter expression', () => {
       pending('not implemented yet')
     })
   })
 
+  // @ts-ignore
   context('when withSortKeyCondition is passed', () => {
     it('appends it to KeyConditionExpression', () => {
       pending('not implemented yet')
     })
   })
 
+  // @ts-ignore
   context('when withAttributes is passed', () => {
     beforeEach(() => {
       input.withAttributes = ['content, createdAt']
