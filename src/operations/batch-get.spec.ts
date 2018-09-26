@@ -1,7 +1,6 @@
 import { AWSError, DynamoDB } from 'aws-sdk'
-import { IBatchGetInput } from './batch-get'
+import { IBatchGetInput } from '../types'
 import { BatchGet } from './batch-get'
-import anything = jasmine.anything
 
 interface IUserModel { id: string, name: string }
 interface IUserKeySchema { id: string }

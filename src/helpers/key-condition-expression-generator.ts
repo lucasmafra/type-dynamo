@@ -1,29 +1,22 @@
-import { BeginsWith, IsBetween, IsEqualTo, IsGreaterOrEqualTo, IsGreaterThan,
-  IsLessOrEqualTo, IsLessThan } from '../expressions/operator'
 import {
-  ExpressionAttributeNamesGenerator, IExpressionAttributeNames,
+  IExpressionAttributeNames,
+  IExpressionAttributeNamesGenerator,
+  IExpressionAttributeValues,
+  IExpressionAttributeValuesGenerator, IKeyConditionExpressionGenerator,
+  IWithSortKeyCondition,
+} from '../types'
+import {
+  ExpressionAttributeNamesGenerator,
 } from './expression-attribute-names-generator'
+
 import {
-  ExpressionAttributeValuesGenerator, IExpressionAttributeValues,
+  ExpressionAttributeValuesGenerator,
 } from './expression-attribute-values-generator'
 
-export type SortKeyConditionOperator = BeginsWith | IsEqualTo | IsGreaterThan |
-  IsLessThan | IsLessOrEqualTo | IsGreaterOrEqualTo | IsBetween
-
-export interface IWithSortKeyCondition {
-  sortKeyName: string,
-  sortKeyConditionOperator: SortKeyConditionOperator
-}
-
-export interface IKeyConditionExpression {
-  keyConditionExpression: string,
-  expressionAttributeNames: IExpressionAttributeNames,
-  expressionAttributeValues: IExpressionAttributeValues,
-}
-
-export class KeyConditionExpressionGenerator {
-  private expressionAttributeNamesGenerator: ExpressionAttributeNamesGenerator
-  private expressionAttributeValuesGenerator: ExpressionAttributeValuesGenerator
+export class KeyConditionExpressionGenerator
+  implements IKeyConditionExpressionGenerator {
+  private expressionAttributeNamesGenerator: IExpressionAttributeNamesGenerator
+  private expressionAttributeValuesGenerator: IExpressionAttributeValuesGenerator
 
   constructor(
     expressionAttributeNamesGenerator: ExpressionAttributeNamesGenerator,

@@ -1,24 +1,24 @@
-import DynamoPromise from '../../../../database-operations/dynamo-to-promise'
+import DynamoClient from '../../../../operations/dynamo-client'
 import { TableSchema } from '../../../../schema'
-import { DynamoIndexWithCompositeKey, DynamoIndexWithSimpleKey } from '../../../../schema/dynamo-index'
-import { DynamoTableWithCompositeKey } from '../../../../schema/dynamo-table'
+import { DynamoIndexWithCompositeKey, DynamoIndexWithSimpleKey } from '../../../dynamo-index'
+import { DynamoTableWithCompositeKey } from '../../../dynamo-table'
 import { CompositeKeyWithGlobalIndex } from './with-global-index'
 
-export class TypeDynamoDefineTableCompositeKey<
+export class DefineTableCompositeKey<
     Table,
     PartitionKey extends keyof Table,
     SortKey extends keyof Table
 > {
 
-    private dynamoPromise: DynamoPromise
+    private dynamoClient: DynamoClient
     private tableSchema: TableSchema
 
-    constructor(dynamoPromise: DynamoPromise, schema: {
+    constructor(dynamoClient: DynamoClient, schema: {
         tableName: string,
         partitionKey: PartitionKey,
         sortKey: SortKey,
     }) {
-        this.dynamoPromise = dynamoPromise
+        this.dynamoClient = dynamoClient
         this.tableSchema = this.buildTableSchema(schema)
     }
 
@@ -28,7 +28,7 @@ export class TypeDynamoDefineTableCompositeKey<
         Pick<Table, SortKey>
     > {
         return new DynamoTableWithCompositeKey(
-            this.tableSchema, this.dynamoPromise,
+            this.tableSchema, this.dynamoClient,
         )
     }
 
@@ -144,14 +144,14 @@ export class TypeDynamoDefineTableCompositeKey<
     public withGlobalIndex(config: any) {
         if (config.sortKey) {
             return new CompositeKeyWithGlobalIndex(
-                this.dynamoPromise,
+                this.dynamoClient,
                 this.tableSchema,
                 { [config.indexName] : new DynamoIndexWithCompositeKey(config) },
                 {},
             )
         }
         return new CompositeKeyWithGlobalIndex(
-            this.dynamoPromise,
+            this.dynamoClient,
             this.tableSchema,
             { [config.indexName] : new DynamoIndexWithSimpleKey(config) },
             { },

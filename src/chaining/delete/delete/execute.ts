@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import { buildDeleteInput, deleteItem, DeleteResult } from '../../../database-operations/delete'
+import { buildDeleteInput, deleteItem, DeleteResult } from '../../../operations/delete'
 import { EntitySchema } from '../../../schema'
 import { Chaining, WithCondition } from '../../common'
 import { DeleteChainingKind } from './'
@@ -24,5 +24,5 @@ export function execute<Entity, KeySchema>(
 ) {
     const { deleteMetadata, withCondition } = extractFromStack<Entity, KeySchema>(stack)
     const deleteInput = buildDeleteInput(deleteMetadata, withCondition)
-    return deleteItem<Entity>(deleteInput, deleteMetadata.schema.dynamoPromise)
+    return deleteItem<Entity>(deleteInput, deleteMetadata.schema.dynamoClient)
 }

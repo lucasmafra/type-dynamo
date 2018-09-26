@@ -1,29 +1,22 @@
 import {
-  ExpressionAttributeNamesGenerator,
   IExpressionAttributeNames,
-} from './expression-attribute-names-generator'
-import {
-  ProjectionExpressionGenerator,
-} from './projection-expression-generator'
+  IExpressionAttributeNamesGenerator, IProjectionExpressionGenerator,
+  IWithAttributesGenerator,
+} from '../types'
 
-export interface IWithAttributesExpression {
-  projectionExpression: string,
-  expressionAttributeNames: IExpressionAttributeNames
-}
-
-export class WithAttributesGenerator {
-  private expressionAttributeNamesGenerator: ExpressionAttributeNamesGenerator
-  private projectionExpressionGenerator: ProjectionExpressionGenerator
+export class WithAttributesGenerator implements  IWithAttributesGenerator {
+  private expressionAttributeNamesGenerator: IExpressionAttributeNamesGenerator
+  private projectionExpressionGenerator: IProjectionExpressionGenerator
 
   public constructor(
-    expressionAttributeNamesGenerator: ExpressionAttributeNamesGenerator,
-    projectionExpressionGenerator: ProjectionExpressionGenerator,
+    expressionAttributeNamesGenerator: IExpressionAttributeNamesGenerator,
+    projectionExpressionGenerator: IProjectionExpressionGenerator,
   ) {
     this.expressionAttributeNamesGenerator = expressionAttributeNamesGenerator
     this.projectionExpressionGenerator = projectionExpressionGenerator
   }
 
-  public generateExpression(attributes: string[]): IWithAttributesExpression {
+  public generateExpression(attributes: string[]) {
     const expressionAttributeNames = this.expressionAttributeNamesGenerator
       .generateExpression(attributes)
 

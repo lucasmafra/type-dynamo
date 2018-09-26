@@ -1,8 +1,7 @@
-import DynamoClient from '../../../database-operations/dynamo-client'
-import { IQueryResult, Query } from '../../../database-operations/query'
-import { IHelpers } from '../../../helpers'
+import DynamoClient from '../../../operations/dynamo-client'
+import { Query } from '../../../operations/query'
+import { IHelpers, IQueryResult, QueryChaining } from '../../../types'
 import { Chaining } from '../../chaining'
-import { QueryChaining } from './'
 
 export class DynamoQueryPaginate<
   Model, KeySchema, PartitionKey

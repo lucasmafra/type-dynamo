@@ -1,22 +1,22 @@
-import DynamoPromise from '../../../../database-operations/dynamo-to-promise'
+import DynamoClient from '../../../../operations/dynamo-client'
 import { TableSchema } from '../../../../schema'
 import { DynamoIndexWithCompositeKey, DynamoIndexWithSimpleKey } from '../../../../schema/dynamo-index'
 import { DynamoTableWithSimpleKey } from '../../../../schema/dynamo-table'
 import { SimpleKeyWithGlobalIndex } from './with-global-index'
 
-export class TypeDynamoDefineTableSimpleKey<
+export class DefineTableSimpleKey<
     Table,
     PartitionKey extends keyof Table
 > {
 
-    private dynamoPromise: DynamoPromise
+    private dynamoClient: DynamoClient
     private tableSchema: TableSchema
 
-    constructor(dynamoPromise: DynamoPromise, schema: {
+    constructor(dynamoClient: DynamoClient, schema: {
         tableName: string,
         partitionKey: PartitionKey,
     }) {
-        this.dynamoPromise = dynamoPromise
+        this.dynamoClient = dynamoClient
         this.tableSchema = this.buildTableSchema(schema)
     }
 
@@ -25,7 +25,7 @@ export class TypeDynamoDefineTableSimpleKey<
         Pick<Table, PartitionKey>
     > {
         return new DynamoTableWithSimpleKey(
-            this.tableSchema, this.dynamoPromise,
+            this.tableSchema, this.dynamoClient,
         )
     }
 
@@ -141,14 +141,14 @@ export class TypeDynamoDefineTableSimpleKey<
     public withGlobalIndex(config: any) {
         if (config.sortKey) {
             return new SimpleKeyWithGlobalIndex(
-                this.dynamoPromise,
+                this.dynamoClient,
                 this.tableSchema,
                 { [config.indexName] : new DynamoIndexWithCompositeKey(config) },
                 {},
             )
         }
         return new SimpleKeyWithGlobalIndex(
-            this.dynamoPromise,
+            this.dynamoClient,
             this.tableSchema,
             { [config.indexName] : new DynamoIndexWithSimpleKey(config) },
             { },

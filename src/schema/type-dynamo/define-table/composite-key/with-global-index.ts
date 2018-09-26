@@ -1,4 +1,4 @@
-import DynamoPromise from '../../../../database-operations/dynamo-to-promise'
+import DynamoClient from '../../../../operations/dynamo-client'
 import { TableSchema } from '../../../../schema'
 import { DynamoIndexWithCompositeKey, DynamoIndexWithSimpleKey } from '../../../../schema/dynamo-index'
 import { DynamoORMWithCompositeKey } from '../../../../schema/dynamo-orm'
@@ -11,18 +11,18 @@ export class CompositeKeyWithGlobalIndex<
     CurrentLocalIndexes
 > {
 
-    private dynamoPromise: DynamoPromise
+    private dynamoClient: DynamoClient
     private tableSchema: TableSchema
     private currentGlobalIndexes: CurrentGlobalIndexes
     private currentLocalIndexes: CurrentLocalIndexes
 
     constructor(
-        dynamoPromise: DynamoPromise,
+        dynamoClient: DynamoClient,
         tableSchema: TableSchema,
         currentGlobalIndexes: CurrentGlobalIndexes,
         currentLocalIndexes: CurrentLocalIndexes,
     ) {
-        this.dynamoPromise = dynamoPromise
+        this.dynamoClient = dynamoClient
         this.tableSchema = tableSchema
         this.currentGlobalIndexes = currentGlobalIndexes
         this.currentLocalIndexes = currentLocalIndexes
@@ -38,7 +38,7 @@ export class CompositeKeyWithGlobalIndex<
             this.tableSchema,
             this.currentGlobalIndexes,
             this.currentLocalIndexes,
-            this.dynamoPromise,
+            this.dynamoClient,
         )
     }
 
@@ -158,7 +158,7 @@ export class CompositeKeyWithGlobalIndex<
                 [config.indexName] : new DynamoIndexWithCompositeKey(config),
             }
             return new CompositeKeyWithGlobalIndex(
-                this.dynamoPromise,
+                this.dynamoClient,
                 this.tableSchema,
                 this.currentGlobalIndexes,
                 this.currentLocalIndexes,
@@ -169,7 +169,7 @@ export class CompositeKeyWithGlobalIndex<
             [config.indexName] : new DynamoIndexWithSimpleKey(config),
         }
         return new CompositeKeyWithGlobalIndex(
-            this.dynamoPromise,
+            this.dynamoClient,
             this.tableSchema,
             this.currentGlobalIndexes,
             this.currentLocalIndexes,

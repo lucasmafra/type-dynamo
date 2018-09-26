@@ -1,4 +1,4 @@
-import { DeleteResult } from '../../../database-operations/delete'
+import { DeleteResult } from '../../../operations/delete'
 import { Chaining, CommonWithCondition, WithCondition } from '../../common'
 import { DeleteChainingKind } from './'
 import { execute } from './execute'

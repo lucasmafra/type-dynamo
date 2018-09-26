@@ -1,3 +1,3 @@
 export { TypeDynamo } from './schema'
 export * from './expressions'
-export { Omit, Diff } from './helpers'
+export { Omit, Diff } from './type-helpers'

@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import DynamoClient from '../dynamo-to-promise'
+import DynamoClient from '../dynamo-client'
 
 export interface DeleteResult<TableModel> {
     data: TableModel
@@ -7,8 +7,8 @@ export interface DeleteResult<TableModel> {
 
 export async function deleteItem<
     Entity
->(deleteInput: DynamoDB.DeleteItemInput, dynamoPromise: DynamoClient): Promise<DeleteResult<Entity>> {
-    const deleteOutput = await dynamoPromise.delete(deleteInput)
+>(deleteInput: DynamoDB.DeleteItemInput, dynamoClient: DynamoClient): Promise<DeleteResult<Entity>> {
+    const deleteOutput = await dynamoClient.delete(deleteInput)
     if (!deleteOutput.Attributes || Object.keys(!deleteOutput.Attributes).length) {
         throw new Error('ItemNotFound')
     }

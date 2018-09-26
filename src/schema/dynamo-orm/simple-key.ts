@@ -1,5 +1,5 @@
 import { IndexSchema, TableSchema } from '../'
-import DynamoPromise from '../../database-operations/dynamo-to-promise'
+import DynamoClient from '../../operations/dynamo-client'
 import { DynamoTableWithSimpleKey } from '../dynamo-table'
 import { DynamoTableWithCompositeKey } from '../dynamo-table'
 
@@ -16,14 +16,14 @@ export class DynamoORMWithSimpleKey<
         tableSchema: TableSchema,
         globalIndexes: GlobalIndexes,
         localIndexes: LocalIndexes,
-        dynamoPromise: DynamoPromise,
+        dynamoClient: DynamoClient,
     ) {
-        super(tableSchema, dynamoPromise)
+        super(tableSchema, dynamoClient)
         this.globalIndexes = globalIndexes
         this.localIndexes = localIndexes
         this.onIndex = Object.assign({}, this.globalIndexes, this.localIndexes)
         this.injectTableNameOnIndexes()
-        this.injectDynamoPromiseOnIndexes()
+        this.injectDynamoClientOnIndexes()
     }
 
     private injectTableNameOnIndexes() {
@@ -34,10 +34,10 @@ export class DynamoORMWithSimpleKey<
         }
     }
 
-    private injectDynamoPromiseOnIndexes() {
+    private injectDynamoClientOnIndexes() {
         for (const index in this.onIndex as any) {
             if (this.onIndex.hasOwnProperty(index)) {
-                this.onIndex[index]._entitySchema.dynamoPromise = (this as any)._entitySchema.dynamoPromise
+                this.onIndex[index]._entitySchema.dynamoClient = (this as any)._entitySchema.dynamoClient
             }
         }
     }

@@ -1,17 +1,14 @@
-import {
-  RandomGenerator,
-} from './random-generator'
+import { IExpressionAttributeNamesGenerator, IRandomGenerator } from '../types'
 
-export interface IExpressionAttributeNames { [key: string]: string }
+export class ExpressionAttributeNamesGenerator
+  implements IExpressionAttributeNamesGenerator {
+  private randomGenerator: IRandomGenerator
 
-export class ExpressionAttributeNamesGenerator {
-  private randomGenerator: RandomGenerator
-
-  public constructor(randomGenerator: RandomGenerator) {
+  public constructor(randomGenerator: IRandomGenerator) {
     this.randomGenerator = randomGenerator
   }
 
-  public generateExpression(attrs: string[]): IExpressionAttributeNames {
+  public generateExpression(attrs: string[]) {
     return attrs.reduce((acc, value) => {
       const randomId = '#' + this.randomGenerator.generateRandomString()
       acc[randomId] = value

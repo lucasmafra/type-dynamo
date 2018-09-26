@@ -1,24 +1,6 @@
 import { DynamoDB } from 'aws-sdk'
-import { IHelpers } from '../helpers'
+import { IHelpers, IScanInput, IScanResult } from '../types'
 import DynamoClient from './dynamo-client'
-
-export interface IScanPagination<KeySchema> {
-  limit: number
-  lastKey?: KeySchema
-}
-
-export interface IScanInput<KeySchema> {
-  tableName: string
-  indexName?: string
-  withAttributes?: string[]
-  paginate?: IScanPagination<KeySchema>
-  allResults?: boolean
-}
-
-export interface IScanResult<Model, KeySchema> {
-  data: Model[]
-  lastKey?: KeySchema
-}
 
 export class Scan<Model, KeySchema> {
   private dynamoClient: DynamoClient

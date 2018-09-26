@@ -1,7 +1,6 @@
-import DynamoClient from '../../../database-operations/dynamo-client'
-import { IHelpers } from '../../../helpers'
+import DynamoClient from '../../../operations/dynamo-client'
+import { IHelpers, ScanChaining } from '../../../types'
 import { Chaining } from '../../chaining'
-import { ScanChaining } from './'
 import { DynamoScanAllResults } from './all-results'
 import { DynamoScanPaginate } from './paginate'
 
@@ -34,5 +33,4 @@ export class DynamoScanWithAttributes<
       this.stack,
     )
   }
-
 }

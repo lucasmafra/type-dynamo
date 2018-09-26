@@ -1,4 +1,5 @@
-import { IScanInput, Scan } from './scan'
+import { IScanInput } from '../types'
+import { Scan } from './scan'
 import objectContaining = jasmine.objectContaining
 
 interface IDummyModel {

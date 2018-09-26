@@ -1,8 +1,7 @@
-import DynamoClient from '../../../database-operations/dynamo-client'
-import { IScanResult, Scan } from '../../../database-operations/scan'
-import { IHelpers } from '../../../helpers'
+import DynamoClient from '../../../operations/dynamo-client'
+import { Scan } from '../../../operations/scan'
+import { IHelpers, IScanResult, ScanChaining } from '../../../types'
 import { Chaining } from '../../chaining'
-import { ScanChaining } from './'
 
 export class DynamoScanPaginate<Model,
   KeySchema> extends Chaining<ScanChaining> {

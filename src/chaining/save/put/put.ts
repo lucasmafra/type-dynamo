@@ -1,4 +1,4 @@
-import { PutResult } from '../../../database-operations/put'
+import { PutResult } from '../../../operations/put'
 import Expression from '../../../expressions/expression'
 import { EntitySchema } from '../../../schema'
 import { Chaining } from '../../common'

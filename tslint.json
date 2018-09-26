@@ -18,7 +18,8 @@
       "prefer-for-of": false,
       "no-require-imports": false,
       "no-var-requires": false,
-      "no-unused-variable": true
+      "no-unused-variable": true,
+      "no-reference": false
     },
     "rulesDirectory": []
 }

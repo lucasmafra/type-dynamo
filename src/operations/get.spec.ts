@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import { IGetInput } from './get'
+import { IGetInput } from '../types'
 import { Get } from './get'
 
 interface IUserModel {

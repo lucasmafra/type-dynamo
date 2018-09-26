@@ -1,4 +1,4 @@
-import { UpdateResult } from '../../database-operations/update'
+import { UpdateResult } from '../../operations/update'
 import { Chaining, CommonWithCondition, WithCondition } from '../common'
 import { UpdateChainingKind } from './'
 import { execute } from './execute'

@@ -1,19 +1,15 @@
 import { DynamoDB } from 'aws-sdk'
-import { AttributeValue } from 'aws-sdk/clients/dynamodb'
-import {
-  RandomGenerator,
-} from './random-generator'
+import { IExpressionAttributeValuesGenerator, IRandomGenerator } from '../types'
 
-export interface IExpressionAttributeValues { [key: string]: AttributeValue }
+export class ExpressionAttributeValuesGenerator
+  implements  IExpressionAttributeValuesGenerator {
+  private randomGenerator: IRandomGenerator
 
-export class ExpressionAttributeValuesGenerator {
-  private randomGenerator: RandomGenerator
-
-  public constructor(randomGenerator: RandomGenerator) {
+  public constructor(randomGenerator: IRandomGenerator) {
     this.randomGenerator = randomGenerator
   }
 
-  public generateExpression(values: any[]): IExpressionAttributeValues {
+  public generateExpression(values: any[]) {
     return values.reduce((acc, value) => {
       const randomId = ':' + this.randomGenerator.generateRandomString()
       return Object.assign(

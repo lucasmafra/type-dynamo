@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import { buildUpdateInput, update, UpdateResult } from '../../database-operations/update'
+import { buildUpdateInput, update, UpdateResult } from '../../operations/update'
 import { EntitySchema } from '../../schema'
 import { Chaining, WithCondition } from '../common'
 import { UpdateChainingKind } from './'
@@ -24,5 +24,5 @@ export function execute<Entity, KeySchema>(
 ) {
     const { updateMetadata, withCondition } = extractFromStack<Entity, KeySchema>(stack)
     const updateInput = buildUpdateInput(updateMetadata, withCondition)
-    return update<Entity>(updateInput, updateMetadata.schema.dynamoPromise)
+    return update<Entity>(updateInput, updateMetadata.schema.dynamoClient)
 }

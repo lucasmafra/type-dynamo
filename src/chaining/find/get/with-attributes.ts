@@ -1,8 +1,7 @@
-import DynamoClient from '../../../database-operations/dynamo-client'
-import { Get, IGetResult } from '../../../database-operations/get'
-import { IHelpers } from '../../../helpers'
+import DynamoClient from '../../../operations/dynamo-client'
+import { Get } from '../../../operations/get'
+import { GetChaining, IGetResult, IHelpers } from '../../../types'
 import { Chaining } from '../../chaining'
-import { GetChaining } from './'
 
 export class DynamoGetWithAttributes<Entity, KeySchema>
   extends Chaining<GetChaining> {

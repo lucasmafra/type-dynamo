@@ -1,26 +1,7 @@
 import { DynamoDB } from 'aws-sdk'
 import { AttributeMap, QueryInput } from 'aws-sdk/clients/dynamodb'
-import { IHelpers } from '../helpers/index'
+import { IHelpers, IQueryInput, IQueryResult } from '../types'
 import DynamoClient from './dynamo-client'
-
-export interface IQueryInput<KeySchema, PartitionKey> {
-  tableName: string,
-  indexName?: string,
-  partitionKey: PartitionKey
-  paginate?: IQueryPaginationOptions<KeySchema>
-  allResults?: boolean
-  withAttributes?: string[]
-}
-
-export interface IQueryResult<Model, KeySchema> {
-  data: Model[]
-  lastKey?: KeySchema
-}
-
-export interface IQueryPaginationOptions<KeySchema> {
-  lastKey?: KeySchema,
-  limit?: number
-}
 
 export class Query<Model, KeySchema, PartitionKey> {
   private dynamoClient: DynamoClient

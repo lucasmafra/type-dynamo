@@ -1,4 +1,5 @@
-import { IQueryInput, Query } from './query'
+import { IQueryInput } from '../types'
+import { Query } from './query'
 
 interface IFeedModel {
   userId: string

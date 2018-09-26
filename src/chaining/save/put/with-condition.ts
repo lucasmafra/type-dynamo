@@ -1,4 +1,4 @@
-import { PutResult } from '../../../database-operations/put'
+import { PutResult } from '../../../operations/put'
 import { Chaining, CommonWithCondition, WithCondition } from '../../common'
 import { PutChainingKind } from './'
 import { execute } from './execute'

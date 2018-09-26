@@ -3,7 +3,7 @@ import { DynamoBatchDelete, DynamoDelete } from '../../chaining/delete'
 import { DynamoBatchGet, DynamoGet, DynamoQuery, DynamoScan } from '../../chaining/find'
 import { DynamoBatchWrite, DynamoPut } from '../../chaining/save'
 import { DynamoUpdate, ExplicitKeyItemType, ImplicityKeyItemType } from '../../chaining/update'
-import DynamoPromise from '../../database-operations/dynamo-to-promise'
+import DynamoClient from '../../operations/dynamo-client'
 import { DynamoEntityWithCompositeKey } from '../dynamo-entity'
 
 export class DynamoTableWithCompositeKey<Table, PartitionKey, SortKey> extends DynamoEntityWithCompositeKey<
@@ -14,12 +14,12 @@ export class DynamoTableWithCompositeKey<Table, PartitionKey, SortKey> extends D
 
     constructor(
         tableSchema: TableSchema,
-        dynamoPromise: DynamoPromise,
+        dynamoClient: DynamoClient,
     ) {
         super({
             tableName: tableSchema.tableName,
             tableSchema,
-            dynamoPromise,
+            dynamoClient,
         })
     }
 

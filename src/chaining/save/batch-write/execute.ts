@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import { batchWrite, BatchWriteResult, buildBatchWriteInput } from '../../../database-operations/batch-write'
+import { batchWrite, BatchWriteResult, buildBatchWriteInput } from '../../../operations/batch-write'
 import { EntitySchema } from '../../../schema'
 import { Chaining, Filter, Paginate, WithAttributes } from '../../common'
 import { BatchWriteChainingKind } from './'
@@ -17,5 +17,5 @@ export function execute<Entity>(
 ) {
     const { batchWriteMetadata } = extractFromStack<Entity>(stack)
     const batchWriteInput = buildBatchWriteInput(batchWriteMetadata)
-    return batchWrite<Entity>(batchWriteMetadata.items, batchWriteInput, batchWriteMetadata.schema.dynamoPromise)
+    return batchWrite<Entity>(batchWriteMetadata.items, batchWriteInput, batchWriteMetadata.schema.dynamoClient)
 }

@@ -1,4 +1,4 @@
-import { BatchWriteResult } from '../../../database-operations/batch-write'
+import { BatchWriteResult } from '../../../operations/batch-write'
 import { EntitySchema } from '../../../schema'
 import { Chaining } from '../../common'
 import { BatchWriteChainingKind } from './'

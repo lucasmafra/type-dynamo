@@ -1,8 +1,7 @@
-import DynamoClient from '../database-operations/dynamo-client'
-import { IHelpers } from '../helpers/index'
+import DynamoClient from '../operations/dynamo-client'
+import { IHelpers } from '../types'
 
 export abstract class Chaining<ChainingKind> {
-
   protected kind: ChainingKind
   protected stack: Array<Chaining<ChainingKind>>
   protected dynamoClient: DynamoClient

@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import DynamoClient from '../dynamo-to-promise'
+import DynamoClient from '../dynamo-client'
 
 export interface PutResult<TableModel> {
     data: TableModel
@@ -7,8 +7,8 @@ export interface PutResult<TableModel> {
 
 export async function put<
     Entity
->(item: Entity, putInput: DynamoDB.PutItemInput, dynamoPromise: DynamoClient): Promise<PutResult<Entity>> {
-    const putOutput = await dynamoPromise.put(putInput)
+>(item: Entity, putInput: DynamoDB.PutItemInput, dynamoClient: DynamoClient): Promise<PutResult<Entity>> {
+    const putOutput = await dynamoClient.put(putInput)
     const result: PutResult<Entity> = {
         data: item,
     }

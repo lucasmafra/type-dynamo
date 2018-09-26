@@ -1,4 +1,4 @@
-import DynamoPromise from '../database-operations/dynamo-to-promise'
+import DynamoClient from '../operations/dynamo-client'
 
 export type ProjectionType = 'ALL' | 'INCLUDE' | 'KEYS_ONLY'
 
@@ -6,7 +6,7 @@ export interface EntitySchema {
     tableName: string
     tableSchema?: TableSchema,
     indexSchema?: IndexSchema
-    dynamoPromise: DynamoPromise
+    dynamoClient: DynamoClient
 }
 
 export interface IndexSchema {

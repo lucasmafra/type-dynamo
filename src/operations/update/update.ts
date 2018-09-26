@@ -1,14 +1,14 @@
 import { DynamoDB } from 'aws-sdk'
-import DynamoClient from '../dynamo-to-promise'
+import DynamoClient from '../dynamo-client'
 
 export interface UpdateResult<TableModel> {
     data: TableModel
 }
 
 export async function update<Entity>(
-    updateInput: DynamoDB.UpdateItemInput, dynamoPromise: DynamoClient,
+    updateInput: DynamoDB.UpdateItemInput, dynamoClient: DynamoClient,
 ): Promise<UpdateResult<Entity>> {
-    const updateOutput = await dynamoPromise.update(updateInput)
+    const updateOutput = await dynamoClient.update(updateInput)
     const result: UpdateResult<Entity> = {
         data: updateOutput.Attributes as any,
     }

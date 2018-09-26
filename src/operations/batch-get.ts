@@ -1,16 +1,6 @@
 import { AWSError, DynamoDB } from 'aws-sdk'
-import { IHelpers } from '../helpers'
+import { IBatchGetInput, IBatchGetResult, IHelpers } from '../types'
 import DynamoClient from './dynamo-client'
-
-export interface IBatchGetInput<KeySchema> {
-  tableName: string
-  keys: KeySchema[]
-  withAttributes?: string[]
-}
-
-export interface IBatchGetResult<Model> {
-  data: Model[]
-}
 
 export class BatchGet<Model, KeySchema> {
   private dynamoClient: DynamoClient

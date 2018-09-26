@@ -1,14 +1,6 @@
 import { DynamoDB } from 'aws-sdk'
-import { IHelpers } from '../helpers'
+import { IGetInput, IGetResult, IHelpers } from '../types'
 import DynamoClient from './dynamo-client'
-
-export interface IGetInput<KeySchema> {
-  tableName: string
-  key: KeySchema
-  withAttributes?: string[]
-}
-
-export interface IGetResult<Model, KeySchema> { data: Model }
 
 export class Get<Model, KeySchema> {
   private dynamoClient: DynamoClient

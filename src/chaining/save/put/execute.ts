@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import { buildPutInput, put, PutResult } from '../../../database-operations/put'
+import { buildPutInput, put, PutResult } from '../../../operations/put'
 import { EntitySchema } from '../../../schema'
 import { Chaining, WithCondition } from '../../common'
 import { PutChainingKind } from './'
@@ -24,5 +24,5 @@ export function execute<Entity>(
 ) {
     const { putMetadata, withCondition } = extractFromStack<Entity>(stack)
     const putInput = buildPutInput(putMetadata, withCondition)
-    return put<Entity>(putMetadata.item, putInput, putMetadata.schema.dynamoPromise)
+    return put<Entity>(putMetadata.item, putInput, putMetadata.schema.dynamoClient)
 }

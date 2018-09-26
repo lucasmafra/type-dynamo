@@ -1,10 +1,7 @@
-import {
-  BatchGet, IBatchGetResult,
-} from '../../../database-operations/batch-get'
-import DynamoClient from '../../../database-operations/dynamo-client'
-import { IHelpers } from '../../../helpers'
+import { BatchGet } from '../../../operations/batch-get'
+import DynamoClient from '../../../operations/dynamo-client'
+import { BatchGetChaining, IBatchGetResult, IHelpers } from '../../../types'
 import { Chaining } from '../../chaining'
-import { BatchGetChaining } from './'
 
 export class DynamoBatchGetWithAttributes<Model,
   KeySchema> extends Chaining<BatchGetChaining> {
