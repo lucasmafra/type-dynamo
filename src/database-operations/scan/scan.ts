@@ -2,40 +2,17 @@ import { DynamoDB } from 'aws-sdk'
 import { IHelpers } from '../../helpers'
 import DynamoClient from '../dynamo-client'
 
-// export async function scanPaginate<Entity, KeySchema>(
-//   scanInput: DynamoDB.ScanInput, dynamoPromise: DynamoClient,
-// ): Promise<ScanResult<Entity, KeySchema>> {
-//   const scanOutput = await dynamoPromise.scan(scanInput)
-//   const result: ScanResult<Entity, KeySchema> = {
-//     data: scanOutput.Items as any,
-//     lastKey: scanOutput.LastEvaluatedKey as any,
-//   }
-//   return result
-// }
-//
-// export async function scanAllResults<Entity, KeySchema>(
-//   scanInput: DynamoDB.ScanInput, dynamoPromise: DynamoClient,
-// ): Promise<Omit<ScanResult<Entity, KeySchema>, 'lastKey'>> {
-//   let lastKey
-//   const result: ScanResult<Entity, KeySchema> = {} as any
-//   do {
-//     const scanOutput = await dynamoPromise.scan(scanInput)
-//     if (!result.data) {
-//       result.data = new Array<Entity>()
-//     }
-//     result.data = result.data.concat(scanOutput.Items as any)
-//     lastKey = scanOutput.LastEvaluatedKey
-//     if (lastKey) {
-//       scanInput.ExclusiveStartKey = buildExclusiveStartKey(lastKey)
-//     }
-//   } while (lastKey)
-//   return result
-// }
+export interface IScanPagination<KeySchema> {
+  limit: number
+  lastKey?: KeySchema
+}
 
-export interface IScanInput {
+export interface IScanInput<KeySchema> {
   tableName: string
   indexName?: string
   withAttributes?: string[]
+  pagination?: IScanPagination<KeySchema>
+  allResults?: boolean
 }
 
 export interface IScanResult<Model, KeySchema> {
@@ -46,6 +23,7 @@ export interface IScanResult<Model, KeySchema> {
 export class Scan<Model, KeySchema> {
   private dynamoClient: DynamoClient
   private helpers: IHelpers
+  private DEFAULT_PAGINATION_ITEMS = 100
 
   public constructor(
     dynamoClient: DynamoClient,
@@ -56,24 +34,45 @@ export class Scan<Model, KeySchema> {
   }
 
   public async execute(
-    input: IScanInput,
+    input: IScanInput<KeySchema>,
   ): Promise<IScanResult<Model, KeySchema>> {
-    const dynamoScanInput = this.buildDynamoScanInput(input)
+    let dynamoScanInput = this.buildDynamoScanInput(input)
+
+    let lastKey
 
     const result: IScanResult<Model, KeySchema> = {
       data: [],
     }
 
-    const { Items } = await this.dynamoClient.scan(dynamoScanInput)
+    do {
+      if (lastKey) {
+        dynamoScanInput = { ...dynamoScanInput, ExclusiveStartKey: lastKey }
+      }
 
-    if (Items) {
-      result.data = Items.map(this.toModel)
-    }
+      const {
+        Items,
+        LastEvaluatedKey,
+      } = await this.dynamoClient.scan(dynamoScanInput)
+
+      if (Items) {
+        result.data = [...result.data, ...Items.map(this.toModel)]
+      }
+
+      if (LastEvaluatedKey) {
+        lastKey = LastEvaluatedKey
+        result.lastKey = DynamoDB.Converter.unmarshall(LastEvaluatedKey) as any
+      } else {
+        result.lastKey = undefined
+      }
+
+    } while (input.allResults && result.lastKey)
 
     return result
   }
 
-  private buildDynamoScanInput(input: IScanInput): DynamoDB.ScanInput {
+  private buildDynamoScanInput(
+    input: IScanInput<KeySchema>,
+  ): DynamoDB.ScanInput {
     const dynamoScanInput: DynamoDB.ScanInput = {
       TableName: input.tableName,
     }
@@ -91,6 +90,17 @@ export class Scan<Model, KeySchema> {
 
       dynamoScanInput.ExpressionAttributeNames = expressionAttributeNames
       dynamoScanInput.ProjectionExpression = projectionExpression
+    }
+
+    dynamoScanInput.Limit = this.DEFAULT_PAGINATION_ITEMS
+
+    if (input.pagination) {
+      dynamoScanInput.Limit = input.pagination.limit
+      if (input.pagination.lastKey) {
+        dynamoScanInput.ExclusiveStartKey = DynamoDB.Converter.marshall(
+          input.pagination.lastKey as any,
+        )
+      }
     }
 
     return dynamoScanInput

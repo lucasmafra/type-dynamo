@@ -1,4 +1,5 @@
 import { IScanInput, Scan } from './scan'
+import objectContaining = jasmine.objectContaining
 
 interface IDummyModel {
   id: string
@@ -18,7 +19,7 @@ const dynamoClient = {
 }
 
 describe('Scan', () => {
-  let input: IScanInput
+  let input: IScanInput<IDummyKeySchema>
   let scan: Scan<IDummyModel, IDummyKeySchema>
 
   beforeEach(() => {
@@ -43,7 +44,7 @@ describe('Scan', () => {
 
   it('calls dynamoClient scan', async () => {
     await scan.execute(input)
-    expect(dynamoClient.scan).toHaveBeenCalledWith({
+    expect(dynamoClient.scan.mock.calls[0][0]).toMatchObject({
       TableName: 'DummyTable',
     })
   })
@@ -104,7 +105,7 @@ describe('Scan', () => {
         .toHaveBeenCalledWith(['email'])
 
       expect(dynamoClient.scan.mock.calls[0][0]).toMatchObject({
-        ExpressionAttributeNames: { '#email': 'email' },
+        ExpressionAttributeNames: {'#email': 'email'},
       })
     })
 
@@ -114,6 +115,105 @@ describe('Scan', () => {
       expect(dynamoClient.scan.mock.calls[0][0]).toMatchObject({
         ProjectionExpression: '#email',
       })
+    })
+
+    it('paginates by default', async () => {
+      await scan.execute(input)
+      expect(dynamoClient.scan.mock.calls[0][0]).toMatchObject({
+        Limit: 100,
+      })
+    })
+
+    // @ts-ignore
+    context('when dynamoClient returns LastEvaluatedKey', () => {
+      beforeEach(() => {
+        dynamoClient.scan.mockReset()
+
+        dynamoClient.scan.mockImplementationOnce(() => ({
+          LastEvaluatedKey: {id: {S: '1'}},
+        }))
+      })
+
+      it('returns lastKey', async () => {
+        expect(await scan.execute(input)).toMatchObject({
+          lastKey: {id: '1'},
+        })
+      })
+    })
+
+    // @ts-ignore
+    context('when pagination option is present', () => {
+      beforeEach(() => {
+        input.pagination = {limit: 50, lastKey: {id: '1'}}
+      })
+
+      it('overrides default pagination', async () => {
+        await scan.execute(input)
+
+        expect(dynamoClient.scan.mock.calls[0][0]).toMatchObject({
+          Limit: 50,
+          ExclusiveStartKey: {id: {S: '1'}},
+        })
+      })
+    })
+
+    // @ts-ignore
+    context('when allResults option is present', () => {
+      beforeEach(() => {
+        input.allResults = true
+
+        dynamoClient.scan.mockReset()
+
+        dynamoClient.scan
+          .mockImplementationOnce(() => ({
+            Items: [{ id: { S: '1' }, email: { S: 'fausto@gmail.com' }}],
+            LastEvaluatedKey: {id: {S: '1'}},
+          }))
+          .mockImplementationOnce(() => ({
+            Items: [{ id: { S: '2' }, email: { S: 'silva@gmail.com' }}],
+            LastEvaluatedKey: {id: {S: '2'}},
+          }))
+          .mockImplementationOnce(() => ({
+            Items: [{ id: { S: '3' }, email: { S: 'faustao@hot.com' }}],
+            LastEvaluatedKey: undefined,
+          }))
+      })
+
+      it('calls dynamoClient until there is no item to retrieve', async () => {
+        await scan.execute(input)
+        expect(dynamoClient.scan).toHaveBeenCalledTimes(3)
+      })
+
+      it(`uses the LastEvaluatedKey from the previous call as the
+      ExclusiveStartKey in the subsequent call`, async () => {
+        await scan.execute(input)
+        expect(dynamoClient.scan).toHaveBeenNthCalledWith(2, objectContaining({
+          ExclusiveStartKey: { id: { S: '1' } },
+        }))
+        expect(dynamoClient.scan).toHaveBeenNthCalledWith(3, objectContaining( {
+          ExclusiveStartKey: { id: { S: '2' } },
+        }))
+      })
+
+      it('concats partial result from each call and return them', async () => {
+        expect(await scan.execute(input)).toEqual({
+          data: [{
+            id: '1', email: 'fausto@gmail.com',
+          }, {
+            id: '2', email: 'silva@gmail.com',
+          }, {
+            id: '3', email: 'faustao@hot.com',
+          }],
+          lastKey: undefined,
+        })
+      })
+    })
+  })
+  
+  // @ts-ignore
+  context('when filter is present', () => {
+    it('calls dynamoClient with filter expression', () => {
+      pending('not implemented yet')
     })
   })
 })
