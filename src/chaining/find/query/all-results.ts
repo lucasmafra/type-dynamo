@@ -1,23 +1,27 @@
-import { IQueryResult } from '../../../database-operations/query'
-import Expression from '../../../expressions/expression'
-import { EntitySchema } from '../../../schema'
-import { Chaining, CommonAllResults } from '../../common'
-import { QueryChainingKind } from './'
-import { executeAllResults } from './execute'
+import DynamoClient from '../../../database-operations/dynamo-client'
+import { IQueryResult, Query } from '../../../database-operations/query'
+import { IHelpers } from '../../../helpers'
+import { Chaining } from '../../chaining'
+import { QueryChaining } from './'
 
 export class DynamoQueryAllResults<
-    Entity,
-    KeySchema
-> extends CommonAllResults<QueryChainingKind> {
+  Model,
+  KeySchema,
+  PartitionKey
+> extends Chaining<QueryChaining> {
 
-    constructor(
-        currentStack: Array<Chaining<QueryChainingKind>>,
-    ) {
-        super(currentStack)
-    }
+  constructor(
+    dynamoClient: DynamoClient,
+    helpers: IHelpers,
+    currentStack: Array<Chaining<QueryChaining>>,
+  ) {
+    super('allResults', dynamoClient, helpers, {}, currentStack)
+  }
 
-    public execute() {
-        return executeAllResults<Entity, KeySchema>(this._stack)
-    }
-
+  public execute(): Promise<IQueryResult<Model, KeySchema>> {
+    const {query, withAttributes} = this.extractFromStack()
+    return new Query<Model, KeySchema, PartitionKey>(
+      this.dynamoClient, this.helpers,
+    ).execute({...query, withAttributes, allResults: true})
+  }
 }

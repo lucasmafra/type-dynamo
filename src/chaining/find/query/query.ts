@@ -1,62 +1,68 @@
-import Expression from '../../../expressions/expression'
-import { EntitySchema } from '../../../schema'
-import { Chaining } from '../../common'
-import { QueryChainingKind } from './'
+import DynamoClient from '../../../database-operations/dynamo-client'
+import { IQueryInput } from '../../../database-operations/query'
+import { IHelpers } from '../../../helpers'
+import { Chaining } from '../../chaining'
+import { QueryChaining } from './'
 import { DynamoQueryAllResults } from './all-results'
-import { DynamoQueryFilter } from './filter'
 import { DynamoQueryPaginate } from './paginate'
 import { DynamoQueryWithAttributes } from './with-attributes'
-import { DynamoQueryWithOptions, WithOptions } from './with-options'
-import { DynamoWithSortKeyCondition, SortKeyConditionOperator } from './with-sort-key-condition'
 
-export type QueryType = 'query'
+export class DynamoQuery<Model,
+  PartitionKey,
+  SortKey,
+  KeySchema
+> extends Chaining<QueryChaining> {
+  constructor(
+    dynamoClient: DynamoClient,
+    helpers: IHelpers,
+    input: IQueryInput<KeySchema, PartitionKey>,
+  ) {
+    super('query', dynamoClient, helpers, input)
+  }
 
-export interface Query<PartitionKey> {
-    schema: EntitySchema,
-    partitionKey: PartitionKey
-}
+  // public withSortKeyCondition(operator: SortKeyConditionOperator) {
+  //   // return new DynamoWithSortKeyCondition<
+  //   // Model, KeySchema
+  //   // >(this._query.schema, operator, this._stack)
+  // }
 
-export class DynamoQuery<
-    Entity,
-    PartitionKey,
-    SortKey,
-    KeySchema
-> extends Chaining<QueryChainingKind> {
+  // public filter(filterExpression: Expression) {
+  //   // return new DynamoQueryFilter<
+  //   // Model, KeySchema
+  //   // >({filterExpression}, this._stack)
+  // }
 
-    protected _query: Query<PartitionKey>
+  public withAttributes<K extends keyof Model>(attributes: K[]) {
+    return new DynamoQueryWithAttributes<
+      Pick<Model, K>, KeySchema, PartitionKey
+    >(
+      this.dynamoClient,
+      this.helpers,
+      attributes,
+      this.stack,
+    )
+  }
 
-    constructor(
-        query: Query<PartitionKey>,
-    ) {
-        super('query')
-        this._query = query
-        this._stack.push(this)
-    }
+  // public withOptions(options: WithOptions) {
+  //   // return new DynamoQueryWithOptions<
+  // Model, KeySchema
+  // >(this._stack, options)
+  // }
 
-    public withSortKeyCondition(operator: SortKeyConditionOperator) {
-        return new DynamoWithSortKeyCondition<Entity, KeySchema>(this._query.schema, operator, this._stack)
-    }
+  public paginate(limit?: number, lastKey?: KeySchema) {
+    return new DynamoQueryPaginate<Model, KeySchema, PartitionKey>(
+      this.dynamoClient,
+      this.helpers,
+      { limit, lastKey },
+      this.stack,
+    )
+  }
 
-    public filter(filterExpression: Expression) {
-        return new DynamoQueryFilter<Entity, KeySchema>({ filterExpression }, this._stack)
-    }
-
-    public withAttributes<K extends keyof Entity>(attributes: K[]) {
-        return new DynamoQueryWithAttributes<Pick<Entity, K>, KeySchema>(
-            attributes, this._stack,
-        )
-    }
-
-    public withOptions(options: WithOptions) {
-        return new DynamoQueryWithOptions<Entity, KeySchema>(this._stack, options)
-    }
-
-    public paginate(limit?: number, lastKey?: KeySchema) {
-        return new DynamoQueryPaginate<Entity, KeySchema>(this._stack, { limit, lastKey})
-    }
-
-    public allResults() {
-        return new DynamoQueryAllResults<Entity, KeySchema>(this._stack)
-    }
-
+  public allResults() {
+    return new DynamoQueryAllResults<Model, KeySchema, PartitionKey>(
+      this.dynamoClient,
+      this.helpers,
+      this.stack,
+    )
+  }
 }

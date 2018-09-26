@@ -1,32 +1,44 @@
-import { randomGenerator } from '../../../helpers/random-generator'
-import { Chaining, CommonWithAttributes } from '../../common'
-import { QueryChainingKind } from './'
+import DynamoClient from '../../../database-operations/dynamo-client'
+import { IHelpers } from '../../../helpers'
+import { Chaining } from '../../chaining'
+import { QueryChaining } from './'
 import { DynamoQueryAllResults } from './all-results'
 import { DynamoQueryPaginate } from './paginate'
-import { DynamoQueryWithOptions, WithOptions } from './with-options'
 
 export class DynamoQueryWithAttributes<
-    Entity,
-    KeySchema
-> extends CommonWithAttributes<QueryChainingKind> {
+  Model, KeySchema, PartitionKey
+  > extends Chaining<QueryChaining> {
 
-    constructor(
-        attributes: string[],
-        currentStack: Array<Chaining<QueryChainingKind>>,
-    ) {
-        super(attributes, currentStack)
-    }
+  constructor(
+    dynamoClient: DynamoClient,
+    helpers: IHelpers,
+    attributes: string[],
+    currentStack: Array<Chaining<QueryChaining>>,
+  ) {
+    super('withAttributes', dynamoClient, helpers, attributes, currentStack)
+  }
 
-    public withOptions(options: WithOptions) {
-        return new DynamoQueryWithOptions<Entity, KeySchema>(this._stack, options)
-    }
+  // public withOptions(options: WithOptions) {
+  //   // return new DynamoQueryWithOptions<
+  // Model, KeySchema
+  // >(this._stack, options)
+  // }
 
-    public paginate(limit?: number, lastKey?: KeySchema) {
-        return new DynamoQueryPaginate<Entity, KeySchema>(this._stack, { limit, lastKey})
-    }
+  public paginate(limit?: number, lastKey?: KeySchema) {
+    return new DynamoQueryPaginate<Model, KeySchema, PartitionKey>(
+      this.dynamoClient,
+      this.helpers,
+      { limit,  lastKey },
+      this.stack,
+    )
+  }
 
-    public allResults() {
-        return new DynamoQueryAllResults<Entity, KeySchema>(this._stack)
-    }
+  public allResults() {
+    return new DynamoQueryAllResults<Model, KeySchema, PartitionKey>(
+      this.dynamoClient,
+      this.helpers,
+      this.stack,
+    )
+  }
 
 }

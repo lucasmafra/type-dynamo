@@ -1,22 +1,24 @@
-import { ScanResult } from '../../../database-operations/scan'
-import { Chaining, CommonPaginate, Paginate } from '../../common'
-import { ScanChainingKind } from './'
-import { executePaginate } from './execute'
+import DynamoClient from '../../../database-operations/dynamo-client'
+import { IScanResult, Scan } from '../../../database-operations/scan'
+import { IHelpers } from '../../../helpers'
+import { Chaining } from '../../chaining'
+import { ScanChaining } from './'
 
-export class DynamoScanPaginate<
-    Entity,
-    KeySchema
-> extends CommonPaginate<ScanChainingKind, KeySchema> {
+export class DynamoScanPaginate<Model,
+  KeySchema> extends Chaining<ScanChaining> {
 
-    constructor(
-        currentStack: Array<Chaining<ScanChainingKind>>,
-        paginate?: Paginate<KeySchema>,
-    ) {
-        super(currentStack, paginate)
-    }
+  constructor(
+    dynamoClient: DynamoClient,
+    helpers: IHelpers,
+    paginate: { limit?: number, lastKey?: KeySchema },
+    currentStack: Array<Chaining<ScanChaining>>,
+  ) {
+    super('paginate', dynamoClient, helpers, paginate, currentStack)
+  }
 
-    public execute() {
-        return executePaginate<Entity, KeySchema>(this._stack)
-    }
-
+  public execute(): Promise<IScanResult<Model, KeySchema>> {
+    const { scan, withAttributes, paginate } = this.extractFromStack()
+    return new Scan<Model, KeySchema>(this.dynamoClient, this.helpers)
+      .execute({ ...scan, withAttributes, paginate })
+  }
 }

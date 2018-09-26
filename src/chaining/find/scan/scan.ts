@@ -1,45 +1,53 @@
-import Expression from '../../../expressions/expression'
-import { EntitySchema } from '../../../schema'
-import { Chaining } from '../../common'
-import { ScanChainingKind } from './'
+import DynamoClient from '../../../database-operations/dynamo-client'
+import { IScanInput } from '../../../database-operations/scan'
+import { IHelpers } from '../../../helpers'
+import { Chaining } from '../../chaining'
+import { ScanChaining } from './'
 import { DynamoScanAllResults } from './all-results'
-import { DynamoScanFilter } from './filter'
 import { DynamoScanPaginate } from './paginate'
 import { DynamoScanWithAttributes } from './with-attributes'
 
-export type ScanType = 'scan'
-
 export class DynamoScan<
-    Entity,
-    KeySchema
-> extends Chaining<ScanChainingKind> {
+  Model,
+  KeySchema
+> extends Chaining<ScanChaining> {
+  constructor(
+    dynamoClient: DynamoClient,
+    helpers: IHelpers,
+    input: IScanInput<KeySchema>,
+  ) {
+    super('scan', dynamoClient, helpers, input)
+  }
 
-    protected _schema: EntitySchema
+  // public filter(filterExpression: Expression) {
+  //     return new DynamoScanFilter<
+  // Entity, KeySchema
+  // >({filterExpression}, this._stack)
+  // }
 
-    constructor(
-        schema: EntitySchema,
-    ) {
-        super('scan')
-        this._schema = schema
-        this._stack.push(this)
-    }
+  public withAttributes<K extends keyof Model>(attributes: K[]) {
+    return new DynamoScanWithAttributes<Pick<Model, K>, KeySchema>(
+      this.dynamoClient,
+      this.helpers,
+      attributes,
+      this.stack,
+    )
+  }
 
-    public filter(filterExpression: Expression) {
-        return new DynamoScanFilter<Entity, KeySchema>({filterExpression}, this._stack)
-    }
+  public paginate(limit?: number, lastKey?: KeySchema) {
+    return new DynamoScanPaginate<Model, KeySchema>(
+      this.dynamoClient,
+      this.helpers,
+      { limit, lastKey },
+      this.stack,
+    )
+  }
 
-    public withAttributes<K extends keyof Entity>(attributes: K[]) {
-        return new DynamoScanWithAttributes<Pick<Entity, K>, KeySchema>(
-            attributes, this._stack,
-        )
-    }
-
-    public paginate(limit?: number, lastKey?: KeySchema) {
-        return new DynamoScanPaginate<Entity, KeySchema>(this._stack, { limit, lastKey})
-    }
-
-    public allResults() {
-        return new DynamoScanAllResults<Entity, KeySchema>(this._stack)
-    }
-
+  public allResults() {
+    return new DynamoScanAllResults<Model, KeySchema>(
+      this.dynamoClient,
+      this.helpers,
+      this.stack,
+    )
+  }
 }

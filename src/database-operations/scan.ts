@@ -11,7 +11,7 @@ export interface IScanInput<KeySchema> {
   tableName: string
   indexName?: string
   withAttributes?: string[]
-  pagination?: IScanPagination<KeySchema>
+  paginate?: IScanPagination<KeySchema>
   allResults?: boolean
 }
 
@@ -94,11 +94,11 @@ export class Scan<Model, KeySchema> {
 
     dynamoScanInput.Limit = this.DEFAULT_PAGINATION_ITEMS
 
-    if (input.pagination) {
-      dynamoScanInput.Limit = input.pagination.limit
-      if (input.pagination.lastKey) {
+    if (input.paginate) {
+      dynamoScanInput.Limit = input.paginate.limit
+      if (input.paginate.lastKey) {
         dynamoScanInput.ExclusiveStartKey = DynamoDB.Converter.marshall(
-          input.pagination.lastKey as any,
+          input.paginate.lastKey as any,
         )
       }
     }

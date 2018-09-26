@@ -1,27 +1,38 @@
-import { randomGenerator } from '../../../helpers/random-generator'
-import { Chaining, CommonWithAttributes } from '../../common'
-import { ScanChainingKind } from './'
+import DynamoClient from '../../../database-operations/dynamo-client'
+import { IHelpers } from '../../../helpers'
+import { Chaining } from '../../chaining'
+import { ScanChaining } from './'
 import { DynamoScanAllResults } from './all-results'
 import { DynamoScanPaginate } from './paginate'
 
 export class DynamoScanWithAttributes<
-    Entity,
-    KeySchema
-> extends CommonWithAttributes<ScanChainingKind> {
+  Model,
+  KeySchema
+> extends Chaining<ScanChaining> {
+  constructor(
+    dynamoClient: DynamoClient,
+    helpers: IHelpers,
+    attributes: string[],
+    currentStack: Array<Chaining<ScanChaining>>,
+  ) {
+    super('withAttributes', dynamoClient, helpers, attributes, currentStack)
+  }
 
-    constructor(
-        attributes: string[],
-        currentStack: Array<Chaining<ScanChainingKind>>,
-    ) {
-        super(attributes, currentStack)
-    }
+  public paginate(limit?: number, lastKey?: KeySchema) {
+    return new DynamoScanPaginate<Model, KeySchema>(
+      this.dynamoClient,
+      this.helpers,
+      { limit, lastKey },
+      this.stack,
+    )
+  }
 
-    public paginate(limit?: number, lastKey?: KeySchema) {
-        return new DynamoScanPaginate<Entity, KeySchema>(this._stack, { limit, lastKey})
-    }
-
-    public allResults() {
-        return new DynamoScanAllResults<Entity, KeySchema>(this._stack)
-    }
+  public allResults() {
+    return new DynamoScanAllResults<Model, KeySchema>(
+      this.dynamoClient,
+      this.helpers,
+      this.stack,
+    )
+  }
 
 }

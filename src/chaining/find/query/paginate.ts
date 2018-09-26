@@ -1,22 +1,26 @@
-import { IQueryResult } from '../../../database-operations/query'
-import { Chaining, CommonPaginate, Paginate } from '../../common'
-import { QueryChainingKind } from './'
-import { executePaginate } from './execute'
+import DynamoClient from '../../../database-operations/dynamo-client'
+import { IQueryResult, Query } from '../../../database-operations/query'
+import { IHelpers } from '../../../helpers'
+import { Chaining } from '../../chaining'
+import { QueryChaining } from './'
 
 export class DynamoQueryPaginate<
-    Entity,
-    KeySchema
-> extends CommonPaginate<QueryChainingKind, KeySchema> {
+  Model, KeySchema, PartitionKey
+> extends Chaining<QueryChaining> {
 
-    constructor(
-        currentStack: Array<Chaining<QueryChainingKind>>,
-        paginate?: Paginate<KeySchema>,
-    ) {
-        super(currentStack, paginate)
-    }
+  constructor(
+    dynamoClient: DynamoClient,
+    helpers: IHelpers,
+    paginate: { limit?: number, lastKey?: KeySchema },
+    currentStack: Array<Chaining<QueryChaining>>,
+  ) {
+    super('paginate', dynamoClient, helpers, paginate, currentStack)
+  }
 
-    public execute() {
-        return executePaginate<Entity, KeySchema>(this._stack)
-    }
-
+  public execute(): Promise<IQueryResult<Model, KeySchema>> {
+    const {query, paginate, withAttributes} = this.extractFromStack()
+    return new Query<Model, KeySchema, PartitionKey>(
+      this.dynamoClient, this.helpers,
+    ).execute({...query, withAttributes, paginate})
+  }
 }

@@ -1,23 +1,22 @@
-import { ScanResult } from '../../../database-operations/scan'
-import Expression from '../../../expressions/expression'
-import { EntitySchema } from '../../../schema'
-import { Chaining, CommonAllResults } from '../../common'
-import { ScanChainingKind } from './'
-import { executeAllResults } from './execute'
+import DynamoClient from '../../../database-operations/dynamo-client'
+import { IScanResult, Scan } from '../../../database-operations/scan'
+import { IHelpers } from '../../../helpers'
+import { Chaining } from '../../chaining'
+import { ScanChaining } from './'
 
-export class DynamoScanAllResults<
-    Entity,
-    KeySchema
-> extends CommonAllResults<ScanChainingKind> {
+export class DynamoScanAllResults<Model,
+  KeySchema> extends Chaining<ScanChaining> {
+  constructor(
+    dynamoClient: DynamoClient,
+    helpers: IHelpers,
+    currentStack: Array<Chaining<ScanChaining>>,
+  ) {
+    super('allResults', dynamoClient, helpers, {}, currentStack)
+  }
 
-    constructor(
-        currentStack: Array<Chaining<ScanChainingKind>>,
-    ) {
-        super(currentStack)
-    }
-
-    public execute() {
-        return executeAllResults<Entity, KeySchema>(this._stack)
-    }
-
+  public execute(): Promise<IScanResult<Model, KeySchema>> {
+    const { scan, withAttributes } = this.extractFromStack()
+    return new Scan<Model, KeySchema>(this.dynamoClient, this.helpers)
+      .execute({ ...scan, withAttributes, allResults: true })
+  }
 }

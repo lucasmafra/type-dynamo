@@ -142,12 +142,12 @@ describe('Scan', () => {
     })
 
     // @ts-ignore
-    context('when pagination option is present', () => {
+    context('when paginate option is present', () => {
       beforeEach(() => {
-        input.pagination = {limit: 50, lastKey: {id: '1'}}
+        input.paginate = {limit: 50, lastKey: {id: '1'}}
       })
 
-      it('overrides default pagination', async () => {
+      it('overrides default paginate', async () => {
         await scan.execute(input)
 
         expect(dynamoClient.scan.mock.calls[0][0]).toMatchObject({

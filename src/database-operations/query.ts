@@ -7,7 +7,7 @@ export interface IQueryInput<KeySchema, PartitionKey> {
   tableName: string,
   indexName?: string,
   partitionKey: PartitionKey
-  pagination?: IQueryPaginationOptions<KeySchema>
+  paginate?: IQueryPaginationOptions<KeySchema>
   allResults?: boolean
   withAttributes?: string[]
 }
@@ -19,7 +19,7 @@ export interface IQueryResult<Model, KeySchema> {
 
 export interface IQueryPaginationOptions<KeySchema> {
   lastKey?: KeySchema,
-  limit: number
+  limit?: number
 }
 
 export class Query<Model, KeySchema, PartitionKey> {
@@ -87,13 +87,13 @@ export class Query<Model, KeySchema, PartitionKey> {
       ExpressionAttributeValues,
       ExpressionAttributeNames,
       KeyConditionExpression,
-      Limit: input.pagination ?
-        input.pagination.limit : this.DEFAULT_PAGINATION_ITEMS,
+      Limit: input.paginate && input.paginate.limit ?
+        input.paginate.limit : this.DEFAULT_PAGINATION_ITEMS,
     }
 
-    if (input.pagination && input.pagination.lastKey) {
+    if (input.paginate && input.paginate.lastKey) {
       queryInput.ExclusiveStartKey = DynamoDB.Converter.marshall(
-        input.pagination.lastKey as any,
+        input.paginate.lastKey as any,
       )
     }
 

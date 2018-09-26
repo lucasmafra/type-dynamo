@@ -117,15 +117,15 @@ describe('Query', () => {
   })
 
   // @ts-ignore
-  context('when pagination options are passed', () => {
+  context('when paginate options are passed', () => {
     beforeEach(() => {
-      input.pagination = {
+      input.paginate = {
         limit: 50,
         lastKey: {userId: '1', createdAt: 1234},
       }
     })
 
-    it('overrides default pagination', async () => {
+    it('overrides default paginate', async () => {
       await query.execute(input)
       expect(dynamoClient.query.mock.calls[0][0]).toMatchObject({
         Limit: 50,

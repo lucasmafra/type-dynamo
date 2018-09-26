@@ -1,21 +1,25 @@
-import DynamoClient from '../../database-operations/dynamo-client'
+import DynamoClient from '../database-operations/dynamo-client'
+import { IHelpers } from '../helpers/index'
 
 export abstract class Chaining<ChainingKind> {
 
   protected kind: ChainingKind
   protected stack: Array<Chaining<ChainingKind>>
   protected dynamoClient: DynamoClient
+  protected helpers: IHelpers
   protected input?: any
 
   constructor(
     kind: ChainingKind,
     dynamoClient: DynamoClient,
-    currentStack?: Array<Chaining<ChainingKind>>,
+    helpers: IHelpers,
     input?: any,
+    currentStack?: Array<Chaining<ChainingKind>>,
   ) {
     this.stack = currentStack || []
     this.kind = kind
     this.dynamoClient = dynamoClient
+    this.helpers = helpers
     this.input = input
     this.stack.push(this)
   }
@@ -28,8 +32,3 @@ export abstract class Chaining<ChainingKind> {
     return inputs as any
   }
 }
-
-export * from './with-condition'
-export * from './paginate'
-export * from './filter'
-export * from './all-results'
