@@ -36,11 +36,7 @@ export class Query<Model, KeySchema, PartitionKey> {
   public async execute(
     input: IQueryInput<KeySchema, PartitionKey>,
   ): Promise<IQueryResult<Model, KeySchema>> {
-    const dynamoQueryInput = this.buildDynamoQueryInput(input)
-
-    const {
-      Items, LastEvaluatedKey,
-    } = await this.dynamoClient.query(dynamoQueryInput)
+    let dynamoQueryInput = this.buildDynamoQueryInput(input)
 
     let lastKey
 
@@ -48,27 +44,26 @@ export class Query<Model, KeySchema, PartitionKey> {
       data: [],
     }
 
-    if (Items) {
-      result.data = Items.map(this.toModel)
-    }
-
-    if (LastEvaluatedKey) {
-      lastKey = this.parseLastKey(LastEvaluatedKey)
-      result.lastKey = lastKey
-    }
-
-    while (input.allResults === true && lastKey) {
-      const nextDynamoQueryInput = this.buildDynamoQueryInput(input, lastKey)
-      const nextResult = await this.dynamoClient.query(nextDynamoQueryInput)
-      lastKey = nextResult.LastEvaluatedKey ?
-        this.parseLastKey(nextResult.LastEvaluatedKey) :
-        undefined
-
-      if (nextResult.Items) {
-        result.data = [...result.data, ...nextResult.Items.map(this.toModel)]
+    do {
+      if (lastKey) {
+        dynamoQueryInput = { ...dynamoQueryInput, ExclusiveStartKey: lastKey }
       }
-      result.lastKey = lastKey
-    }
+
+      const {
+        Items, LastEvaluatedKey,
+      } = await this.dynamoClient.query(dynamoQueryInput)
+
+      if (Items) {
+        result.data = [...result.data, ...Items.map(this.toModel)]
+      }
+
+      if (LastEvaluatedKey) {
+        lastKey = LastEvaluatedKey
+        result.lastKey = this.parseLastKey(LastEvaluatedKey)
+      } else {
+        result.lastKey = undefined
+      }
+    } while (input.allResults && result.lastKey)
 
     return result
   }
@@ -78,7 +73,7 @@ export class Query<Model, KeySchema, PartitionKey> {
   }
 
   private buildDynamoQueryInput(
-    input: IQueryInput<KeySchema, PartitionKey>, lastKey?: KeySchema,
+    input: IQueryInput<KeySchema, PartitionKey>,
   ): DynamoDB.QueryInput {
     const {
       expressionAttributeValues: ExpressionAttributeValues,
@@ -100,10 +95,6 @@ export class Query<Model, KeySchema, PartitionKey> {
       queryInput.ExclusiveStartKey = DynamoDB.Converter.marshall(
         input.pagination.lastKey as any,
       )
-    }
-
-    if (input.allResults && lastKey) {
-      queryInput.ExclusiveStartKey = DynamoDB.Converter.marshall(lastKey as any)
     }
 
     if (input.indexName) {

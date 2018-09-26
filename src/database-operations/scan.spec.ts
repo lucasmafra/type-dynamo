@@ -209,7 +209,7 @@ describe('Scan', () => {
       })
     })
   })
-  
+
   // @ts-ignore
   context('when filter is present', () => {
     it('calls dynamoClient with filter expression', () => {

@@ -1,5 +1,5 @@
 import { DynamoDB } from 'aws-sdk'
-import { IHelpers } from '../helpers/index'
+import { IHelpers } from '../helpers'
 import DynamoClient from './dynamo-client'
 
 export interface IScanPagination<KeySchema> {
