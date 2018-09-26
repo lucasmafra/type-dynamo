@@ -21,6 +21,7 @@ const dynamoClient = {
 
 const helpers = {
   keyConditionExpressionGenerator: {generateExpression: jest.fn()},
+  withAttributesGenerator: {generateExpression: jest.fn()},
 }
 
 describe('Query', () => {
@@ -49,7 +50,7 @@ describe('Query', () => {
       Items: [{
         userId: {S: '1'},
         createdAt: {N: '1234'},
-        email: {S: 'john@doe.com'},
+        content: {S: 'Hi'},
       }],
     }))
   })
@@ -74,7 +75,7 @@ describe('Query', () => {
 
   it('parses result and returns it', async () => {
     expect(await query.execute(input)).toEqual({
-      data: [{userId: '1', createdAt: 1234, email: 'john@doe.com'}],
+      data: [{userId: '1', createdAt: 1234, content: 'Hi'}],
     })
   })
 
@@ -139,16 +140,61 @@ describe('Query', () => {
       dynamoClient.query
         .mockImplementationOnce(() => ({
           LastEvaluatedKey: {userId: {S: '1'}, createdAt: {N: '1'}},
+          Items: [{
+            userId: {S: '1'},
+            createdAt: {N: '1'},
+            content: {S: 'Hello world'},
+          }],
         }))
         .mockImplementationOnce(() => ({
           LastEvaluatedKey: {userId: {S: '1'}, createdAt: {N: '2'}},
+          Items: [{
+            userId: {S: '1'},
+            createdAt: {N: '2'},
+            content: {S: 'Ola mundo'},
+          }],
         }))
-        .mockImplementationOnce(() => ({}))
+        .mockImplementationOnce(() => ({
+          Items: [{
+            userId: {S: '1'},
+            createdAt: {N: '3'},
+            content: {S: 'Hola que tal'},
+          }],
+        }))
     })
 
     it('calls queries while LastEvaluatedKey is present', async () => {
       await query.execute(input)
       expect(dynamoClient.query).toHaveBeenCalledTimes(3)
+    })
+
+    it('uses the LastEvaluatedKey for the subsequent call', async () => {
+      await query.execute(input)
+      expect(dynamoClient.query.mock.calls[1][0]).toMatchObject({
+        ExclusiveStartKey: {userId: {S: '1'}, createdAt: {N: '1'}},
+      })
+      expect(dynamoClient.query.mock.calls[2][0]).toMatchObject({
+        ExclusiveStartKey: {userId: {S: '1'}, createdAt: {N: '2'}},
+      })
+    })
+
+    it('concats partial results from each call and return them', async () => {
+      expect(await query.execute(input)).toEqual({
+        data: [{
+          userId: '1',
+          createdAt: 1,
+          content: 'Hello world',
+        }, {
+          userId: '1',
+          createdAt: 2,
+          content: 'Ola mundo',
+        }, {
+          userId: '1',
+          createdAt: 3,
+          content: 'Hola que tal',
+        }],
+        lastKey: undefined,
+      })
     })
   })
 
@@ -162,6 +208,53 @@ describe('Query', () => {
       await query.execute(input)
       expect(dynamoClient.query.mock.calls[0][0]).toMatchObject({
         IndexName: 'createdAtIndex',
+      })
+    })
+  })
+
+  context('when filter is passed', () => {
+    it('calls dynamoClient with filter expression', () => {
+      pending('not implemented yet')
+    })
+  })
+
+  context('when withSortKeyCondition is passed', () => {
+    it('appends it to KeyConditionExpression', () => {
+      pending('not implemented yet')
+    })
+  })
+
+  context('when withAttributes is passed', () => {
+    beforeEach(() => {
+      input.withAttributes = ['content, createdAt']
+
+      helpers.withAttributesGenerator.generateExpression
+        .mockImplementationOnce(() => ({
+          expressionAttributeNames: {
+            '#content': 'content', '#createdAt': 'createdAt',
+          },
+          projectionExpression: '#content,#createdAt',
+        }))
+    })
+
+    it('adds to expression attribute names', async () => {
+      await query.execute(input)
+
+      expect(helpers.withAttributesGenerator.generateExpression)
+        .toHaveBeenCalledWith(['content, createdAt'])
+
+      expect(dynamoClient.query.mock.calls[0][0]).toMatchObject({
+        ExpressionAttributeNames: {
+          '#content': 'content', '#createdAt': 'createdAt',
+        },
+      })
+    })
+
+    it('calls dynamoClient with projection expression', async () => {
+      await query.execute(input)
+
+      expect(dynamoClient.query.mock.calls[0][0]).toMatchObject({
+        ProjectionExpression: '#content,#createdAt',
       })
     })
   })

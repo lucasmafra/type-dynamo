@@ -9,6 +9,7 @@ export interface IQueryInput<KeySchema, PartitionKey> {
   partitionKey: PartitionKey
   pagination?: IQueryPaginationOptions<KeySchema>
   allResults?: boolean
+  withAttributes?: string[]
 }
 
 export interface IQueryResult<Model, KeySchema> {
@@ -48,7 +49,7 @@ export class Query<Model, KeySchema, PartitionKey> {
     }
 
     if (Items) {
-      result.data = Items!.map(this.toModel)
+      result.data = Items.map(this.toModel)
     }
 
     if (LastEvaluatedKey) {
@@ -57,12 +58,16 @@ export class Query<Model, KeySchema, PartitionKey> {
     }
 
     while (input.allResults === true && lastKey) {
-      input.partitionKey = lastKey
-      const nextDynamoQueryInput = this.buildDynamoQueryInput(input)
+      const nextDynamoQueryInput = this.buildDynamoQueryInput(input, lastKey)
       const nextResult = await this.dynamoClient.query(nextDynamoQueryInput)
       lastKey = nextResult.LastEvaluatedKey ?
         this.parseLastKey(nextResult.LastEvaluatedKey) :
         undefined
+
+      if (nextResult.Items) {
+        result.data = [...result.data, ...nextResult.Items.map(this.toModel)]
+      }
+      result.lastKey = lastKey
     }
 
     return result
@@ -73,7 +78,7 @@ export class Query<Model, KeySchema, PartitionKey> {
   }
 
   private buildDynamoQueryInput(
-    input: IQueryInput<KeySchema, PartitionKey>,
+    input: IQueryInput<KeySchema, PartitionKey>, lastKey?: KeySchema,
   ): DynamoDB.QueryInput {
     const {
       expressionAttributeValues: ExpressionAttributeValues,
@@ -97,10 +102,28 @@ export class Query<Model, KeySchema, PartitionKey> {
       )
     }
 
+    if (input.allResults && lastKey) {
+      queryInput.ExclusiveStartKey = DynamoDB.Converter.marshall(lastKey as any)
+    }
+
     if (input.indexName) {
       queryInput.IndexName = input.indexName
     }
 
+    if (input.withAttributes) {
+      const {
+        expressionAttributeNames,
+        projectionExpression,
+      } = this.helpers.withAttributesGenerator
+        .generateExpression(input.withAttributes)
+
+      queryInput.ExpressionAttributeNames = {
+        ...queryInput.ExpressionAttributeNames,
+        ...expressionAttributeNames,
+      }
+
+      queryInput.ProjectionExpression = projectionExpression
+    }
     return queryInput
   }
 
