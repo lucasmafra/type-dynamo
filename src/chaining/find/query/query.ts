@@ -5,11 +5,8 @@ import { DynamoQueryAllResults } from './all-results'
 import { DynamoQueryPaginate } from './paginate'
 import { DynamoQueryWithAttributes } from './with-attributes'
 
-export class DynamoQuery<Model,
-  PartitionKey,
-  SortKey,
-  KeySchema
-> extends Chaining<QueryChaining> {
+export class DynamoQuery<Model, PartitionKey, SortKey, KeySchema>
+  extends Chaining<QueryChaining> {
   constructor(
     dynamoClient: DynamoClient,
     helpers: IHelpers,
@@ -18,11 +15,11 @@ export class DynamoQuery<Model,
     super('query', dynamoClient, helpers, input)
   }
 
-  // public withSortKeyCondition(operator: SortKeyConditionOperator) {
-  //   // return new DynamoWithSortKeyCondition<
-  //   // Model, KeySchema
-  //   // >(this._query.schema, operator, this._stack)
-  // }
+  public withSortKeyCondition(operator: any) {
+    // return new DynamoWithSortKeyCondition<
+    // Model, KeySchema
+    // >(this._query.schema, operator, this._stack)
+  }
 
   // public filter(filterExpression: Expression) {
   //   // return new DynamoQueryFilter<

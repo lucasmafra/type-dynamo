@@ -1,48 +1,57 @@
-import DynamoClient from '../../../../operations/dynamo-client'
-import {
-  DynamoIndexWithCompositeKey, DynamoIndexWithSimpleKey,
-} from '../../../../schema/dynamo-index'
-import { DynamoORMWithCompositeKey } from '../../../../schema/dynamo-orm'
+import DynamoClient from '../../operations/dynamo-client'
 import {
   CompositeKeyWithGlobalIndexCompositeKeyAndAllAttributes,
   CompositeKeyWithGlobalIndexCompositeKeyAndIncludeAttributes,
   CompositeKeyWithGlobalIndexCompositeKeyAndKeysOnly,
   CompositeKeyWithGlobalIndexSimpleKeyAndAllAttributes,
   CompositeKeyWithGlobalIndexSimpleKeyAndIncludeAttributes,
-  CompositeKeyWithGlobalIndexSimpleKeyAndKeysOnly,
+  CompositeKeyWithGlobalIndexSimpleKeyAndKeysOnly, IHelpers,
   IIndexCompositeKeyAndAllAttributes, IIndexCompositeKeyAndIncludeAttributes,
-  IIndexCompositeKeyAndKeysOnly, IIndexSimpleKeyAndAllAttributes,
+  IIndexCompositeKeyAndKeysOnly, IIndexSchema, IIndexSimpleKeyAndAllAttributes,
   IIndexSimpleKeyAndIncludeAttributes, IIndexSimpleKeyAndKeysOnly, ITableSchema,
-} from '../../../../types'
+} from '../../types'
+import {
+  DynamoIndexWithCompositeKey,
+} from '../dynamo-index/dynamo-index-with-composite-key'
+import {
+  DynamoIndexWithSimpleKey,
+} from '../dynamo-index/dynamo-index-with-simple-key'
+import {
+  DynamoTableWithCompositeKeyAndIndexes,
+} from '../dynamo-table/dynamo-table-with-composite-key-and-indexes'
 
-export class CompositeKeyWithGlobalIndex<
+export class DefineTableWithCompositeKeyAndIndexes<
   Model, PartitionKey extends keyof Model, SortKey extends keyof Model,
   CurrentGlobalIndexes, CurrentLocalIndexes> {
   private dynamoClient: DynamoClient
+  private helpers: IHelpers
   private tableSchema: ITableSchema
   private currentGlobalIndexes: CurrentGlobalIndexes
   private currentLocalIndexes: CurrentLocalIndexes
 
   constructor(
     dynamoClient: DynamoClient,
+    helpers: IHelpers,
     tableSchema: ITableSchema,
     currentGlobalIndexes: CurrentGlobalIndexes,
     currentLocalIndexes: CurrentLocalIndexes,
   ) {
     this.dynamoClient = dynamoClient
+    this.helpers = helpers
     this.tableSchema = tableSchema
     this.currentGlobalIndexes = currentGlobalIndexes
     this.currentLocalIndexes = currentLocalIndexes
   }
 
-  public getInstance(): DynamoORMWithCompositeKey<
+  public getInstance(): DynamoTableWithCompositeKeyAndIndexes<
     Model, Pick<Model, PartitionKey>, Pick<Model, SortKey>,
     CurrentGlobalIndexes, CurrentLocalIndexes> {
-    return new DynamoORMWithCompositeKey(
+    return new DynamoTableWithCompositeKeyAndIndexes(
       this.tableSchema,
       this.currentGlobalIndexes,
       this.currentLocalIndexes,
       this.dynamoClient,
+      this.helpers,
     )
   }
 
@@ -102,13 +111,23 @@ export class CompositeKeyWithGlobalIndex<
   >
 
   public withGlobalIndex(config: any) {
+    const indexSchema: IIndexSchema = {
+      tableName: this.tableSchema.tableName,
+      indexName: config.indexName,
+      projectionType: config.projectionType,
+      partitionKey: config.partitionKey,
+      sortKey: config.sortKey,
+    }
     if (config.sortKey) {
       this.currentGlobalIndexes = {
         ...this.currentGlobalIndexes as any,
-        [config.indexName]: new DynamoIndexWithCompositeKey(config),
+        [config.indexName]: new DynamoIndexWithCompositeKey(
+          indexSchema, this.dynamoClient, this.helpers,
+        ),
       }
-      return new CompositeKeyWithGlobalIndex(
+      return new DefineTableWithCompositeKeyAndIndexes(
         this.dynamoClient,
+        this.helpers,
         this.tableSchema,
         this.currentGlobalIndexes,
         this.currentLocalIndexes,
@@ -116,14 +135,16 @@ export class CompositeKeyWithGlobalIndex<
     }
     this.currentGlobalIndexes = {
       ...this.currentGlobalIndexes as any,
-      [config.indexName]: new DynamoIndexWithSimpleKey(config),
+      [config.indexName]: new DynamoIndexWithSimpleKey(
+        indexSchema, this.dynamoClient, this.helpers,
+      ),
     }
-    return new CompositeKeyWithGlobalIndex(
+    return new DefineTableWithCompositeKeyAndIndexes(
       this.dynamoClient,
+      this.helpers,
       this.tableSchema,
       this.currentGlobalIndexes,
       this.currentLocalIndexes,
     )
   }
-
 }
