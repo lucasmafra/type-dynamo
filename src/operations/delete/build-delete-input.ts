@@ -2,7 +2,7 @@ import { DynamoDB } from 'aws-sdk'
 import { WithCondition } from '../../chaining/common'
 import { Delete } from '../../chaining/delete/'
 import { resolveExpression } from '../../expressions/resolve-expression'
-import { EntitySchema } from '../../schema'
+import { IEntitySchema } from '../../schema'
 import {
     buildKey, mergeExpressionAttributeNames, mergeExpressionAttributeValues, projectionExpression,
 } from '../helpers'

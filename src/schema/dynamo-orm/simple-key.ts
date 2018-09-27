@@ -1,4 +1,4 @@
-import { IndexSchema, TableSchema } from '../'
+import { IndexSchema, ITableSchema } from '../'
 import DynamoClient from '../../operations/dynamo-client'
 import { DynamoTableWithSimpleKey } from '../dynamo-table'
 import { DynamoTableWithCompositeKey } from '../dynamo-table'
@@ -13,7 +13,7 @@ export class DynamoORMWithSimpleKey<
     private globalIndexes: GlobalIndexes
     private localIndexes: LocalIndexes
     constructor(
-        tableSchema: TableSchema,
+        tableSchema: ITableSchema,
         globalIndexes: GlobalIndexes,
         localIndexes: LocalIndexes,
         dynamoClient: DynamoClient,

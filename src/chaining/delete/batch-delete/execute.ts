@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk'
 import { batchDelete, BatchDeleteResult, buildBatchDeleteInput} from '../../../operations/batch-delete'
-import { EntitySchema } from '../../../schema'
+import { IEntitySchema } from '../../../schema'
 import { Chaining, Filter, Paginate, WithAttributes } from '../../common'
 import { BatchDeleteChainingKind } from './'
 import { BatchDelete } from './batch-delete'

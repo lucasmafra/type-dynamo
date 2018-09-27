@@ -1,5 +1,5 @@
 import { BatchWriteResult } from '../../../operations/batch-write'
-import { EntitySchema } from '../../../schema'
+import { IEntitySchema } from '../../../schema'
 import { Chaining } from '../../common'
 import { BatchWriteChainingKind } from './'
 import { execute } from './execute'
@@ -7,7 +7,7 @@ import { execute } from './execute'
 export type BatchWriteType = 'batchWrite'
 
 export interface BatchWrite<Table> {
-    schema: EntitySchema,
+    schema: IEntitySchema,
     items: Table[],
 }
 

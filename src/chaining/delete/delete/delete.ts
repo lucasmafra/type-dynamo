@@ -1,6 +1,6 @@
 import { DeleteResult } from '../../../operations/delete'
 import Expression from '../../../expressions/expression'
-import { EntitySchema } from '../../../schema'
+import { IEntitySchema } from '../../../schema'
 import { Chaining } from '../../common'
 import { DeleteChainingKind } from './'
 import { execute } from './execute'
@@ -9,7 +9,7 @@ import { DynamoDeleteWithCondition } from './with-condition'
 export type DeleteType = 'delete'
 
 export interface Delete<Entity, KeySchema> {
-    schema: EntitySchema,
+    schema: IEntitySchema,
     key: KeySchema,
 }
 

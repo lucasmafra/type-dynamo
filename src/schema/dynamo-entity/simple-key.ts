@@ -1,4 +1,4 @@
-import { EntitySchema } from '../'
+import { IEntitySchema } from '../'
 
 export class DynamoEntityWithSimpleKey<
     Entity,
@@ -6,10 +6,10 @@ export class DynamoEntityWithSimpleKey<
     KeySchema
 > {
 
-    protected _entitySchema: EntitySchema
+    protected _entitySchema: IEntitySchema
 
     constructor(
-        entitySchema: EntitySchema,
+        entitySchema: IEntitySchema,
     ) {
         this._entitySchema = entitySchema
     }

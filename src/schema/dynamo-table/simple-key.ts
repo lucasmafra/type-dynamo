@@ -1,4 +1,4 @@
-import { TableSchema } from '../'
+import { ITableSchema } from '../'
 import { DynamoBatchDelete, DynamoDelete } from '../../chaining/delete'
 import { DynamoBatchGet, DynamoGet, DynamoScan } from '../../chaining/find'
 import { DynamoBatchWrite, DynamoPut } from '../../chaining/save'
@@ -13,7 +13,7 @@ export class DynamoTableWithSimpleKey<Table, PartitionKey> extends DynamoEntityW
     private mockData: Table[]
 
     constructor(
-        tableSchema: TableSchema,
+        tableSchema: ITableSchema,
         dynamoClient: DynamoClient,
     ) {
         super({

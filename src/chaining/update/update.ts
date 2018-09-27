@@ -3,7 +3,7 @@ import Expression from '../../expressions/expression'
 import { randomGenerator } from '../../helpers/random-generator'
 import { ResolvedExpression } from '../../expressions/resolve-expression'
 import { Diff, Omit } from '../../helpers'
-import { EntitySchema } from '../../schema'
+import { IEntitySchema } from '../../schema'
 import { Chaining } from '../common'
 import { UpdateChainingKind } from './'
 import { execute } from './execute'
@@ -18,19 +18,19 @@ export type ExplicitKeyItemType<Entity, KeySchema> =
 export type ImplicityKeyItemType<Entity, KeySchema> = Partial<Entity> & KeySchema
 
 export interface Update<KeySchema> {
-    schema: EntitySchema,
+    schema: IEntitySchema,
     key: KeySchema,
     updateExpression: ResolvedExpression
 }
 
 export interface UpdateWithExplicitKey<Entity, KeySchema> {
-    schema: EntitySchema,
+    schema: IEntitySchema,
     key: KeySchema,
     item: ExplicitKeyItemType<Entity, KeySchema>,
 }
 
 export interface UpdateWithImplicitKey<Entity, KeySchema> {
-    schema: EntitySchema,
+    schema: IEntitySchema,
     item: ImplicityKeyItemType<Entity, KeySchema>,
 }
 

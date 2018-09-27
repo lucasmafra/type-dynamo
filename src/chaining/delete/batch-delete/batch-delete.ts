@@ -1,5 +1,5 @@
 import { BatchDeleteResult } from '../../../operations/batch-delete'
-import { EntitySchema } from '../../../schema'
+import { IEntitySchema } from '../../../schema'
 import { Chaining } from '../../common'
 import { BatchDeleteChainingKind } from './'
 import { execute } from './execute'
@@ -7,7 +7,7 @@ import { execute } from './execute'
 export type BatchDeleteType = 'batchDelete'
 
 export interface BatchDelete<KeySchema> {
-    schema: EntitySchema,
+    schema: IEntitySchema,
     keys: KeySchema[],
 }
 

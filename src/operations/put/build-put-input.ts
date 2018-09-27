@@ -4,7 +4,7 @@ import { WithCondition } from '../../chaining/common/with-condition'
 import { Put } from '../../chaining/save/put/put'
 import Expression from '../../expressions/expression'
 import { resolveExpression } from '../../expressions/resolve-expression'
-import { EntitySchema } from '../../schema'
+import { IEntitySchema } from '../../schema'
 import { mergeExpressionAttributeNames, mergeExpressionAttributeValues } from '../helpers'
 export function buildPutInput<Table>(
     put: Put<Table>,

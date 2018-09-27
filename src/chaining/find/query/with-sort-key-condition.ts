@@ -5,7 +5,7 @@
 //  } from '../../../expressions/operator'
 // import { IExpressionAttributeNames } from '../../../helpers/expression-attribute-names-generator'
 // import { randomGenerator } from '../../../helpers/random-generator'
-// import { EntitySchema } from '../../../schema'
+// import { IEntitySchema } from '../../../schema'
 // import { Chaining } from '../../common'
 // import { QueryChaining } from './'
 // import { DynamoQueryAllResults } from './all-results'
@@ -24,7 +24,7 @@
 //     private _withSortKeyCondition: IWithSortKeyCondition
 //
 //     constructor(
-//         schema: EntitySchema,
+//         schema: IEntitySchema,
 //         operator: SortKeyConditionOperator,
 //         currentStack: Array<Chaining<QueryChaining>>,
 //     ) {
@@ -55,7 +55,7 @@
 //         return new DynamoQueryAllResults<Model, KeySchema>(this._stack)
 //     }
 //
-//     private buildSortKeyCondition(schema: EntitySchema, sortKeyConditionOperator: SortKeyConditionOperator) {
+//     private buildSortKeyCondition(schema: IEntitySchema, sortKeyConditionOperator: SortKeyConditionOperator) {
 //         let expression: string
 //         const sortKey = schema.tableSchema ? schema.tableSchema.sortKey! : schema.indexSchema!.sortKey!
 //         const randomId = '#' + randomGenerator()

@@ -4,7 +4,7 @@ import { WithCondition } from '../../chaining/common/with-condition'
 import { Update } from '../../chaining/update'
 import Expression from '../../expressions/expression'
 import { resolveExpression } from '../../expressions/resolve-expression'
-import { EntitySchema } from '../../schema'
+import { IEntitySchema } from '../../schema'
 import { mergeExpressionAttributeNames, mergeExpressionAttributeValues } from '../helpers'
 
 export function buildUpdateInput<Table, KeySchema>(

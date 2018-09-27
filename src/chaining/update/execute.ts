@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk'
 import { buildUpdateInput, update, UpdateResult } from '../../operations/update'
-import { EntitySchema } from '../../schema'
+import { IEntitySchema } from '../../schema'
 import { Chaining, WithCondition } from '../common'
 import { UpdateChainingKind } from './'
 import { Update } from './update'

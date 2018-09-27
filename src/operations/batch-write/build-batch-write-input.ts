@@ -1,7 +1,7 @@
 import { DynamoDB } from 'aws-sdk'
 import { WithAttributes } from '../../chaining/common'
 import { BatchWrite } from '../../chaining/save/batch-write/batch-write'
-import { EntitySchema } from '../../schema'
+import { IEntitySchema } from '../../schema'
 import { buildKey, projectionExpression } from '../helpers'
 const marshalItem = require('dynamodb-marshaler').marshalItem
 
