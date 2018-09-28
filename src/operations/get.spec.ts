@@ -2,17 +2,7 @@ import { DynamoDB } from 'aws-sdk'
 import { IGetInput } from '../types'
 import { Get } from './get'
 
-interface IUserModel {
-  id: string,
-  name: string,
-  email: string
-}
-
-interface IUserKeySchema {
-  id: string
-}
-
-let get: Get<IUserModel, IUserKeySchema>
+let get: Get
 
 const dynamoClient = {
   getItem: jest.fn(async () => ({
@@ -24,7 +14,7 @@ const helpers = {
   withAttributesGenerator: {generateExpression: jest.fn()},
 }
 
-let input: IGetInput<IUserKeySchema>
+let input: IGetInput<any>
 
 describe('Get', () => {
   beforeEach(() => {

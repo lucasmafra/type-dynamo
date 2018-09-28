@@ -6,7 +6,7 @@
 // import { ScanChainingWithAttributes } from './with-attributes'
 //
 // export class DynamoScanFilter<
-//     Entity,
+//     Model,
 //     KeySchema
 // > extends CommonFilter<ScanChainingType> {
 //
@@ -17,18 +17,18 @@
 //         super(filter, currentStack)
 //     }
 //
-//     public withAttributes<K extends keyof Entity>(attributes: K[]) {
-//         return new ScanChainingWithAttributes<Pick<Entity, K>, KeySchema>(
+//     public withAttributes<K extends keyof Model>(attributes: K[]) {
+//         return new ScanChainingWithAttributes<Pick<Model, K>, KeySchema>(
 //             attributes, this._stack,
 //         )
 //     }
 //
 //     public paginate(limit?: number, lastKey?: KeySchema) {
-//         return new ScanChainingPaginate<Entity, KeySchema>(this._stack, { limit, lastKey})
+//         return new ScanChainingPaginate<Model, KeySchema>(this._stack, { limit, lastKey})
 //     }
 //
 //     public allResults() {
-//         return new ScanChainingAllResults<Entity, KeySchema>(this._stack)
+//         return new ScanChainingAllResults<Model, KeySchema>(this._stack)
 //     }
 //
 // }

@@ -2,7 +2,7 @@ import { DynamoDB } from 'aws-sdk'
 import { IGetInput, IGetResult, IHelpers } from '../types'
 import DynamoClient from './dynamo-client'
 
-export class Get<Model, KeySchema> {
+export class Get {
   private dynamoClient: DynamoClient
   private helpers: IHelpers
 
@@ -15,8 +15,8 @@ export class Get<Model, KeySchema> {
   }
 
   public execute = async (
-    input: IGetInput<KeySchema>,
-  ): Promise<IGetResult<Model, KeySchema>> => {
+    input: IGetInput<any>,
+  ): Promise<IGetResult<any, any>> => {
     const dynamoGetInput = this.buildDynamoGetInput(input)
     const getOutput = await this.dynamoClient.getItem(dynamoGetInput)
 
@@ -26,7 +26,7 @@ export class Get<Model, KeySchema> {
   }
 
   private buildDynamoGetInput = (
-    input: IGetInput<KeySchema>
+    input: IGetInput<any>,
   ) => {
     const { withAttributes } = input
     const dynamoInput: DynamoDB.GetItemInput = {

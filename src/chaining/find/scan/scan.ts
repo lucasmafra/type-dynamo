@@ -19,7 +19,7 @@ export class ScanChaining<
 
   // public filter(filterExpression: Expression) {
   //     return new DynamoScanFilter<
-  // Entity, KeySchema
+  // Model, KeySchema
   // >({filterExpression}, this._stack)
   // }
 
