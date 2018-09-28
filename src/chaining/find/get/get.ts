@@ -1,11 +1,13 @@
 import DynamoClient from '../../../operations/dynamo-client'
 import { Get } from '../../../operations/get'
-import { GetChaining, IGetInput, IGetResult, IHelpers } from '../../../types'
+import {
+  GetChainingType, IGetInput, IGetResult, IHelpers,
+} from '../../../types'
 import { Chaining } from '../../chaining'
-import { DynamoGetWithAttributes } from './with-attributes'
+import { GetChainingWithAttributes } from './with-attributes'
 
-export class DynamoGet<Entity,
-  KeySchema> extends Chaining<GetChaining> {
+export class GetChaining<Entity,
+  KeySchema> extends Chaining<GetChainingType> {
 
   constructor(
     dynamoClient: DynamoClient,
@@ -16,7 +18,7 @@ export class DynamoGet<Entity,
   }
 
   public withAttributes<K extends keyof Entity>(attributes: K[]) {
-    return new DynamoGetWithAttributes<Pick<Entity, K>, KeySchema>(
+    return new GetChainingWithAttributes<Pick<Entity, K>, KeySchema>(
       this.dynamoClient, this.helpers, attributes, this.stack,
     )
   }

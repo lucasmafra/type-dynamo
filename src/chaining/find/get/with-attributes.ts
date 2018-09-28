@@ -1,10 +1,10 @@
 import DynamoClient from '../../../operations/dynamo-client'
 import { Get } from '../../../operations/get'
-import { GetChaining, IGetResult, IHelpers } from '../../../types'
+import { GetChainingType, IGetResult, IHelpers } from '../../../types'
 import { Chaining } from '../../chaining'
 
-export class DynamoGetWithAttributes<Entity, KeySchema>
-  extends Chaining<GetChaining> {
+export class GetChainingWithAttributes<Entity, KeySchema>
+  extends Chaining<GetChainingType> {
 
   protected withAttributes: string[]
 
@@ -12,7 +12,7 @@ export class DynamoGetWithAttributes<Entity, KeySchema>
     dynamoClient: DynamoClient,
     helpers: IHelpers,
     attributes: string[],
-    currentStack: Array<Chaining<GetChaining>>,
+    currentStack: Array<Chaining<GetChainingType>>,
   ) {
     super('withAttributes', dynamoClient, helpers, attributes, currentStack)
   }

@@ -1,14 +1,14 @@
 import DynamoClient from '../../../operations/dynamo-client'
-import { IHelpers, IScanInput, ScanChaining } from '../../../types'
+import { IHelpers, IScanInput, ScanChainingType } from '../../../types'
 import { Chaining } from '../../chaining'
-import { DynamoScanAllResults } from './all-results'
-import { DynamoScanPaginate } from './paginate'
-import { DynamoScanWithAttributes } from './with-attributes'
+import { ScanChainingAllResults } from './all-results'
+import { ScanChainingPaginate } from './paginate'
+import { ScanChainingWithAttributes } from './with-attributes'
 
-export class DynamoScan<
+export class ScanChaining<
   Model,
   KeySchema
-> extends Chaining<ScanChaining> {
+> extends Chaining<ScanChainingType> {
   constructor(
     dynamoClient: DynamoClient,
     helpers: IHelpers,
@@ -24,7 +24,7 @@ export class DynamoScan<
   // }
 
   public withAttributes<K extends keyof Model>(attributes: K[]) {
-    return new DynamoScanWithAttributes<Pick<Model, K>, KeySchema>(
+    return new ScanChainingWithAttributes<Pick<Model, K>, KeySchema>(
       this.dynamoClient,
       this.helpers,
       attributes,
@@ -33,7 +33,7 @@ export class DynamoScan<
   }
 
   public paginate(limit?: number, lastKey?: KeySchema) {
-    return new DynamoScanPaginate<Model, KeySchema>(
+    return new ScanChainingPaginate<Model, KeySchema>(
       this.dynamoClient,
       this.helpers,
       { limit, lastKey },
@@ -42,7 +42,7 @@ export class DynamoScan<
   }
 
   public allResults() {
-    return new DynamoScanAllResults<Model, KeySchema>(
+    return new ScanChainingAllResults<Model, KeySchema>(
       this.dynamoClient,
       this.helpers,
       this.stack,

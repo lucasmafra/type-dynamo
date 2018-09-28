@@ -1,5 +1,5 @@
-import { DynamoQuery } from '../../chaining/find/query/query'
-import { DynamoScan } from '../../chaining/find/scan/scan'
+import { QueryChaining } from '../../chaining/find/query/query'
+import { ScanChaining } from '../../chaining/find/scan/scan'
 import DynamoClient from '../../operations/dynamo-client'
 import { IHelpers, IIndexSchema } from '../../types'
 
@@ -19,20 +19,20 @@ export class DynamoIndexWithCompositeKey<Index, PartitionKey, SortKey,
     this.helpers = helpers
   }
 
-  public find(): DynamoScan<Index, KeySchema>
+  public find(): ScanChaining<Index, KeySchema>
 
-  public find(partitionKey: PartitionKey): DynamoQuery<
+  public find(partitionKey: PartitionKey): QueryChaining<
     Index, PartitionKey, SortKey, KeySchema>
 
   public find(args?: any): any {
     if (!args) {
-      return new DynamoScan<Index, KeySchema>(
+      return new ScanChaining<Index, KeySchema>(
         this.dynamoClient, this.helpers,
         { tableName: this.indexSchema.tableName,
           indexName: this.indexSchema.indexName },
       )
     }
-    return new DynamoQuery<Index, PartitionKey, SortKey, KeySchema>(
+    return new QueryChaining<Index, PartitionKey, SortKey, KeySchema>(
       this.dynamoClient, this.helpers,
       { tableName: this.indexSchema.tableName,
         indexName: this.indexSchema.indexName, partitionKey: args },

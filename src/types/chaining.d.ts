@@ -1,9 +1,9 @@
-export type BatchGetChaining = 'batchGet' | 'withAttributes'
+export type BatchGetChainingType = 'batchGet' | 'withAttributes'
 
-export type GetChaining = 'get' | 'withAttributes'
+export type GetChainingType = 'get' | 'withAttributes'
 
-export type QueryChaining = 'query' | 'allResults' | 'withAttributes' |
+export type QueryChainingType = 'query' | 'allResults' | 'withAttributes' |
   'paginate'| 'filter' | 'withSortKeyCondition' | 'withOptions'
 
-export type ScanChaining = 'scan' | 'allResults' | 'withAttributes' |
+export type ScanChainingType = 'scan' | 'allResults' | 'withAttributes' |
   'paginate' | 'filter'

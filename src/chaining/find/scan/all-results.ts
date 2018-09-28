@@ -1,14 +1,14 @@
 import DynamoClient from '../../../operations/dynamo-client'
 import { Scan } from '../../../operations/scan'
-import { IHelpers, IScanResult, ScanChaining } from '../../../types'
+import { IHelpers, IScanResult, ScanChainingType } from '../../../types'
 import { Chaining } from '../../chaining'
 
-export class DynamoScanAllResults<Model,
-  KeySchema> extends Chaining<ScanChaining> {
+export class ScanChainingAllResults<Model,
+  KeySchema> extends Chaining<ScanChainingType> {
   constructor(
     dynamoClient: DynamoClient,
     helpers: IHelpers,
-    currentStack: Array<Chaining<ScanChaining>>,
+    currentStack: Array<Chaining<ScanChainingType>>,
   ) {
     super('allResults', dynamoClient, helpers, {}, currentStack)
   }

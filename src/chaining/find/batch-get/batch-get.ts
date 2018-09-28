@@ -1,16 +1,16 @@
 import { BatchGet } from '../../../operations/batch-get'
 import DynamoClient from '../../../operations/dynamo-client'
 import {
-  BatchGetChaining,
+  BatchGetChainingType,
   IBatchGetInput,
   IBatchGetResult,
   IHelpers,
 } from '../../../types'
 import { Chaining } from '../../chaining'
-import { DynamoBatchGetWithAttributes } from './with-attributes'
+import { BatchGetChainingWithAttributes } from './with-attributes'
 
-export class DynamoBatchGet<Model,
-  KeySchema> extends Chaining<BatchGetChaining> {
+export class BatchGetChaining<Model,
+  KeySchema> extends Chaining<BatchGetChainingType> {
 
   constructor(
     dynamoClient: DynamoClient,
@@ -21,7 +21,7 @@ export class DynamoBatchGet<Model,
   }
 
   public withAttributes<K extends keyof Model>(attributes: K[]) {
-    return new DynamoBatchGetWithAttributes<Pick<Model, K>, KeySchema>(
+    return new BatchGetChainingWithAttributes<Pick<Model, K>, KeySchema>(
       this.dynamoClient, this.helpers, attributes, this.stack,
     )
   }

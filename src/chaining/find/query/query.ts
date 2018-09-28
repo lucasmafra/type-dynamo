@@ -1,12 +1,12 @@
 import DynamoClient from '../../../operations/dynamo-client'
-import { IHelpers, IQueryInput, QueryChaining } from '../../../types'
+import { IHelpers, IQueryInput, QueryChainingType } from '../../../types'
 import { Chaining } from '../../chaining'
-import { DynamoQueryAllResults } from './all-results'
-import { DynamoQueryPaginate } from './paginate'
+import { QueryChainingAllResults } from './all-results'
+import { QueryChainingPaginate } from './paginate'
 import { DynamoQueryWithAttributes } from './with-attributes'
 
-export class DynamoQuery<Model, PartitionKey, SortKey, KeySchema>
-  extends Chaining<QueryChaining> {
+export class QueryChaining<Model, PartitionKey, SortKey, KeySchema>
+  extends Chaining<QueryChainingType> {
   constructor(
     dynamoClient: DynamoClient,
     helpers: IHelpers,
@@ -45,7 +45,7 @@ export class DynamoQuery<Model, PartitionKey, SortKey, KeySchema>
   // }
 
   public paginate(limit?: number, lastKey?: KeySchema) {
-    return new DynamoQueryPaginate<Model, KeySchema, PartitionKey>(
+    return new QueryChainingPaginate<Model, KeySchema, PartitionKey>(
       this.dynamoClient,
       this.helpers,
       { limit, lastKey },
@@ -54,7 +54,7 @@ export class DynamoQuery<Model, PartitionKey, SortKey, KeySchema>
   }
 
   public allResults() {
-    return new DynamoQueryAllResults<Model, KeySchema, PartitionKey>(
+    return new QueryChainingAllResults<Model, KeySchema, PartitionKey>(
       this.dynamoClient,
       this.helpers,
       this.stack,

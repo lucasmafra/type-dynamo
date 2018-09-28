@@ -1,8 +1,8 @@
 // import { randomGenerator } from '../../../helpers/random-generator'
 // import { Chaining, CommonWithAttributes } from '../../common'
-// import { QueryChaining } from './'
-// import { DynamoQueryAllResults } from './all-results'
-// import { DynamoQueryPaginate } from './paginate'
+// import { QueryChainingType } from './'
+// import { QueryChainingAllResults } from './all-results'
+// import { QueryChainingPaginate } from './paginate'
 //
 // export type WithOptionsType = 'withOptions'
 //
@@ -13,12 +13,12 @@
 // export class DynamoQueryWithOptions<
 //     Model,
 //     KeySchema
-// > extends Chaining<QueryChaining> {
+// > extends Chaining<QueryChainingType> {
 //
 //     private _withOptions: WithOptions
 //
 //     constructor(
-//         currentStack: Array<Chaining<QueryChaining>>,
+//         currentStack: Array<Chaining<QueryChainingType>>,
 //         withOptions: WithOptions,
 //     ) {
 //         super('withOptions', currentStack)
@@ -27,11 +27,11 @@
 //     }
 //
 //     public paginate(limit?: number, lastKey?: KeySchema) {
-//         return new DynamoQueryPaginate<Model, KeySchema>(this._stack, { limit, lastKey})
+//         return new QueryChainingPaginate<Model, KeySchema>(this._stack, { limit, lastKey})
 //     }
 //
 //     public allResults() {
-//         return new DynamoQueryAllResults<Model, KeySchema>(this._stack)
+//         return new QueryChainingAllResults<Model, KeySchema>(this._stack)
 //     }
 //
 // }

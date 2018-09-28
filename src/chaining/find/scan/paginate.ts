@@ -1,16 +1,16 @@
 import DynamoClient from '../../../operations/dynamo-client'
 import { Scan } from '../../../operations/scan'
-import { IHelpers, IScanResult, ScanChaining } from '../../../types'
+import { IHelpers, IScanResult, ScanChainingType } from '../../../types'
 import { Chaining } from '../../chaining'
 
-export class DynamoScanPaginate<Model,
-  KeySchema> extends Chaining<ScanChaining> {
+export class ScanChainingPaginate<Model,
+  KeySchema> extends Chaining<ScanChainingType> {
 
   constructor(
     dynamoClient: DynamoClient,
     helpers: IHelpers,
     paginate: { limit?: number, lastKey?: KeySchema },
-    currentStack: Array<Chaining<ScanChaining>>,
+    currentStack: Array<Chaining<ScanChainingType>>,
   ) {
     super('paginate', dynamoClient, helpers, paginate, currentStack)
   }

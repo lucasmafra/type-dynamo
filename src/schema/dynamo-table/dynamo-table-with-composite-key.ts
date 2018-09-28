@@ -1,12 +1,8 @@
-import { DynamoBatchGet } from '../../chaining/find/batch-get/batch-get'
-import { DynamoGet } from '../../chaining/find/get/get'
-import { DynamoQuery } from '../../chaining/find/query/query'
-import { DynamoScan } from '../../chaining/find/scan/scan'
-import { BatchGet } from '../../operations/batch-get'
+import { BatchGetChaining } from '../../chaining/find/batch-get/batch-get'
+import { GetChaining } from '../../chaining/find/get/get'
+import { QueryChaining } from '../../chaining/find/query/query'
+import { ScanChaining } from '../../chaining/find/scan/scan'
 import DynamoClient from '../../operations/dynamo-client'
-import { Get } from '../../operations/get'
-import { Query } from '../../operations/query'
-import { Scan } from '../../operations/scan'
 import { IHelpers, ITableSchema } from '../../types'
 
 export class DynamoTableWithCompositeKey<Model, PartitionKey, SortKey> {
@@ -24,25 +20,26 @@ export class DynamoTableWithCompositeKey<Model, PartitionKey, SortKey> {
     this.helpers = helpers
   }
 
-  public find(): Scan<Model, PartitionKey & SortKey>
+  public find(): ScanChaining<Model, PartitionKey & SortKey>
 
-  public find(keys: Array<PartitionKey & SortKey>): BatchGet<
+  public find(keys: Array<PartitionKey & SortKey>): BatchGetChaining<
     Model, PartitionKey & SortKey>
 
-  public find(key: PartitionKey & SortKey): Get<Model, PartitionKey & SortKey>
+  public find(key: PartitionKey & SortKey): GetChaining<
+    Model, PartitionKey & SortKey>
 
-  public find(partitionKey: PartitionKey): Query<
-    Model, PartitionKey & SortKey, PartitionKey>
+  public find(partitionKey: PartitionKey): QueryChaining<
+    Model, PartitionKey, SortKey, PartitionKey & SortKey>
 
   public find(args?: any): any {
     if (!args) {
-      return new DynamoScan<Model, PartitionKey & SortKey>(
+      return new ScanChaining<Model, PartitionKey & SortKey>(
         this.dynamoClient, this.helpers,
         { tableName: this.tableSchema.tableName },
       )
     }
     if (args.constructor === Array && args.length) {
-      return new DynamoBatchGet<Model, PartitionKey & SortKey>(
+      return new BatchGetChaining<Model, PartitionKey & SortKey>(
         this.dynamoClient, this.helpers,
         { tableName: this.tableSchema.tableName, keys: args  },
       )
@@ -54,12 +51,12 @@ export class DynamoTableWithCompositeKey<Model, PartitionKey, SortKey> {
     }
 
     if (Object.keys(args).length === 2) {
-      return new DynamoGet<Model, PartitionKey & SortKey>(
+      return new GetChaining<Model, PartitionKey & SortKey>(
         this.dynamoClient, this.helpers,
         { tableName: this.tableSchema.tableName, key: args },
       )
     } else {
-      return new DynamoQuery<
+      return new QueryChaining<
         Model, PartitionKey, SortKey, PartitionKey & SortKey
         >(
           this.dynamoClient, this.helpers,

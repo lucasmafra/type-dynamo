@@ -7,10 +7,10 @@
 // import { randomGenerator } from '../../../helpers/random-generator'
 // import { IEntitySchema } from '../../../schema'
 // import { Chaining } from '../../common'
-// import { QueryChaining } from './'
-// import { DynamoQueryAllResults } from './all-results'
+// import { QueryChainingType } from './'
+// import { QueryChainingAllResults } from './all-results'
 // import { DynamoQueryFilter } from './filter'
-// import { DynamoQueryPaginate } from './paginate'
+// import { QueryChainingPaginate } from './paginate'
 // import { DynamoQueryWithAttributes } from './with-attributes'
 // import { DynamoQueryWithOptions, WithOptions } from './with-options'
 //
@@ -19,14 +19,14 @@
 // export class DynamoWithSortKeyCondition<
 //     Model,
 //     KeySchema
-// > extends Chaining<QueryChaining> {
+// > extends Chaining<QueryChainingType> {
 //
 //     private _withSortKeyCondition: IWithSortKeyCondition
 //
 //     constructor(
 //         schema: IEntitySchema,
 //         operator: SortKeyConditionOperator,
-//         currentStack: Array<Chaining<QueryChaining>>,
+//         currentStack: Array<Chaining<QueryChainingType>>,
 //     ) {
 //         super('withSortKeyCondition', currentStack)
 //         this._withSortKeyCondition = this.buildSortKeyCondition(schema, operator)
@@ -48,11 +48,11 @@
 //     }
 //
 //     public paginate(limit?: number, lastKey?: KeySchema) {
-//         return new DynamoQueryPaginate<Model, KeySchema>(this._stack, { limit, lastKey})
+//         return new QueryChainingPaginate<Model, KeySchema>(this._stack, { limit, lastKey})
 //     }
 //
 //     public allResults() {
-//         return new DynamoQueryAllResults<Model, KeySchema>(this._stack)
+//         return new QueryChainingAllResults<Model, KeySchema>(this._stack)
 //     }
 //
 //     private buildSortKeyCondition(schema: IEntitySchema, sortKeyConditionOperator: SortKeyConditionOperator) {

@@ -1,18 +1,18 @@
 // import { Chaining, CommonFilter, Filter } from '../../common'
-// import { QueryChaining } from './'
-// import { DynamoQueryAllResults } from './all-results'
-// import { DynamoQueryPaginate } from './paginate'
+// import { QueryChainingType } from './'
+// import { QueryChainingAllResults } from './all-results'
+// import { QueryChainingPaginate } from './paginate'
 // import { DynamoQueryWithAttributes } from './with-attributes'
 // import { DynamoQueryWithOptions, WithOptions } from './with-options'
 //
 // export class DynamoQueryFilter<
 //     Model,
 //     KeySchema
-// > extends CommonFilter<QueryChaining> {
+// > extends CommonFilter<QueryChainingType> {
 //
 //     constructor(
 //         filter: Filter,
-//         currentStack: Array<Chaining<QueryChaining>>,
+//         currentStack: Array<Chaining<QueryChainingType>>,
 //     ) {
 //         super(filter, currentStack)
 //     }
@@ -28,11 +28,11 @@
 //     }
 //
 //     public paginate(limit?: number, lastKey?: KeySchema) {
-//         return new DynamoQueryPaginate<Model, KeySchema>(this._stack, { limit, lastKey})
+//         return new QueryChainingPaginate<Model, KeySchema>(this._stack, { limit, lastKey})
 //     }
 //
 //     public allResults() {
-//         return new DynamoQueryAllResults<Model, KeySchema>(this._stack)
+//         return new QueryChainingAllResults<Model, KeySchema>(this._stack)
 //     }
 //
 // }

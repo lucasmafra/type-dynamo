@@ -1,18 +1,18 @@
 import DynamoClient from '../../../operations/dynamo-client'
 import {  Query } from '../../../operations/query'
-import { IHelpers, IQueryResult, QueryChaining } from '../../../types'
+import { IHelpers, IQueryResult, QueryChainingType } from '../../../types'
 import { Chaining } from '../../chaining'
 
-export class DynamoQueryAllResults<
+export class QueryChainingAllResults<
   Model,
   KeySchema,
   PartitionKey
-> extends Chaining<QueryChaining> {
+> extends Chaining<QueryChainingType> {
 
   constructor(
     dynamoClient: DynamoClient,
     helpers: IHelpers,
-    currentStack: Array<Chaining<QueryChaining>>,
+    currentStack: Array<Chaining<QueryChainingType>>,
   ) {
     super('allResults', dynamoClient, helpers, {}, currentStack)
   }

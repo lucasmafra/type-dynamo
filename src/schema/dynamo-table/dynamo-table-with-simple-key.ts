@@ -1,6 +1,6 @@
-import { DynamoBatchGet } from '../../chaining/find/batch-get/batch-get'
-import { DynamoGet } from '../../chaining/find/get/get'
-import { DynamoScan } from '../../chaining/find/scan/scan'
+import { BatchGetChaining } from '../../chaining/find/batch-get/batch-get'
+import { GetChaining } from '../../chaining/find/get/get'
+import { ScanChaining } from '../../chaining/find/scan/scan'
 import DynamoClient from '../../operations/dynamo-client'
 import { IHelpers, ITableSchema } from '../../types'
 
@@ -19,21 +19,21 @@ export class DynamoTableWithSimpleKey<Model, PartitionKey> {
     this.helpers = helpers
   }
 
-  public find(): DynamoScan<Model, PartitionKey>
+  public find(): ScanChaining<Model, PartitionKey>
 
-  public find(keys: PartitionKey[]): DynamoBatchGet<Model, PartitionKey>
+  public find(keys: PartitionKey[]): BatchGetChaining<Model, PartitionKey>
 
-  public find(key: PartitionKey): DynamoGet<Model, PartitionKey>
+  public find(key: PartitionKey): GetChaining<Model, PartitionKey>
 
   public find(args?: any): any {
     if (!args) {
-      return new DynamoScan<Model, PartitionKey>(
+      return new ScanChaining<Model, PartitionKey>(
         this.dynamoClient, this.helpers,
         { tableName: this.tableSchema.tableName },
       )
     }
     if (args.constructor === Array && args.length) {
-      return new DynamoBatchGet<Model, PartitionKey>(
+      return new BatchGetChaining<Model, PartitionKey>(
         this.dynamoClient, this.helpers,
         { tableName: this.tableSchema.tableName, keys: args },
       )
@@ -42,7 +42,7 @@ export class DynamoTableWithSimpleKey<Model, PartitionKey> {
       // can't call batch get without key
       throw new Error('BatchGetWithNoKeys')
     }
-    return new DynamoGet<Model, PartitionKey>(
+    return new GetChaining<Model, PartitionKey>(
       this.dynamoClient, this.helpers,
       { tableName: this.tableSchema.tableName, key: args })
   }

@@ -1,21 +1,14 @@
 import { AttributeValue } from 'aws-sdk/clients/dynamodb'
-import {
-  BeginsWith, IsBetween,
-  IsEqualTo, IsGreaterOrEqualTo,
-  IsGreaterThan, IsLessOrEqualTo,
-  IsLessThan,
-} from '../expressions/operator'
-
 export interface IExpressionAttributeNames { [key: string]: string }
 
 export interface IExpressionAttributeValues { [key: string]: AttributeValue }
 
-export type SortKeyConditionOperator = BeginsWith | IsEqualTo | IsGreaterThan |
-  IsLessThan | IsLessOrEqualTo | IsGreaterOrEqualTo | IsBetween
+// export type SortKeyConditionOperator = BeginsWith | IsEqualTo | IsGreaterThan |
+//   IsLessThan | IsLessOrEqualTo | IsGreaterOrEqualTo | IsBetween
 
 export interface IWithSortKeyCondition {
   sortKeyName: string,
-  sortKeyConditionOperator: SortKeyConditionOperator
+  // sortKeyConditionOperator: SortKeyConditionOperator
 }
 
 export interface IKeyConditionExpression {
