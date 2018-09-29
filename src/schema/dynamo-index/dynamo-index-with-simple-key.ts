@@ -21,7 +21,7 @@ export class DynamoIndexWithSimpleKey<Index, PartitionKey, KeySchema> {
       return new ScanChaining(scan, { tableName, indexName })
     }
     return new QueryChaining(
-      query, { tableName, indexName, partitionKey: args }
+      query, { tableName, indexName, partitionKey: args },
     )
   }
 }

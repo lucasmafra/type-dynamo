@@ -22,7 +22,7 @@ export class DynamoIndexWithCompositeKey<Index, PartitionKey, SortKey,
       return new ScanChaining(scan, { tableName, indexName })
     }
     return new QueryChaining(
-      query, { tableName, indexName, partitionKey: args }
+      query, { tableName, indexName, partitionKey: args },
     )
   }
 }
