@@ -1,12 +1,12 @@
-import { QueryChaining } from '../../chaining/find/query'
-import { ScanChaining } from '../../chaining/find/scan/scan'
-import DynamoClient from '../../operations/dynamo-client'
-import { IHelpers, IIndexSchema, IOperations } from '../../types'
+import { QueryChaining } from '../../chaining/query-chaining'
+import { ScanChaining } from '../../chaining/scan-chaining'
+import { IOperations } from '../../types'
 
 export class DynamoIndexWithCompositeKey<Index, PartitionKey, SortKey,
   KeySchema> {
   constructor(
-    private indexSchema: IIndexSchema,
+    private tableName: string,
+    private indexName: string,
     private operations: IOperations,
   ) { }
 
@@ -16,17 +16,13 @@ export class DynamoIndexWithCompositeKey<Index, PartitionKey, SortKey,
     Index, PartitionKey, SortKey, KeySchema>
 
   public find(args?: any): any {
+    const { tableName, indexName } = this
+    const { scan, query } = this.operations
     if (!args) {
-      return new ScanChaining<Index, KeySchema>(
-        this.operations,
-        { tableName: this.indexSchema.tableName,
-          indexName: this.indexSchema.indexName },
-      )
+      return new ScanChaining(scan, { tableName, indexName })
     }
-    return new QueryChaining<Index, PartitionKey, SortKey, KeySchema>(
-      this.dynamoClient, this.helpers,
-      { tableName: this.indexSchema.tableName,
-        indexName: this.indexSchema.indexName, partitionKey: args },
+    return new QueryChaining(
+      query, { tableName, indexName, partitionKey: args }
     )
   }
 }
