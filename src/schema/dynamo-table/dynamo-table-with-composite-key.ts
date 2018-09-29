@@ -1,24 +1,13 @@
-import { BatchGetChaining } from '../../chaining/find/batch-get'
-import { GetChaining } from '../../chaining/find/get/get'
-import { QueryChaining } from '../../chaining/find/query'
-import { ScanChaining } from '../../chaining/find/scan/scan'
-import DynamoClient from '../../operations/dynamo-client'
-import { IHelpers, ITableSchema } from '../../types'
+import { BatchGetChaining } from '../../chaining/batch-get-chaining'
+import { GetChaining } from '../../chaining/get-chaining'
+import { QueryChaining } from '../../chaining/query-chaining'
+import { ScanChaining } from '../../chaining/scan-chaining'
+import { IOperations } from '../../types'
 
 export class DynamoTableWithCompositeKey<Model, PartitionKey, SortKey> {
-  private tableSchema: ITableSchema
-  private dynamoClient: DynamoClient
-  private helpers: IHelpers
-
   constructor(
-    tableSchema: ITableSchema,
-    dynamoClient: DynamoClient,
-    helpers: IHelpers,
-  ) {
-    this.tableSchema = tableSchema
-    this.dynamoClient = dynamoClient
-    this.helpers = helpers
-  }
+    private tableName: string, private operations: IOperations,
+  ) { }
 
   public find(): ScanChaining<Model, PartitionKey & SortKey>
 
@@ -32,37 +21,19 @@ export class DynamoTableWithCompositeKey<Model, PartitionKey, SortKey> {
     Model, PartitionKey, SortKey, PartitionKey & SortKey>
 
   public find(args?: any): any {
+    const { tableName } = this
+    const { scan, batchGet, get, query } = this.operations
+
     if (!args) {
-      return new ScanChaining<Model, PartitionKey & SortKey>(
-        this.dynamoClient, this.helpers,
-        { tableName: this.tableSchema.tableName },
-      )
+      return new ScanChaining(scan, { tableName })
     }
-    if (args.constructor === Array && args.length) {
-      return new BatchGetChaining<Model, PartitionKey & SortKey>(
-        this.dynamoClient, this.helpers,
-        { tableName: this.tableSchema.tableName, keys: args  },
-      )
+    if (args.constructor === Array) {
+      return new BatchGetChaining(batchGet, { tableName, keys: args  })
     }
-
-    if (args.constructor === Array && args.length === 0) {
-      // can't call batch get without key
-      throw new Error('BatchGetWithNoKeys')
-    }
-
     if (Object.keys(args).length === 2) {
-      return new GetChaining<Model, PartitionKey & SortKey>(
-        this.dynamoClient, this.helpers,
-        { tableName: this.tableSchema.tableName, key: args },
-      )
-    } else {
-      return new QueryChaining<
-        Model, PartitionKey, SortKey, PartitionKey & SortKey
-        >(
-          this.dynamoClient, this.helpers,
-        { tableName: this.tableSchema.tableName, partitionKey: args },
-      )
+      return new GetChaining(get, { tableName, key: args })
     }
+    return new QueryChaining(query, { tableName, partitionKey: args })
   }
 
   // public save(item: Model): DynamoPut<Model>
