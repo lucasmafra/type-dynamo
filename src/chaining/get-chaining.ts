@@ -1,6 +1,5 @@
-import { Omit } from '../..'
-import { Get } from '../../operations/get'
-import { IGetInput, IGetResult } from '../../types'
+import { Get } from '../operations/get'
+import { IGetInput, IGetResult, Omit } from '../types'
 
 /*
   MyRepository

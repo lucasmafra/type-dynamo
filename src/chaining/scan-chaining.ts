@@ -1,6 +1,14 @@
-import { Omit } from '../..'
-import { Scan } from '../../operations/scan'
-import { IScanInput, IScanResult } from '../../types'
+import { Scan } from '../operations/scan'
+import { IScanInput, IScanResult, Omit } from '../types'
+
+/*
+  MyRepository
+    .find()
+    .filter(filterExpression: any) // optional
+    .withAttributes(attributes: string[]) // optional
+    .paginate(limit?: number, lastKey?: KeySchema) // or allResults()
+    .execute()
+*/
 
 export class ScanChaining<Model, KeySchema> {
   constructor(

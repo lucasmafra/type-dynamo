@@ -1,4 +1,4 @@
-import { IGetInput } from '../../types'
+import { IGetInput } from '../types/index'
 import { GetChaining } from './get-chaining'
 import objectContaining = jasmine.objectContaining
 

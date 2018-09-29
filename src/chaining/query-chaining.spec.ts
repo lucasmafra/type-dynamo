@@ -1,4 +1,4 @@
-import { IQueryInput } from '../../types'
+import { IQueryInput } from '../types/index'
 import { QueryChaining } from './query-chaining'
 import objectContaining = jasmine.objectContaining
 

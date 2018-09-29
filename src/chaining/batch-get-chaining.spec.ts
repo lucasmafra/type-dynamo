@@ -1,4 +1,4 @@
-import { IBatchGetInput } from '../../types'
+import { IBatchGetInput } from '../types/index'
 import { BatchGetChaining } from './batch-get-chaining'
 import objectContaining = jasmine.objectContaining
 

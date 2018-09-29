@@ -1,4 +1,4 @@
-import { IScanInput } from '../../types'
+import { IScanInput } from '../types'
 import { ScanChaining } from './scan-chaining'
 import objectContaining = jasmine.objectContaining
 
@@ -24,6 +24,7 @@ describe('ScanChaining', () => {
     expect(result).toEqual({ data: [user] })
   })
 
+  // @ts-ignore
   context('when paginate', () => {
     it('adds pagination to input', async () => {
       await scanChaining
@@ -36,6 +37,7 @@ describe('ScanChaining', () => {
     })
   })
 
+  // @ts-ignore
   context('when allResults', () => {
     it('adds allResults to input', async () => {
       await scanChaining
@@ -48,6 +50,7 @@ describe('ScanChaining', () => {
     })
   })
 
+  // @ts-ignore
   context('when withAttributes', () => {
     it('adds withAttributes to input', async () => {
       await scanChaining
@@ -60,6 +63,7 @@ describe('ScanChaining', () => {
     })
   })
 
+  // @ts-ignore
   context('filter', () => {
     it('adds filter to input', () => {
       pending('not implemented yet')

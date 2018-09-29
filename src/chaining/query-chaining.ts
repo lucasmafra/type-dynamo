@@ -1,6 +1,5 @@
-import { Omit } from '../..'
-import { Query } from '../../operations/query'
-import { IQueryInput, IQueryResult } from '../../types'
+import { Query } from '../operations/query'
+import { IQueryInput, IQueryResult, Omit } from '../types'
 
 /*
   MyRepository

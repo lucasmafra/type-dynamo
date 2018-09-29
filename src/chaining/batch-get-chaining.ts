@@ -1,6 +1,5 @@
-import { Omit } from '../..'
-import { BatchGet } from '../../operations/batch-get'
-import { IBatchGetInput, IBatchGetResult } from '../../types'
+import { BatchGet } from '../operations/batch-get'
+import { IBatchGetInput, IBatchGetResult, Omit } from '../types'
 
 /*
   MyRepository
