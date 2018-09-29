@@ -2,10 +2,7 @@ import { AWSError, DynamoDB } from 'aws-sdk'
 import { IBatchGetInput } from '../types'
 import { BatchGet } from './batch-get'
 
-interface IUserModel { id: string, name: string }
-interface IUserKeySchema { id: string }
-
-let batchGet: BatchGet<IUserModel, IUserKeySchema>
+let batchGet: BatchGet
 
 const dynamoClient = {
   batchGet: jest.fn(async () => ({
@@ -24,7 +21,7 @@ const helpers = {
   withAttributesGenerator: { generateExpression: jest.fn() },
 }
 
-let input: IBatchGetInput<IUserKeySchema>
+let input: IBatchGetInput<any>
 
 describe('BatchGet', () => {
   beforeEach(() => {
@@ -32,9 +29,7 @@ describe('BatchGet', () => {
       tableName: 'UserTable',
       keys: [{ id: '1' }, { id: '2' }, { id: '3' }],
     }
-    batchGet = new BatchGet<IUserModel, IUserKeySchema>(
-      dynamoClient as any, helpers as any,
-    )
+    batchGet = new BatchGet(dynamoClient as any, helpers as any)
     dynamoClient.batchGet.mockClear()
   })
 

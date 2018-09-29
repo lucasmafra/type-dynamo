@@ -2,15 +2,6 @@ import { IScanInput } from '../types'
 import { Scan } from './scan'
 import objectContaining = jasmine.objectContaining
 
-interface IDummyModel {
-  id: string
-  email: string
-}
-
-interface IDummyKeySchema {
-  id: string
-}
-
 const helpers = {
   withAttributesGenerator: {generateExpression: jest.fn()},
 }
@@ -20,8 +11,8 @@ const dynamoClient = {
 }
 
 describe('Scan', () => {
-  let input: IScanInput<IDummyKeySchema>
-  let scan: Scan<IDummyModel, IDummyKeySchema>
+  let input: IScanInput<any>
+  let scan: Scan
 
   beforeEach(() => {
     input = {
