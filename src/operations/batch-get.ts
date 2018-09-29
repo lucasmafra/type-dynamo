@@ -2,7 +2,7 @@ import { AWSError, DynamoDB } from 'aws-sdk'
 import { IBatchGetInput, IBatchGetResult, IHelpers } from '../types'
 import DynamoClient from './dynamo-client'
 
-export class BatchGet<Model, KeySchema> {
+export class BatchGet {
   private dynamoClient: DynamoClient
   private helpers: IHelpers
 
@@ -12,33 +12,33 @@ export class BatchGet<Model, KeySchema> {
   }
 
   public async execute(
-    input: IBatchGetInput<KeySchema>,
-  ): Promise<IBatchGetResult<Model>> {
+    input: IBatchGetInput<any>,
+  ): Promise<IBatchGetResult<any>> {
     const chunks = this.groupKeysInChunks(input.keys)
-    const batchRequests = chunks.map((chunk) => () => this.batchRequest(
+    const batchRequests = chunks.map((chunk: any) => () => this.batchRequest(
       { ...input, keys: chunk },
       ),
     )
     return this.resolveBatchRequests(batchRequests)
   }
 
-  private groupKeysInChunks(keys: KeySchema[]) {
+  private groupKeysInChunks(keys: any[]) {
     let index = 0
     const MAX_ITEMS_PER_BATCH = 100
     return keys.reduce((acc, key) => {
       if (acc[index].length === MAX_ITEMS_PER_BATCH) {
         index++
-        acc[index] = acc[index] || new Array<KeySchema>()
+        acc[index] = acc[index] || new Array<any>()
       }
       acc[index].push(key)
       return acc
-    }, new Array<KeySchema[]>([]))
+    }, new Array<any[]>([]))
   }
 
   private async batchRequest(
-    input: IBatchGetInput<KeySchema>,
-  ): Promise<IBatchGetResult<Model>> {
-    const data = new Array<Model>()
+    input: IBatchGetInput<any>,
+  ): Promise<IBatchGetResult<any>> {
+    const data = new Array<any>()
     const dynamoBatchGetInput = this.buildDynamoBatchGetInput(input)
     let {
       Responses, UnprocessedKeys,
@@ -63,7 +63,7 @@ export class BatchGet<Model, KeySchema> {
   }
 
   private buildDynamoBatchGetInput(
-    input: IBatchGetInput<KeySchema>,
+    input: IBatchGetInput<any>,
   ) {
     const dynamoBatchGetInput: DynamoDB.BatchGetItemInput = {
       RequestItems: {
@@ -86,8 +86,8 @@ export class BatchGet<Model, KeySchema> {
   }
 
   private async resolveBatchRequests(
-    requests: Array<() => Promise<IBatchGetResult<Model>>>,
-  ): Promise<IBatchGetResult<Model>> {
+    requests: Array<() => Promise<IBatchGetResult<any>>>,
+  ): Promise<IBatchGetResult<any>> {
     const data = []
     for (const request of requests) {
       let currentBackoff = 100

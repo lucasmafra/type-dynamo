@@ -1,3 +1,8 @@
+import { BatchGet } from '../operations/batch-get'
+import { Get } from '../operations/get'
+import { Query } from '../operations/query'
+import { Scan } from '../operations/scan'
+
 export interface IBatchGetInput<KeySchema> {
   tableName: string
   keys: KeySchema[]
@@ -36,7 +41,7 @@ export interface IQueryPaginationOptions<KeySchema> {
 }
 
 export interface IScanPagination<KeySchema> {
-  limit: number
+  limit?: number
   lastKey?: KeySchema
 }
 
@@ -51,4 +56,11 @@ export interface IScanInput<KeySchema> {
 export interface IScanResult<Model, KeySchema> {
   data: Model[]
   lastKey?: KeySchema
+}
+
+export interface IOperations {
+  get: Get
+  batchGet: BatchGet
+  query: Query
+  scan: Scan
 }

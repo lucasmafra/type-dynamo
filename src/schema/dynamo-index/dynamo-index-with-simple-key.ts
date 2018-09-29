@@ -1,5 +1,5 @@
 import { Omit } from '../..'
-import { QueryChaining } from '../../chaining/find/query/query'
+import { QueryChaining } from '../../chaining/find/query'
 import { ScanChaining } from '../../chaining/find/scan/scan'
 import DynamoClient from '../../operations/dynamo-client'
 import { IHelpers, IIndexSchema } from '../../types'

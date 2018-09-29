@@ -2,7 +2,7 @@ import { DynamoDB } from 'aws-sdk'
 import { IHelpers, IScanInput, IScanResult } from '../types'
 import DynamoClient from './dynamo-client'
 
-export class Scan<Model, KeySchema> {
+export class Scan {
   private dynamoClient: DynamoClient
   private helpers: IHelpers
   private DEFAULT_PAGINATION_ITEMS = 100
@@ -16,13 +16,13 @@ export class Scan<Model, KeySchema> {
   }
 
   public async execute(
-    input: IScanInput<KeySchema>,
-  ): Promise<IScanResult<Model, KeySchema>> {
+    input: IScanInput<any>,
+  ): Promise<IScanResult<any, any>> {
     let dynamoScanInput = this.buildDynamoScanInput(input)
 
     let lastKey
 
-    const result: IScanResult<Model, KeySchema> = {
+    const result: IScanResult<any, any> = {
       data: [],
     }
 
@@ -53,7 +53,7 @@ export class Scan<Model, KeySchema> {
   }
 
   private buildDynamoScanInput(
-    input: IScanInput<KeySchema>,
+    input: IScanInput<any>,
   ): DynamoDB.ScanInput {
     const dynamoScanInput: DynamoDB.ScanInput = {
       TableName: input.tableName,
@@ -88,7 +88,7 @@ export class Scan<Model, KeySchema> {
     return dynamoScanInput
   }
 
-  private toModel(item: DynamoDB.AttributeMap): Model {
+  private toModel(item: DynamoDB.AttributeMap): any {
     return DynamoDB.Converter.unmarshall(item) as any
   }
 }

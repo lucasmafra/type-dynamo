@@ -1,23 +1,14 @@
-import { QueryChaining } from '../../chaining/find/query/query'
+import { QueryChaining } from '../../chaining/find/query'
 import { ScanChaining } from '../../chaining/find/scan/scan'
 import DynamoClient from '../../operations/dynamo-client'
-import { IHelpers, IIndexSchema } from '../../types'
+import { IHelpers, IIndexSchema, IOperations } from '../../types'
 
 export class DynamoIndexWithCompositeKey<Index, PartitionKey, SortKey,
   KeySchema> {
-  private indexSchema: IIndexSchema
-  private dynamoClient: DynamoClient
-  private helpers: IHelpers
-
   constructor(
-    indexSchema: IIndexSchema,
-    dynamoClient: DynamoClient,
-    helpers: IHelpers,
-  ) {
-    this.indexSchema = indexSchema
-    this.dynamoClient = dynamoClient
-    this.helpers = helpers
-  }
+    private indexSchema: IIndexSchema,
+    private operations: IOperations,
+  ) { }
 
   public find(): ScanChaining<Index, KeySchema>
 
@@ -27,7 +18,7 @@ export class DynamoIndexWithCompositeKey<Index, PartitionKey, SortKey,
   public find(args?: any): any {
     if (!args) {
       return new ScanChaining<Index, KeySchema>(
-        this.dynamoClient, this.helpers,
+        this.operations,
         { tableName: this.indexSchema.tableName,
           indexName: this.indexSchema.indexName },
       )

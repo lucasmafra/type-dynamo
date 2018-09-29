@@ -1,4 +1,4 @@
-import { BatchGetChaining } from '../../chaining/find/batch-get/batch-get'
+import { BatchGetChaining } from '../../chaining/find/batch-get'
 import { GetChaining } from '../../chaining/find/get/get'
 import { ScanChaining } from '../../chaining/find/scan/scan'
 import DynamoClient from '../../operations/dynamo-client'

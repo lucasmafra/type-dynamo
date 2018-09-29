@@ -1,21 +1,6 @@
 import { IQueryInput } from '../types'
 import { Query } from './query'
 
-interface IFeedModel {
-  userId: string
-  createdAt: number
-  content: string
-}
-
-interface IFeedKeySchema {
-  userId: string
-  createdAt: number
-}
-
-interface IFeedPartitionKey {
-  userId: string
-}
-
 const dynamoClient = {
   query: jest.fn(),
 }
@@ -26,14 +11,14 @@ const helpers = {
 }
 
 describe('Query', () => {
-  const input: IQueryInput<IFeedKeySchema, IFeedPartitionKey> = {
+  const input: IQueryInput<any, any> = {
     tableName: 'FeedTable',
     partitionKey: {userId: '1'},
   }
-  let query: Query<IFeedModel, IFeedKeySchema, IFeedPartitionKey>
+  let query: Query
 
   beforeEach(() => {
-    query = new Query<IFeedModel, IFeedKeySchema, IFeedPartitionKey>(
+    query = new Query(
       dynamoClient as any,
       helpers as any,
     )
@@ -113,7 +98,7 @@ describe('Query', () => {
   it('paginates by default', async () => {
     await query.execute(input)
     expect(dynamoClient.query.mock.calls[0][0]).toMatchObject({
-      Limit: 100,
+      Limit: 1000,
     })
   })
 

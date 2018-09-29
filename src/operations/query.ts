@@ -3,27 +3,23 @@ import { AttributeMap, QueryInput } from 'aws-sdk/clients/dynamodb'
 import { IHelpers, IQueryInput, IQueryResult } from '../types'
 import DynamoClient from './dynamo-client'
 
-export class Query<Model, KeySchema, PartitionKey> {
+export class Query {
   private dynamoClient: DynamoClient
   private helpers: IHelpers
 
-  private DEFAULT_PAGINATION_ITEMS = 100
+  private DEFAULT_PAGINATION_ITEMS = 1000
 
   public constructor(dynamoClient: DynamoClient, helpers: IHelpers) {
     this.dynamoClient = dynamoClient
     this.helpers = helpers
   }
 
-  public async execute(
-    input: IQueryInput<KeySchema, PartitionKey>,
-  ): Promise<IQueryResult<Model, KeySchema>> {
+  public async execute(input: IQueryInput<any, any>):
+    Promise<IQueryResult<any, any>> {
     let dynamoQueryInput = this.buildDynamoQueryInput(input)
-
     let lastKey
 
-    const result: IQueryResult<Model, KeySchema> = {
-      data: [],
-    }
+    const result: IQueryResult<any, any> = { data: [] }
 
     do {
       if (lastKey) {
@@ -54,7 +50,7 @@ export class Query<Model, KeySchema, PartitionKey> {
   }
 
   private buildDynamoQueryInput(
-    input: IQueryInput<KeySchema, PartitionKey>,
+    input: IQueryInput<any, any>,
   ): DynamoDB.QueryInput {
     const {
       expressionAttributeValues: ExpressionAttributeValues,
@@ -100,7 +96,7 @@ export class Query<Model, KeySchema, PartitionKey> {
     return queryInput
   }
 
-  private toModel(item: AttributeMap): Model {
-    return DynamoDB.Converter.unmarshall(item) as any
+  private toModel(item: AttributeMap): any {
+    return DynamoDB.Converter.unmarshall(item)
   }
 }
