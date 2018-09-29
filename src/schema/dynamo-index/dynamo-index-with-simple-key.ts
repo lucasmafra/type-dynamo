@@ -1,45 +1,27 @@
-import { Omit } from '../..'
-import { QueryChaining } from '../../chaining/find/query'
-import { ScanChaining } from '../../chaining/find/scan/scan'
-import DynamoClient from '../../operations/dynamo-client'
-import { IHelpers, IIndexSchema } from '../../types'
+import { QueryChaining } from '../../chaining/query-chaining'
+import { ScanChaining } from '../../chaining/scan-chaining'
+import { IOperations, Omit } from '../../types'
 
 export class DynamoIndexWithSimpleKey<Index, PartitionKey, KeySchema> {
-  private indexSchema: IIndexSchema
-  private dynamoClient: DynamoClient
-  private helpers: IHelpers
-
   constructor(
-    indexSchema: IIndexSchema,
-    dynamoClient: DynamoClient,
-    helpers: IHelpers,
-  ) {
-    this.indexSchema = indexSchema
-    this.dynamoClient = dynamoClient
-    this.helpers = helpers
-  }
+    private tableName: string,
+    private indexName: string,
+    private operations: IOperations,
+  ) { }
 
   public find(): ScanChaining<Index, KeySchema>
-
   public find(partitionKey: PartitionKey): Omit<
     QueryChaining<Index, PartitionKey, {}, KeySchema>, 'withSortKeyCondition'>
 
   public find(args?: any): any {
+    const { tableName, indexName } = this
+    const { scan, query } = this.operations
+
     if (!args) {
-      return new ScanChaining<Index, KeySchema>(
-        this.dynamoClient, this.helpers, {
-          tableName: this.indexSchema.tableName,
-          indexName: this.indexSchema.indexName,
-        },
-      )
+      return new ScanChaining(scan, { tableName, indexName })
     }
-    return new QueryChaining<Index, PartitionKey, {}, KeySchema>(
-      this.dynamoClient, this.helpers,
-      {
-        tableName: this.indexSchema.tableName,
-        indexName: this.indexSchema.indexName,
-        partitionKey: args,
-      },
+    return new QueryChaining(
+      query, { tableName, indexName, partitionKey: args }
     )
   }
 }
