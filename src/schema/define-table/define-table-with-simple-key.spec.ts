@@ -1,5 +1,9 @@
-import { DynamoIndexWithCompositeKey } from '../dynamo-index/dynamo-index-with-composite-key'
-import { DynamoIndexWithSimpleKey } from '../dynamo-index/dynamo-index-with-simple-key'
+import {
+  DynamoIndexWithCompositeKey,
+} from '../dynamo-index/dynamo-index-with-composite-key'
+import {
+  DynamoIndexWithSimpleKey,
+} from '../dynamo-index/dynamo-index-with-simple-key'
 import {
   DynamoTableWithSimpleKey,
 } from '../dynamo-table/dynamo-table-with-simple-key'

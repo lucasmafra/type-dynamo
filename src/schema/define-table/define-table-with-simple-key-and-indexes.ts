@@ -12,7 +12,7 @@ import {
   SimpleKeyWithGlobalIndexSimpleKeyAndAllAttributes,
   SimpleKeyWithGlobalIndexSimpleKeyAndIncludeAttributes,
   SimpleKeyWithGlobalIndexSimpleKeyAndKeysOnly,
-} from '../../types/schema'
+} from '../../types'
 import {
   DynamoIndexWithCompositeKey,
 } from '../dynamo-index/dynamo-index-with-composite-key'
