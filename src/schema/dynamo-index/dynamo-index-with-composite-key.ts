@@ -2,7 +2,7 @@ import { QueryChaining } from '../../chaining/query-chaining'
 import { ScanChaining } from '../../chaining/scan-chaining'
 import { IOperations } from '../../types'
 
-export class DynamoIndexWithCompositeKey<Index, PartitionKey, SortKey,
+export class DynamoIndexWithCompositeKey<Model, PartitionKey, SortKey,
   KeySchema> {
   constructor(
     private tableName: string,
@@ -10,10 +10,10 @@ export class DynamoIndexWithCompositeKey<Index, PartitionKey, SortKey,
     private operations: IOperations,
   ) { }
 
-  public find(): ScanChaining<Index, KeySchema>
+  public find(): ScanChaining<Model, KeySchema>
 
   public find(partitionKey: PartitionKey): QueryChaining<
-    Index, PartitionKey, SortKey, KeySchema>
+    Model, PartitionKey, SortKey, KeySchema>
 
   public find(args?: any): any {
     const { tableName, indexName } = this

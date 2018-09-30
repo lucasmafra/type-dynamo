@@ -2,16 +2,16 @@ import { QueryChaining } from '../../chaining/query-chaining'
 import { ScanChaining } from '../../chaining/scan-chaining'
 import { IOperations, Omit } from '../../types'
 
-export class DynamoIndexWithSimpleKey<Index, PartitionKey, KeySchema> {
+export class DynamoIndexWithSimpleKey<Model, PartitionKey> {
   constructor(
     private tableName: string,
     private indexName: string,
     private operations: IOperations,
   ) { }
 
-  public find(): ScanChaining<Index, KeySchema>
-  public find(partitionKey: PartitionKey): Omit<
-    QueryChaining<Index, PartitionKey, {}, KeySchema>, 'withSortKeyCondition'>
+  public find(): ScanChaining<Model, PartitionKey>
+  public find(partitionKey: PartitionKey): Omit<QueryChaining<Model,
+    PartitionKey, {}, PartitionKey>, 'withSortKeyCondition'>
 
   public find(args?: any): any {
     const { tableName, indexName } = this
