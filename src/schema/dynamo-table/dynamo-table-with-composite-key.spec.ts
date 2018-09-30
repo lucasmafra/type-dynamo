@@ -1,5 +1,6 @@
 import { BatchGetChaining } from '../../chaining/batch-get-chaining'
 import { GetChaining } from '../../chaining/get-chaining'
+import { QueryChaining } from '../../chaining/query-chaining'
 import { ScanChaining } from '../../chaining/scan-chaining'
 import { DynamoTableWithCompositeKey } from './dynamo-table-with-composite-key'
 
@@ -37,11 +38,22 @@ describe('DynamoTableWithSimpleKey', () => {
     })
 
     // @ts-ignore
-    context('when a single is passed as args', () => {
+    context('when a single key is passed as args with ' +
+      'both partition and sort key', () => {
       const key = { userId: '1', createdAt: 1 }
       it('calls Get', () => {
         expect(dynamoTableWithCompositeKey.find(key))
           .toBeInstanceOf(GetChaining)
+      })
+    })
+
+    // @ts-ignore
+    context('when a single key is passed as args with ' +
+      'just partition key', () => {
+      const key = { userId: '1' }
+      it('calls Query', () => {
+        expect(dynamoTableWithCompositeKey.find(key))
+          .toBeInstanceOf(QueryChaining)
       })
     })
   })
