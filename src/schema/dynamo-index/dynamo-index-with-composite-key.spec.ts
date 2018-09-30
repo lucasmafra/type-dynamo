@@ -21,6 +21,7 @@ describe('DynamoIndexWithCompositeKey', () => {
   })
 
   describe('find', () => {
+    // @ts-ignore
     context('when no args is present', () => {
       it('calls Scan', () => {
         expect(dynamoIndexWithCompositeKey.find())
@@ -28,6 +29,7 @@ describe('DynamoIndexWithCompositeKey', () => {
       })
     })
 
+    // @ts-ignore
     context('when the partition key is passed as args', () => {
       const key = { companyId: '1' }
 

@@ -10,6 +10,14 @@ import {
 import {
   DynamoIndexWithSimpleKey,
 } from '../schema/dynamo-index/dynamo-index-with-simple-key'
+import { DynamoTableWithCompositeKey } from '../schema/dynamo-table/dynamo-table-with-composite-key'
+import { DynamoTableWithCompositeKeyAndIndexes } from '../schema/dynamo-table/dynamo-table-with-composite-key-and-indexes'
+import {
+  DynamoTableWithSimpleKey,
+} from '../schema/dynamo-table/dynamo-table-with-simple-key'
+import {
+  DynamoTableWithSimpleKeyAndIndexes,
+} from '../schema/dynamo-table/dynamo-table-with-simple-key-and-indexes'
 
 export interface ISdkOptions {
   region: string
@@ -69,9 +77,7 @@ export type CompositeKeyWithGlobalIndexSimpleKeyAndKeysOnly<
     Model, PartitionKey, SortKey, CurrentGlobalIndexes & {
     [P in IndexName]: DynamoIndexWithSimpleKey<
       Pick<Model, IndexPartitionKey> & Pick<Model, PartitionKey | SortKey>,
-      Pick<Model, IndexPartitionKey>,
-      Pick<Model, PartitionKey | SortKey> & Pick<Model, IndexPartitionKey>
-    >
+      Pick<Model, IndexPartitionKey>>
   }, CurrentLocalIndexes
   >
 
@@ -95,9 +101,7 @@ export type CompositeKeyWithGlobalIndexCompositeKeyAndKeysOnly<
       Pick<Model, IndexPartitionKey | IndexSortKey> &
         Pick<Model, PartitionKey | SortKey>,
       Pick<Model, IndexPartitionKey>,
-      Pick<Model, IndexSortKey>,
-      Pick<Model, PartitionKey | SortKey> &
-        Pick<Model, IndexPartitionKey | IndexSortKey>
+      Pick<Model, IndexSortKey>
     >
 }, CurrentLocalIndexes>
 
@@ -113,9 +117,8 @@ export type CompositeKeyWithGlobalIndexSimpleKeyAndAllAttributes<
   CurrentGlobalIndexes, CurrentLocalIndexes
 > = DefineTableWithCompositeKeyAndIndexes<
   Model, PartitionKey, SortKey, CurrentGlobalIndexes & {
-  [P in IndexName]: DynamoIndexWithSimpleKey<Model,
-    Pick<Model, IndexPartitionKey>,
-    Pick<Model, PartitionKey | SortKey> & Pick<Model, IndexPartitionKey>>
+  [P in IndexName]: DynamoIndexWithSimpleKey<
+    Model, Pick<Model, IndexPartitionKey>>
 }, CurrentLocalIndexes>
 
 export interface IIndexCompositeKeyAndAllAttributes<
@@ -135,9 +138,7 @@ export type CompositeKeyWithGlobalIndexCompositeKeyAndAllAttributes<
   Model, PartitionKey, SortKey, CurrentGlobalIndexes & {
   [P in IndexName]: DynamoIndexWithCompositeKey<Model,
     Pick<Model, IndexPartitionKey>,
-    Pick<Model, IndexSortKey>,
-    Pick<Model, PartitionKey | SortKey> &
-    Pick<Model, IndexPartitionKey | IndexSortKey>>
+    Pick<Model, IndexSortKey>>
 }, CurrentLocalIndexes>
 
 export interface IIndexSimpleKeyAndIncludeAttributes<
@@ -159,8 +160,7 @@ export type CompositeKeyWithGlobalIndexSimpleKeyAndIncludeAttributes<
   [P in IndexName]: DynamoIndexWithSimpleKey<
     Pick<Model, IndexPartitionKey | IndexAttributes> &
     Pick<Model, PartitionKey | SortKey>,
-    Pick<Model, IndexPartitionKey>,
-    Pick<Model, PartitionKey | SortKey> & Pick<Model, IndexPartitionKey>>
+    Pick<Model, IndexPartitionKey>>
 }, CurrentLocalIndexes>
 
 export interface IIndexCompositeKeyAndIncludeAttributes<
@@ -184,9 +184,7 @@ export type CompositeKeyWithGlobalIndexCompositeKeyAndIncludeAttributes<
     Pick<Model, IndexPartitionKey | IndexSortKey | IndexAttributes> &
     Pick<Model, PartitionKey | SortKey>,
     Pick<Model, IndexPartitionKey>,
-    Pick<Model, IndexSortKey>,
-    Pick<Model, PartitionKey | SortKey> &
-    Pick<Model, IndexPartitionKey | IndexSortKey>>
+    Pick<Model, IndexSortKey>>
 }, CurrentLocalIndexes>
 
 export type SimpleKeyWithGlobalIndexSimpleKeyAndKeysOnly<Model,
@@ -197,8 +195,7 @@ export type SimpleKeyWithGlobalIndexSimpleKeyAndKeysOnly<Model,
     Model, PartitionKey, CurrentGlobalIndexes & {
   [P in IndexName]: DynamoIndexWithSimpleKey<Pick<Model, IndexPartitionKey> &
       Pick<Model, PartitionKey>,
-    Pick<Model, IndexPartitionKey>,
-    Pick<Model, PartitionKey> & Pick<Model, IndexPartitionKey>>
+    Pick<Model, IndexPartitionKey>>
 }, CurrentLocalIndexes>
 
 export type SimpleKeyWithGlobalIndexCompositeKeyAndKeysOnly<
@@ -211,8 +208,7 @@ export type SimpleKeyWithGlobalIndexCompositeKeyAndKeysOnly<
     [P in IndexName]: DynamoIndexWithCompositeKey<
       Pick<Model, IndexPartitionKey | IndexSortKey> & Pick<Model, PartitionKey>,
       Pick<Model, IndexPartitionKey>,
-      Pick<Model, IndexSortKey>,
-      Pick<Model, PartitionKey> & Pick<Model, IndexPartitionKey | IndexSortKey>>
+      Pick<Model, IndexSortKey>>
   }, CurrentLocalIndexes>
 
 export type SimpleKeyWithGlobalIndexSimpleKeyAndAllAttributes<
@@ -222,8 +218,7 @@ export type SimpleKeyWithGlobalIndexSimpleKeyAndAllAttributes<
 > = DefineTableWithSimpleKeyAndIndexes<
   Model, PartitionKey, CurrentGlobalIndexes & {
   [P in IndexName]: DynamoIndexWithSimpleKey<Model,
-    Pick<Model, IndexPartitionKey>,
-    Pick<Model, PartitionKey> & Pick<Model, IndexPartitionKey>>
+    Pick<Model, IndexPartitionKey>>
 }, CurrentLocalIndexes>
 
 export type SimpleKeyWithGlobalIndexCompositeKeyAndAllAttributes
@@ -234,8 +229,7 @@ export type SimpleKeyWithGlobalIndexCompositeKeyAndAllAttributes
   Model, PartitionKey, CurrentGlobalIndexes & {
   [P in IndexName]: DynamoIndexWithCompositeKey<Model,
     Pick<Model, IndexPartitionKey>,
-    Pick<Model, IndexSortKey>,
-    Pick<Model, PartitionKey> & Pick<Model, IndexPartitionKey | IndexSortKey>>
+    Pick<Model, IndexSortKey>>
 }, CurrentLocalIndexes>
 
 export type SimpleKeyWithGlobalIndexSimpleKeyAndIncludeAttributes<
@@ -247,8 +241,7 @@ export type SimpleKeyWithGlobalIndexSimpleKeyAndIncludeAttributes<
   [P in IndexName]: DynamoIndexWithSimpleKey<
     Pick<Model, IndexPartitionKey | IndexAttributes> &
     Pick<Model, PartitionKey>,
-    Pick<Model, IndexPartitionKey>,
-    Pick<Model, PartitionKey> & Pick<Model, IndexPartitionKey>>
+    Pick<Model, IndexPartitionKey>>
 }, CurrentLocalIndexes>
 
 export type SimpleKeyWithGlobalIndexCompositeKeyAndIncludeAttributes<
@@ -261,6 +254,262 @@ export type SimpleKeyWithGlobalIndexCompositeKeyAndIncludeAttributes<
     Pick<Model, IndexPartitionKey | IndexSortKey | IndexAttributes> &
     Pick<Model, PartitionKey>,
     Pick<Model, IndexPartitionKey>,
-    Pick<Model, IndexSortKey>,
-    Pick<Model, PartitionKey> & Pick<Model, IndexPartitionKey | IndexSortKey>>
+    Pick<Model, IndexSortKey>>
 }, CurrentLocalIndexes>
+
+export interface IDefineTableWithSimpleKey
+<Model, PartitionKey extends keyof Model> {
+
+  getInstance(): DynamoTableWithSimpleKey<
+    Model, Pick<Model, PartitionKey>>
+
+  withGlobalIndex< // simple key; keys only
+    IndexName extends string, IndexPartitionKey extends keyof Model>(
+    config: IIndexSimpleKeyAndKeysOnly<IndexName, IndexPartitionKey>,
+  ): SimpleKeyWithGlobalIndexSimpleKeyAndKeysOnly<Model, PartitionKey,
+    IndexName, IndexPartitionKey, {}, {}>
+
+  withGlobalIndex< // composite key; keys only
+    IndexName extends string,
+    IndexPartitionKey extends keyof Model,
+    IndexSortKey extends keyof Model>(
+    config: IIndexCompositeKeyAndKeysOnly<
+      IndexName, IndexPartitionKey, IndexSortKey
+      >,
+  ): SimpleKeyWithGlobalIndexCompositeKeyAndKeysOnly<
+    Model, PartitionKey, IndexName, IndexPartitionKey, IndexSortKey, {}, {}>
+
+  withGlobalIndex< // simple key; all attributes
+    IndexName extends string,
+    IndexPartitionKey extends keyof Model>(
+    config: IIndexSimpleKeyAndAllAttributes<IndexName, IndexPartitionKey>,
+  ): SimpleKeyWithGlobalIndexSimpleKeyAndAllAttributes<
+    Model, PartitionKey, IndexName, IndexPartitionKey, {}, {}>
+
+  withGlobalIndex< // composite key; all attributes
+    IndexName extends string,
+    IndexPartitionKey extends keyof Model,
+    IndexSortKey extends keyof Model>(
+    config: IIndexCompositeKeyAndAllAttributes<
+      IndexName, IndexPartitionKey, IndexSortKey>,
+  ): SimpleKeyWithGlobalIndexCompositeKeyAndAllAttributes<
+    Model, PartitionKey, IndexName, IndexPartitionKey, IndexSortKey, {}, {}>
+
+  withGlobalIndex< // simple key; include attributes
+    IndexName extends string,
+    IndexPartitionKey extends keyof Model,
+    IndexAttributes extends keyof Model>(
+    config: IIndexSimpleKeyAndIncludeAttributes<
+      IndexName, IndexPartitionKey, IndexAttributes
+      >,
+  ): SimpleKeyWithGlobalIndexSimpleKeyAndIncludeAttributes<
+    Model, PartitionKey, IndexName, IndexPartitionKey, IndexAttributes, {}, {}
+    >
+
+  withGlobalIndex< // composite key; include attributes
+    IndexName extends string,
+    IndexPartitionKey extends keyof Model,
+    IndexSortKey extends keyof Model,
+    IndexAttributes extends keyof Model>(
+    config: IIndexCompositeKeyAndIncludeAttributes<
+      IndexName, IndexPartitionKey, IndexSortKey, IndexAttributes>,
+  ): SimpleKeyWithGlobalIndexCompositeKeyAndIncludeAttributes<
+    Model, PartitionKey, IndexName, IndexPartitionKey, IndexSortKey,
+    IndexAttributes, {}, {}>
+}
+
+interface IDefineTableWithSimpleKeyAndIndexes<
+  Model, PartitionKey extends keyof Model, CurrentGlobalIndexes,
+  CurrentLocalIndexes> {
+
+  getInstance(): DynamoTableWithSimpleKeyAndIndexes<Model,
+    Pick<Model, PartitionKey>, CurrentGlobalIndexes, CurrentLocalIndexes>
+
+  withGlobalIndex< // simple key; keys only
+    IndexName extends string, IndexPartitionKey extends keyof Model>(
+    config: IIndexSimpleKeyAndKeysOnly<IndexName, IndexPartitionKey>,
+  ): SimpleKeyWithGlobalIndexSimpleKeyAndKeysOnly<Model, PartitionKey,
+    IndexName, IndexPartitionKey, CurrentGlobalIndexes, CurrentLocalIndexes>
+
+  withGlobalIndex< // composite key; keys only
+    IndexName extends string,
+    IndexPartitionKey extends keyof Model,
+    IndexSortKey extends keyof Model>(
+    config: IIndexCompositeKeyAndKeysOnly<
+      IndexName, IndexPartitionKey, IndexSortKey
+      >,
+  ): SimpleKeyWithGlobalIndexCompositeKeyAndKeysOnly<
+    Model, PartitionKey, IndexName, IndexPartitionKey, IndexSortKey,
+    CurrentGlobalIndexes, CurrentLocalIndexes>
+
+  withGlobalIndex< // simple key; all attributes
+    IndexName extends string,
+    IndexPartitionKey extends keyof Model>(
+    config: IIndexSimpleKeyAndAllAttributes<IndexName, IndexPartitionKey>,
+  ): SimpleKeyWithGlobalIndexSimpleKeyAndAllAttributes<
+    Model, PartitionKey, IndexName, IndexPartitionKey, CurrentGlobalIndexes,
+    CurrentLocalIndexes>
+
+  withGlobalIndex< // composite key; all attributes
+    IndexName extends string,
+    IndexPartitionKey extends keyof Model,
+    IndexSortKey extends keyof Model>(
+    config: IIndexCompositeKeyAndAllAttributes<
+      IndexName, IndexPartitionKey, IndexSortKey>,
+  ): SimpleKeyWithGlobalIndexCompositeKeyAndAllAttributes<
+    Model, PartitionKey, IndexName, IndexPartitionKey, IndexSortKey,
+    CurrentGlobalIndexes, CurrentLocalIndexes>
+
+  withGlobalIndex< // simple key; include attributes
+    IndexName extends string,
+    IndexPartitionKey extends keyof Model,
+    IndexAttributes extends keyof Model>(
+    config: IIndexSimpleKeyAndIncludeAttributes<
+      IndexName, IndexPartitionKey, IndexAttributes
+      >,
+  ): SimpleKeyWithGlobalIndexSimpleKeyAndIncludeAttributes<
+    Model, PartitionKey, IndexName, IndexPartitionKey, IndexAttributes,
+    CurrentGlobalIndexes, CurrentLocalIndexes>
+
+  withGlobalIndex< // composite key; include attributes
+    IndexName extends string,
+    IndexPartitionKey extends keyof Model,
+    IndexSortKey extends keyof Model,
+    IndexAttributes extends keyof Model>(
+    config: IIndexCompositeKeyAndIncludeAttributes<
+      IndexName, IndexPartitionKey, IndexSortKey, IndexAttributes>,
+  ): SimpleKeyWithGlobalIndexCompositeKeyAndIncludeAttributes<
+    Model, PartitionKey, IndexName, IndexPartitionKey, IndexSortKey,
+    IndexAttributes, CurrentGlobalIndexes, CurrentLocalIndexes>
+}
+
+export interface IDefineTableWithCompositeKeyAndIndexes<Model,
+  PartitionKey extends keyof Model, SortKey extends keyof Model,
+  CurrentGlobalIndexes, CurrentLocalIndexes> {
+
+  getInstance(): DynamoTableWithCompositeKeyAndIndexes<
+    Model, Pick<Model, PartitionKey>, Pick<Model, SortKey>,
+    CurrentGlobalIndexes, CurrentLocalIndexes>
+
+  withGlobalIndex< // simple key; keys only
+    IndexName extends string, IndexPartitionKey extends keyof Model>(
+    config: IIndexSimpleKeyAndKeysOnly<IndexName, IndexPartitionKey>)
+    : CompositeKeyWithGlobalIndexSimpleKeyAndKeysOnly<
+    Model, PartitionKey, SortKey, IndexName, IndexPartitionKey,
+    CurrentGlobalIndexes, CurrentLocalIndexes>
+
+  withGlobalIndex< // composite key; keys only
+    IndexName extends string, IndexPartitionKey extends keyof Model,
+    IndexSortKey extends keyof Model>(
+    config: IIndexCompositeKeyAndKeysOnly<IndexName, IndexPartitionKey,
+      IndexSortKey>,
+  ): CompositeKeyWithGlobalIndexCompositeKeyAndKeysOnly<
+    Model, PartitionKey, SortKey, IndexName, IndexPartitionKey, IndexSortKey,
+    CurrentGlobalIndexes, CurrentLocalIndexes
+    >
+
+  withGlobalIndex< // simple key; all attributes
+    IndexName extends string, IndexPartitionKey extends keyof Model>(
+    config: IIndexSimpleKeyAndAllAttributes<IndexName, IndexPartitionKey>,
+  ): CompositeKeyWithGlobalIndexSimpleKeyAndAllAttributes<
+    Model, PartitionKey, SortKey, IndexName, IndexPartitionKey,
+    CurrentGlobalIndexes, CurrentLocalIndexes
+    >
+
+  withGlobalIndex< // composite key; all attributes
+    IndexName extends string, IndexPartitionKey extends keyof Model,
+    IndexSortKey extends keyof Model>(
+    config: IIndexCompositeKeyAndAllAttributes<IndexName, IndexPartitionKey,
+      IndexSortKey>,
+  ): CompositeKeyWithGlobalIndexCompositeKeyAndAllAttributes<
+    Model, PartitionKey, SortKey, IndexName, IndexPartitionKey, IndexSortKey,
+    CurrentGlobalIndexes, CurrentLocalIndexes
+    >
+
+  withGlobalIndex< // simple key; include attributes
+    IndexName extends string, IndexPartitionKey extends keyof Model,
+    IndexAttributes extends keyof Model>(
+    config: IIndexSimpleKeyAndIncludeAttributes<IndexName, IndexPartitionKey,
+      IndexAttributes>,
+  ): CompositeKeyWithGlobalIndexSimpleKeyAndIncludeAttributes<
+    Model, PartitionKey, SortKey, IndexName, IndexPartitionKey, IndexAttributes,
+    CurrentGlobalIndexes, CurrentLocalIndexes
+    >
+
+  withGlobalIndex< // composite key; include attributes
+    IndexName extends string, IndexPartitionKey extends keyof Model,
+    IndexSortKey extends keyof Model, IndexAttributes extends keyof Model>(
+    config: IIndexCompositeKeyAndIncludeAttributes<IndexName, IndexPartitionKey,
+      IndexSortKey, IndexAttributes>,
+  ): CompositeKeyWithGlobalIndexCompositeKeyAndIncludeAttributes<
+    Model, PartitionKey, SortKey, IndexName, IndexPartitionKey, IndexSortKey,
+    IndexAttributes, CurrentGlobalIndexes, CurrentLocalIndexes
+    >
+}
+
+interface IDefineTableWithCompositeKey<
+  Model, PartitionKey extends keyof Model, SortKey extends keyof Model> {
+
+  getInstance(): DynamoTableWithCompositeKey<
+    Model, Pick<Model, PartitionKey>, Pick<Model, SortKey>
+  >
+
+  withGlobalIndex< // simple key; keys only
+    IndexName extends string, IndexPartitionKey extends keyof Model>(
+    config: IIndexSimpleKeyAndKeysOnly<IndexName, IndexPartitionKey>,
+  ): CompositeKeyWithGlobalIndexSimpleKeyAndKeysOnly<
+    Model, PartitionKey, SortKey, IndexName, IndexPartitionKey, {}, {}
+    >
+
+  withGlobalIndex< // composite key; keys only
+    IndexName extends string, IndexPartitionKey extends keyof Model,
+    IndexSortKey extends keyof Model>(config: IIndexCompositeKeyAndKeysOnly<
+    IndexName, IndexPartitionKey, IndexSortKey
+    >,
+  ): CompositeKeyWithGlobalIndexCompositeKeyAndKeysOnly<
+    Model, PartitionKey, SortKey, IndexName, IndexPartitionKey, IndexSortKey,
+    {}, {}
+    >
+
+  withGlobalIndex< // simple key; all attributes
+    IndexName extends string, IndexPartitionKey extends keyof Model>(
+    config: IIndexSimpleKeyAndAllAttributes<IndexName, IndexPartitionKey>,
+  ): CompositeKeyWithGlobalIndexSimpleKeyAndAllAttributes<
+    Model, PartitionKey, SortKey, IndexName, IndexPartitionKey, {}, {}
+    >
+
+  withGlobalIndex< // composite key; all attributes
+    IndexName extends string, IndexPartitionKey extends keyof Model,
+    IndexSortKey extends keyof Model>(
+    config: IIndexCompositeKeyAndAllAttributes<
+      IndexName, IndexPartitionKey, IndexSortKey
+      >,
+  ): CompositeKeyWithGlobalIndexCompositeKeyAndAllAttributes<
+    Model, PartitionKey, SortKey, IndexName, IndexPartitionKey, IndexSortKey,
+    {}, {}
+    >
+
+  withGlobalIndex< // simple key; include attributes
+    IndexName extends string, IndexPartitionKey extends keyof Model,
+    IndexAttributes extends keyof Model>(
+    config: IIndexSimpleKeyAndIncludeAttributes<
+      IndexName, IndexPartitionKey, IndexAttributes
+      >,
+  ): CompositeKeyWithGlobalIndexSimpleKeyAndIncludeAttributes<
+    Model, PartitionKey, SortKey, IndexName, IndexPartitionKey, IndexAttributes,
+    {}, {}
+    >
+
+  withGlobalIndex< // composite key; include attributes
+    IndexName extends string,
+    IndexPartitionKey extends keyof Model,
+    IndexSortKey extends keyof Model,
+    IndexAttributes extends keyof Model>(
+    config: IIndexCompositeKeyAndIncludeAttributes<
+      IndexName, IndexPartitionKey, IndexSortKey, IndexAttributes
+      >,
+  ): CompositeKeyWithGlobalIndexCompositeKeyAndIncludeAttributes<
+    Model, PartitionKey, SortKey, IndexName, IndexPartitionKey, IndexSortKey,
+    IndexAttributes, {}, {}
+    >
+}
