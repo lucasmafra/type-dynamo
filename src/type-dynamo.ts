@@ -1,26 +1,4 @@
-import { DynamoDB } from 'aws-sdk'
-import {
-  ExpressionAttributeNamesGenerator,
-} from './helpers/expression-attribute-names-generator'
-import {
-  ExpressionAttributeValuesGenerator,
-} from './helpers/expression-attribute-values-generator'
-import {
-  KeyConditionExpressionGenerator,
-} from './helpers/key-condition-expression-generator'
-import {
-  ProjectionExpressionGenerator,
-} from './helpers/projection-expression-generator'
-import {
-  RandomGenerator,
-} from './helpers/random-generator'
-import {
-  Timeout,
-} from './helpers/timeout'
-import {
-  WithAttributesGenerator,
-} from './helpers/with-attributes-generator'
-import DynamoClient from './operations/dynamo-client'
+import { Initializer } from './initializer'
 import {
   DefineTableWithCompositeKey,
 } from './schema/define-table/define-table-with-composite-key'
@@ -28,18 +6,14 @@ import {
   DefineTableWithSimpleKey,
 } from './schema/define-table/define-table-with-simple-key'
 import {
-  ICompositeKeySchema, IHelpers, ISdkOptions, ISimpleKeySchema,
-} from './types/index'
-
-const AmazonDaxClient = require('amazon-dax-client')
+  ICompositeKeySchema, IOperations, ISdkOptions, ISimpleKeySchema,
+} from './types'
 
 export class TypeDynamo {
-  private dynamoClient: DynamoClient
-  private helpers: IHelpers
+  private operations: IOperations
 
   constructor(sdkOptions: ISdkOptions) {
-    this.dynamoClient = this.initializeDynamoClient(sdkOptions)
-    this.helpers = this.initializeHelpers()
+    this.operations = Initializer.initializeOperations(sdkOptions)
   }
 
   public define<Model, PartitionKey extends keyof Model>(
@@ -52,53 +26,11 @@ export class TypeDynamo {
   ): DefineTableWithCompositeKey<Model, PartitionKey, SortKey>
 
   public define(table: any, schema: any) {
+    const { tableName } = schema
     if (schema.sortKey) {
-      return new DefineTableWithCompositeKey(
-        this.dynamoClient, this.helpers, schema,
-      )
+      return new DefineTableWithCompositeKey(tableName, this.operations)
     } else {
-      return new DefineTableWithSimpleKey(
-        this.dynamoClient, this.helpers, schema,
-      )
-    }
-  }
-
-  private initializeDynamoClient(sdkOptions: ISdkOptions) {
-    return new DynamoClient(new DynamoDB.DocumentClient({
-      ...sdkOptions as any,
-      service: sdkOptions.daxEndpoints &&
-        AmazonDaxClient({
-          endpoints: sdkOptions.daxEndpoints,
-          region: sdkOptions.region,
-        }),
-    }))
-  }
-
-  private initializeHelpers(): IHelpers {
-    const randomGenerator = new RandomGenerator()
-
-    const expressionAttributeNamesGenerator =
-      new ExpressionAttributeNamesGenerator(randomGenerator)
-
-    const expressionAttributeValuesGenerator =
-      new ExpressionAttributeValuesGenerator(randomGenerator)
-
-    const projectionExpressionGenerator = new ProjectionExpressionGenerator()
-
-    const timeout = new Timeout()
-
-    const withAttributesGenerator = new WithAttributesGenerator(
-      expressionAttributeNamesGenerator, projectionExpressionGenerator,
-    )
-
-    const keyConditionExpressionGenerator = new KeyConditionExpressionGenerator(
-      expressionAttributeNamesGenerator, expressionAttributeValuesGenerator,
-    )
-
-    return {
-      randomGenerator, projectionExpressionGenerator, timeout,
-      expressionAttributeNamesGenerator, expressionAttributeValuesGenerator,
-      withAttributesGenerator, keyConditionExpressionGenerator,
+      return new DefineTableWithSimpleKey(tableName, this.operations)
     }
   }
 }

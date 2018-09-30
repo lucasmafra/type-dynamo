@@ -1,4 +1,4 @@
-import { IQueryInput } from '../types/index'
+import { IQueryInput } from '../types'
 import { QueryChaining } from './query-chaining'
 import objectContaining = jasmine.objectContaining
 
@@ -29,6 +29,7 @@ describe('QueryChaining', () => {
     })
   })
 
+  // @ts-ignore
   context('when paginate', () => {
     it('adds pagination to input', async () => {
       await queryChaining
@@ -40,6 +41,7 @@ describe('QueryChaining', () => {
     })
   })
 
+  // @ts-ignore
   context('when allResults', () => {
     it('adds allResults to input', async () => {
       await queryChaining
@@ -52,6 +54,7 @@ describe('QueryChaining', () => {
     })
   })
 
+  // @ts-ignore
   context('when withAttributes', () => {
     it('adds withAttributes to input', async () => {
       await queryChaining
@@ -64,18 +67,21 @@ describe('QueryChaining', () => {
     })
   })
 
+  // @ts-ignore
   context('when withSortKeyCondition', () => {
     it('adds withSortKeyCondition to input', () => {
       pending('not implemented yet')
     })
   })
 
+  // @ts-ignore
   context('when filter', () => {
     it('adds filter to input', () => {
       pending('not implemented yet')
     })
   })
 
+  // @ts-ignore
   context('when withOptions', () => {
     it('adds withOptions to input', () => {
       pending('not implemented yet')

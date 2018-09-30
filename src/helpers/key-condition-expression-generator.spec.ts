@@ -57,6 +57,7 @@ describe('KeyConditionExpressionGenerator', () => {
     expect(keyConditionExpression).toEqual('#id = :value')
   })
 
+  // @ts-ignore
   context('when withSortKeyCondition is passed', () => {
     it('adds sort key to expression attribute names', () => {
       pending('not implemented yet')
