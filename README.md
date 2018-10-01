@@ -7,7 +7,7 @@
 #
 
 
-[![npm version](https://badge.fury.io/js/type-dynamo.svg)](https://badge.fury.io/js/type-dynamo) [![CircleCI](https://circleci.com/gh/lucasmafra/type-dynamo/tree/master.svg?style=shield)](https://circleci.com/gh/lucasmafra/type-dynamo/tree/master) [![Coverage Status](https://coveralls.io/repos/github/lucasmafra/type-dynamo/badge.svg?branch=master)](https://coveralls.io/github/lucasmafra/type-dynamo?branch=master) [![GitHub license](https://img.shields.io/github/license/lucasmafra/type-dynamo.svg)](https://github.com/lucasmafra/type-dynamo/blob/master/LICENSE)
+[![npm version](https://badge.fury.io/js/type-dynamo.svg)](https://badge.fury.io/js/type-dynamo) [![CircleCI](https://circleci.com/gh/lucasmafra/type-dynamo/tree/master.svg?style=shield)](https://circleci.com/gh/lucasmafra/type-dynamo/tree/master) [![Coverage Status](https://coveralls.io/repos/github/lucasmafra/type-dynamo/badge.svg)](https://coveralls.io/github/lucasmafra/type-dynamo) [![GitHub license](https://img.shields.io/github/license/lucasmafra/type-dynamo.svg)](https://github.com/lucasmafra/type-dynamo/blob/master/LICENSE)
 
 TypeDynamo is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) for your Typescript projects running in Node.js environment. Its goal is to help you develop backend applications that uses [DynamoDB](https://aws.amazon.com/dynamodb) by abstracting most of the Dynamo boilerplate and letting you focus on what really matters: querying and writing your data!
 
