@@ -13,7 +13,7 @@
     "prepare": "npm run build",
     "docker": "docker-compose up",
     "playground": "ts-node playground/index.ts",
-    "test": "jest --collectCoverage",
+    "test": "jest --collectCoverage --coverageReporters=text-lcov | coveralls",
     "test:watch": "jest --watch"
   },
   "jest": {
@@ -38,6 +38,7 @@
   "devDependencies": {
     "@types/jest": "^23.3.2",
     "@types/node": "^8.0.47",
+    "coveralls": "^3.0.2",
     "jest": "^23.6.0",
     "jest-plugin-context": "^2.9.0",
     "ts-jest": "^23.1.4",
