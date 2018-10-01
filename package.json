@@ -33,14 +33,10 @@
   "license": "ISC",
   "dependencies": {
     "amazon-dax-client": "^1.0.2",
-    "aws-sdk": "git+https://git@github.com/lucasmafra/aws-sdk-js.git",
-    "commander": "^2.11.0",
-    "dynamodb-marshaler": "^2.0.0",
-    "lodash": "^4.17.5"
+    "aws-sdk": "git+https://git@github.com/lucasmafra/aws-sdk-js.git"
   },
   "devDependencies": {
     "@types/jest": "^23.3.2",
-    "@types/lodash": "^4.14.105",
     "@types/node": "^8.0.47",
     "jest": "^23.6.0",
     "jest-plugin-context": "^2.9.0",

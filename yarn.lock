@@ -20,10 +20,6 @@
   version "23.3.2"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.2.tgz#07b90f6adf75d42c34230c026a2529e56c249dbb"
 
-"@types/lodash@^4.14.105":
-  version "4.14.105"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.105.tgz#9fcc4627a1f98f8f8fce79ddb2bff4afd97e959b"
-
 "@types/node@^8.0.47":
   version "8.9.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.9.4.tgz#dfd327582a06c114eb6e0441fa3d6fab35edad48"
@@ -587,10 +583,6 @@ combined-stream@1.0.6, combined-stream@~1.0.6:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@^2.11.0:
-  version "2.14.1"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-2.14.1.tgz#2235123e37af8ca3c65df45b026dbd357b01b9aa"
-
 commander@^2.12.1:
   version "2.18.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.18.0.tgz#2bf063ddee7c7891176981a2cc798e5754bc6970"
@@ -750,22 +742,11 @@ diff@^3.2.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.5.0.tgz#800c0dd1e0a8bfbc95835c202ad220fe317e5a12"
 
-dispatch-recursive@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/dispatch-recursive/-/dispatch-recursive-2.0.0.tgz#8e458886b3c1f8371e0fc716d0829a8bd32ecc22"
-
 domexception@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/domexception/-/domexception-1.0.1.tgz#937442644ca6a31261ef36e3ec677fe805582c90"
   dependencies:
     webidl-conversions "^4.0.2"
-
-dynamodb-marshaler@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/dynamodb-marshaler/-/dynamodb-marshaler-2.0.0.tgz#ef0d7088be08e2b6679ef17279167e3ccd784729"
-  dependencies:
-    dispatch-recursive "^2.0.0"
-    lodash "^4.11.2"
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"
@@ -1982,7 +1963,7 @@ lodash.sortby@^4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
 
-lodash@^4.0.0, lodash@^4.11.2, lodash@^4.17.5:
+lodash@^4.0.0:
   version "4.17.5"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
 
