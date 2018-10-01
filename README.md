@@ -6,6 +6,8 @@
 
 #
 
+[![CircleCI](https://circleci.com/gh/lucasmafra/type-dynamo/tree/master.svg?style=svg)](https://circleci.com/gh/lucasmafra/type-dynamo/tree/master)
+
 TypeDynamo is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) for your Typescript projects running in Node.js environment. Its goal is to help you develop backend applications that uses [DynamoDB](https://aws.amazon.com/dynamodb) by abstracting most of the Dynamo boilerplate and letting you focus on what really matters: querying and writing your data!
 
 TypeDynamo is completely agnostic to your server structure, so it supports both serverless and serverfull projects (see more in the [Demo]() section).
