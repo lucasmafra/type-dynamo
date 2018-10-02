@@ -18,7 +18,7 @@ export class Initializer {
     return {
       scan: new Scan(dynamoClient, helpers),
       query: new Query(dynamoClient, helpers),
-      batchGetItem: new BatchGet(dynamoClient, helpers),
+      batchGet: new BatchGet(dynamoClient, helpers),
       get: new Get(dynamoClient, helpers),
     }
   }
