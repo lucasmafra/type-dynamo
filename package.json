@@ -14,7 +14,8 @@
     "docker": "docker-compose up",
     "playground": "ts-node playground/index.ts",
     "test": "jest --collectCoverage --coverageReporters=text-lcov | coveralls",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:acceptance": "cucumber-js --require 'acceptance/support/**/*.ts' --require-module ts-node/register acceptance"
   },
   "jest": {
     "testRegex": "(spec/.*|(\\.|/)(test|spec))\\.ts$",
@@ -36,9 +37,11 @@
     "aws-sdk": "git+https://git@github.com/lucasmafra/aws-sdk-js.git"
   },
   "devDependencies": {
+    "@types/cucumber": "^4.0.4",
     "@types/jest": "^23.3.2",
     "@types/node": "^8.0.47",
     "coveralls": "^3.0.2",
+    "cucumber": "^5.0.1",
     "jest": "^23.6.0",
     "jest-plugin-context": "^2.9.0",
     "ts-jest": "^23.1.4",
