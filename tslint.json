@@ -19,7 +19,8 @@
       "no-require-imports": false,
       "no-var-requires": false,
       "no-unused-variable": true,
-      "no-reference": false
+      "no-reference": false,
+      "only-arrow-functions": false
     },
     "rulesDirectory": []
 }

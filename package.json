@@ -15,7 +15,7 @@
     "playground": "ts-node playground/index.ts",
     "test": "jest --collectCoverage --coverageReporters=text-lcov | coveralls",
     "test:watch": "jest --watch",
-    "test:acceptance": "cucumber-js --require 'acceptance/support/**/*.ts' --require-module ts-node/register acceptance"
+    "test:acceptance": "cucumber-js --require 'features/support/**/*.ts' --require-module ts-node/register features"
   },
   "jest": {
     "testRegex": "(spec/.*|(\\.|/)(test|spec))\\.ts$",
@@ -33,13 +33,13 @@
   "author": "lucasmafra",
   "license": "ISC",
   "dependencies": {
-    "amazon-dax-client": "^1.0.2",
-    "aws-sdk": "git+https://git@github.com/lucasmafra/aws-sdk-js.git"
+    "aws-sdk": "^2.326.0"
   },
   "devDependencies": {
     "@types/cucumber": "^4.0.4",
+    "@types/expect": "^1.20.3",
     "@types/jest": "^23.3.2",
-    "@types/node": "^8.0.47",
+    "@types/node": "^10.11.3",
     "coveralls": "^3.0.2",
     "cucumber": "^5.0.1",
     "jest": "^23.6.0",
