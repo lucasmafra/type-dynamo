@@ -26,14 +26,19 @@ describe('Get', () => {
     dynamoClient.getItem.mockClear()
   })
 
-  it('gets item using dynamoClient', async () => {
+  it('calls dynamoClient correctly', async () => {
     const dynamoInput: DynamoDB.GetItemInput = {
       TableName: 'DummyTable', Key: {id: {S: '1'}},
     }
     await get.execute(input)
     expect(dynamoClient.getItem).toHaveBeenCalledWith(dynamoInput)
   })
-
+  
+  it('returns item in correct format', async () => {
+    expect(await get.execute(input)).toEqual({
+      data: { id: '1', name: 'John Doe' },
+    })
+  })
   // @ts-ignore
   context('when withAttributes option is present', () => {
     const withAttributes = ['id', 'email']

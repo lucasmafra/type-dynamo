@@ -14,7 +14,7 @@ export class Get {
 
     if (!getOutput.Item) { throw new Error('ItemNotFound') }
 
-    return { data: getOutput.Item as any }
+    return { data: DynamoDB.Converter.unmarshall(getOutput.Item) }
   }
 
   private buildDynamoGetInput = (
