@@ -14,6 +14,7 @@ const dynamoClient = {
           { id: { S: '3'}, name: { S: 'Ronaldinho' } },
         ],
       },
+      UnprocessedKeys: {},
     }),
   })),
 }

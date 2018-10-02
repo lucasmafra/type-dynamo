@@ -43,7 +43,7 @@ export class BatchGet {
         (item) => DynamoDB.Converter.unmarshall(item),
       ) as any)
     }
-    while (UnprocessedKeys) {
+    while (UnprocessedKeys && Object.keys(UnprocessedKeys).length) {
       const nextInput = {RequestItems: UnprocessedKeys}
       const nextCall = await this.dynamoClient.batchGetItem(nextInput).promise()
       Responses = nextCall.Responses
