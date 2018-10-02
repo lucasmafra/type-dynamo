@@ -17,7 +17,7 @@ Given('a table {string} with partition key {string}',
 Given('the following items are saved on table {string}:',
   async function(tableName, dataTable) {
     const items = dataTable.hashes().map((item: any) => ({
-      PutRequest: { Item: DynamoDB.Converter.marshall(item) },
+      PutRequest: {Item: DynamoDB.Converter.marshall(item)},
     }))
     await typeDynamo.dynamoClient.batchWriteItem({
       RequestItems: {
@@ -28,11 +28,24 @@ Given('the following items are saved on table {string}:',
 
 When(/I call User\.find\({ id: (1) }\)\.execute\(\)/, async function(id) {
   this.set(
-    await User.find({ id }).execute(),
+    await User.find({id}).execute(),
   )
 })
 
 Then('I should get the following item:', function(dataTable) {
   const [item] = dataTable.hashes()
-  expect(this.result).toEqual({ data: item })
+  expect(this.result).toEqual({data: item})
+})
+
+When(/I call User\.find\(ids\)\.execute\(\) with the following ids:/,
+  async function(dataTable) {
+    const ids = dataTable.hashes() as Array<{ id: string }>
+    this.set(
+      await User.find(ids).execute(),
+    )
+  })
+
+Then('I should get the following items:', function(dataTable) {
+  const items = dataTable.hashes()
+  expect(this.result).toEqual({data: items})
 })
