@@ -1,5 +1,5 @@
+import { DynamoDB } from 'aws-sdk'
 import { Initializer } from './initializer'
-import DynamoClient from './operations/dynamo-client'
 import {
   DefineTableWithCompositeKey,
 } from './schema/define-table/define-table-with-composite-key'
@@ -11,7 +11,7 @@ import {
 } from './types'
 
 export class TypeDynamo {
-  public dynamoClient: DynamoClient
+  public dynamoClient: DynamoDB
   private operations: IOperations
 
   constructor(sdkOptions: ISdkOptions) {

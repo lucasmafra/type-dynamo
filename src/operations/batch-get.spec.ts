@@ -5,14 +5,16 @@ import { BatchGet } from './batch-get'
 let batchGet: BatchGet
 
 const dynamoClient = {
-  batchGet: jest.fn(async () => ({
-    Responses: {
-      UserTable: [
-        { id: { S: '1' }, name: { S: 'John' } },
-        { id: { S: '2' }, name: { S: 'Doe' } },
-        { id: { S: '3'}, name: { S: 'Ronaldinho' } },
-      ],
-    },
+  batchGetItem: jest.fn(() => ({
+    promise: async () => ({
+      Responses: {
+        UserTable: [
+          { id: { S: '1' }, name: { S: 'John' } },
+          { id: { S: '2' }, name: { S: 'Doe' } },
+          { id: { S: '3'}, name: { S: 'Ronaldinho' } },
+        ],
+      },
+    }),
   })),
 }
 
@@ -30,7 +32,7 @@ describe('BatchGet', () => {
       keys: [{ id: '1' }, { id: '2' }, { id: '3' }],
     }
     batchGet = new BatchGet(dynamoClient as any, helpers as any)
-    dynamoClient.batchGet.mockClear()
+    dynamoClient.batchGetItem.mockClear()
   })
 
   it('calls dynamoClient correctly', async () => {
@@ -42,7 +44,7 @@ describe('BatchGet', () => {
       },
     }
     await batchGet.execute(input)
-    expect(dynamoClient.batchGet).toHaveBeenCalledWith(dynamoInput)
+    expect(dynamoClient.batchGetItem).toHaveBeenCalledWith(dynamoInput)
   })
 
   it('returns items in correct format', async () => {
@@ -58,8 +60,8 @@ describe('BatchGet', () => {
   // @ts-ignore
   context('when dynamoClient returns no response', () => {
     beforeEach(() => {
-      dynamoClient.batchGet.mockImplementationOnce(() => ({
-        Responses: undefined,
+      dynamoClient.batchGetItem.mockImplementationOnce(() => ({
+        promise: async () => ({ Responses: undefined }),
       }))
     })
 
@@ -80,7 +82,7 @@ describe('BatchGet', () => {
     })
     it('only asks dynamoClient for the given attributes', async () => {
       await batchGet.execute(input)
-      expect(dynamoClient.batchGet.mock.calls[0][0]).toMatchObject({
+      expect(dynamoClient.batchGetItem.mock.calls[0][0]).toMatchObject({
         RequestItems: {
           UserTable: {
             ProjectionExpression: '#id,#email',
@@ -94,46 +96,52 @@ describe('BatchGet', () => {
   // @ts-ignore
   context('when dynamoClient returns unprocessed items', () => {
     beforeEach(() => {
-      dynamoClient.batchGet.mockImplementationOnce(() => ({
-        Responses: {
-          UserTable: [
-            { id: { S: '1' }, name: { S: 'John' } },
-          ],
-        },
-        UnprocessedKeys: {
-          UserTable: {
-            Keys: [
-              { id: { S: '2' } },
-              { id: { S: '3' } },
+      dynamoClient.batchGetItem.mockImplementationOnce(() => ({
+        promise: async () => ({
+          Responses: {
+            UserTable: [
+              { id: { S: '1' }, name: { S: 'John' } },
             ],
           },
-        },
-      })).mockImplementationOnce(() => ({
-        Responses: {
-          UserTable: [
-            { id: { S: '2' }, name: { S: 'Doe' } },
-          ],
-        },
-        UnprocessedKeys: {
-          UserTable: {
-            Keys: [
-              { id: { S: '3' } },
-            ],
+          UnprocessedKeys: {
+            UserTable: {
+              Keys: [
+                { id: { S: '2' } },
+                { id: { S: '3' } },
+              ],
+            },
           },
-        },
-      })).mockImplementationOnce(() => ({
-        Responses: {
-          UserTable: [
-            { id: { S: '3' }, name: { S: 'Ronaldinho' } },
-          ],
-        },
+        })}))
+        .mockImplementationOnce(() => ({
+          promise: async () => ({
+            Responses: {
+              UserTable: [
+                { id: { S: '2' }, name: { S: 'Doe' } },
+              ],
+            },
+            UnprocessedKeys: {
+              UserTable: {
+                Keys: [
+                  { id: { S: '3' } },
+                ],
+              },
+            },
+          })}))
+        .mockImplementationOnce(() => ({
+          promise: async () => ({
+            Responses: {
+              UserTable: [
+                { id: { S: '3' }, name: { S: 'Ronaldinho' } },
+              ],
+            },
+          }),
       }))
     })
 
     it('calls dynamoClient until all items are processed', async () => {
       await batchGet.execute(input)
-      expect(dynamoClient.batchGet).toHaveBeenCalledTimes(3)
-      expect(dynamoClient.batchGet.mock.calls).toEqual([[{
+      expect(dynamoClient.batchGetItem).toHaveBeenCalledTimes(3)
+      expect(dynamoClient.batchGetItem.mock.calls).toEqual([[{
         RequestItems: {
           UserTable: {
             Keys: [{ id: { S: '1'} }, { id: { S: '2' } }, { id: { S: '3' } }],
@@ -178,11 +186,11 @@ describe('BatchGet', () => {
 
     it('splits into multiple requests', async () => {
       await batchGet.execute(input)
-      expect(dynamoClient.batchGet).toHaveBeenCalledTimes(2)
-      expect(dynamoClient.batchGet.mock.calls[0][0]
+      expect(dynamoClient.batchGetItem).toHaveBeenCalledTimes(2)
+      expect(dynamoClient.batchGetItem.mock.calls[0][0]
         .RequestItems.UserTable.Keys.length,
       ).toBe(100)
-      expect(dynamoClient.batchGet.mock.calls[1][0]
+      expect(dynamoClient.batchGetItem.mock.calls[1][0]
         .RequestItems.UserTable.Keys.length,
       ).toBe(50)
     })
@@ -191,28 +199,30 @@ describe('BatchGet', () => {
   // @ts-ignore
   context('when provisioned throughput is exceeded', () => {
     beforeEach(() => {
-      dynamoClient.batchGet.mockImplementationOnce(() => {
-        const error: AWSError = {
-          code: 'ProvisionedThroughputExceededException',
-          message: 'Provisioned throughput was exceeded',
-          statusCode: 400,
-        } as any
-        throw error
-      })
+      dynamoClient.batchGetItem.mockImplementationOnce(() => ({
+        promise: async () => {
+          const error: AWSError = {
+            code: 'ProvisionedThroughputExceededException',
+            message: 'Provisioned throughput was exceeded',
+            statusCode: 400,
+          } as any
+          throw error
+        },
+      }))
     })
 
     it('tries again using a back-off algorithm', async () => {
       await batchGet.execute(input)
-      expect(dynamoClient.batchGet).toHaveBeenCalledTimes(2)
+      expect(dynamoClient.batchGetItem).toHaveBeenCalledTimes(2)
     })
   })
 
   // @ts-ignore
   context('when Dynamo throws an unhandled error', () => {
     beforeEach(() => {
-      dynamoClient.batchGet.mockImplementationOnce(() => {
-        throw new Error('Unknown error')
-      })
+      dynamoClient.batchGetItem.mockImplementationOnce(() => ({
+        promise: async () => { throw new Error('Unknown error') },
+      }))
     })
 
     it('throws the unhandled error ', async () => {

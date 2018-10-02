@@ -1,24 +1,16 @@
 import { DynamoDB } from 'aws-sdk'
 import { IGetInput, IGetResult, IHelpers } from '../types'
-import DynamoClient from './dynamo-client'
 
 export class Get {
-  private dynamoClient: DynamoClient
-  private helpers: IHelpers
-
   public constructor(
-    dynamoClient: DynamoClient,
-    helpers: IHelpers,
-  ) {
-    this.dynamoClient = dynamoClient
-    this.helpers = helpers
-  }
+    private dynamoClient: DynamoDB, private helpers: IHelpers,
+  ) { }
 
   public execute = async (
     input: IGetInput<any>,
   ): Promise<IGetResult<any, any>> => {
     const dynamoGetInput = this.buildDynamoGetInput(input)
-    const getOutput = await this.dynamoClient.getItem(dynamoGetInput)
+    const getOutput = await this.dynamoClient.getItem(dynamoGetInput).promise()
 
     if (!getOutput.Item) { throw new Error('ItemNotFound') }
 

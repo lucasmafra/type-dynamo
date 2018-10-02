@@ -5,8 +5,8 @@ import { Get } from './get'
 let get: Get
 
 const dynamoClient = {
-  getItem: jest.fn(async () => ({
-    Item: {id: {S: '1'}, name: {S: 'John Doe'}},
+  getItem: jest.fn(() => ({
+    promise: async () => ({ Item: {id: {S: '1'}, name: {S: 'John Doe'}} }),
   })),
 }
 
@@ -26,11 +26,11 @@ describe('Get', () => {
     dynamoClient.getItem.mockClear()
   })
 
-  it('gets item using dynamoClient', () => {
+  it('gets item using dynamoClient', async () => {
     const dynamoInput: DynamoDB.GetItemInput = {
       TableName: 'DummyTable', Key: {id: {S: '1'}},
     }
-    get.execute(input)
+    await get.execute(input)
     expect(dynamoClient.getItem).toHaveBeenCalledWith(dynamoInput)
   })
 
@@ -49,8 +49,8 @@ describe('Get', () => {
         }))
     })
 
-    it('calls dynamoClient with projection expression', () => {
-      get.execute(input)
+    it('calls dynamoClient with projection expression', async () => {
+      await get.execute(input)
       expect(dynamoClient.getItem.mock.calls[0][0]).toMatchObject({
         ProjectionExpression: '#id, #email',
         ExpressionAttributeNames: {
@@ -64,7 +64,9 @@ describe('Get', () => {
   context('when dynamoClient returns no item', () => {
     beforeEach(() => {
       dynamoClient.getItem.mockImplementationOnce(
-        async () => ({Item: undefined}),
+        () => ({
+          promise: async () => ({ Item: undefined }),
+        }),
       )
     })
 

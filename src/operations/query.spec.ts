@@ -33,11 +33,13 @@ describe('Query', () => {
       }))
 
     dynamoClient.query.mockImplementationOnce(() => ({
-      Items: [{
-        userId: {S: '1'},
-        createdAt: {N: '1234'},
-        content: {S: 'Hi'},
-      }],
+      promise: async () => ({
+        Items: [{
+          userId: {S: '1'},
+          createdAt: {N: '1234'},
+          content: {S: 'Hi'},
+        }],
+      }),
     }))
   })
 
@@ -69,7 +71,9 @@ describe('Query', () => {
   context('when dynamoClient returns no item', () => {
     beforeEach(() => {
       dynamoClient.query.mockReset()
-      dynamoClient.query.mockImplementationOnce(() => ({Items: undefined}))
+      dynamoClient.query.mockImplementationOnce(() => ({
+        promise: async () => ({ Items: undefined }),
+      }))
     })
 
     it('returns an empty array', async () => {
@@ -82,10 +86,12 @@ describe('Query', () => {
     beforeEach(() => {
       dynamoClient.query.mockReset()
       dynamoClient.query.mockImplementationOnce(() => ({
-        LastEvaluatedKey: {
-          userId: {S: '1'},
-          createdAt: {N: '1234'},
-        },
+        promise: async () => ({
+          LastEvaluatedKey: {
+            userId: {S: '1'},
+            createdAt: {N: '1234'},
+          },
+        }),
       }))
     })
 
@@ -129,27 +135,33 @@ describe('Query', () => {
 
       dynamoClient.query
         .mockImplementationOnce(() => ({
-          LastEvaluatedKey: {userId: {S: '1'}, createdAt: {N: '1'}},
-          Items: [{
-            userId: {S: '1'},
-            createdAt: {N: '1'},
-            content: {S: 'Hello world'},
-          }],
+          promise: async () => ({
+            LastEvaluatedKey: {userId: {S: '1'}, createdAt: {N: '1'}},
+            Items: [{
+              userId: {S: '1'},
+              createdAt: {N: '1'},
+              content: {S: 'Hello world'},
+            }],
+          }),
         }))
         .mockImplementationOnce(() => ({
-          LastEvaluatedKey: {userId: {S: '1'}, createdAt: {N: '2'}},
-          Items: [{
-            userId: {S: '1'},
-            createdAt: {N: '2'},
-            content: {S: 'Ola mundo'},
-          }],
+          promise: async () => ({
+            LastEvaluatedKey: {userId: {S: '1'}, createdAt: {N: '2'}},
+            Items: [{
+              userId: {S: '1'},
+              createdAt: {N: '2'},
+              content: {S: 'Ola mundo'},
+            }],
+          }),
         }))
         .mockImplementationOnce(() => ({
-          Items: [{
-            userId: {S: '1'},
-            createdAt: {N: '3'},
-            content: {S: 'Hola que tal'},
-          }],
+          promise: async () => ({
+            Items: [{
+              userId: {S: '1'},
+              createdAt: {N: '3'},
+              content: {S: 'Hola que tal'},
+            }],
+          }),
         }))
     })
 

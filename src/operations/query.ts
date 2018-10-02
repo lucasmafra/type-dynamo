@@ -1,18 +1,13 @@
 import { DynamoDB } from 'aws-sdk'
 import { AttributeMap, QueryInput } from 'aws-sdk/clients/dynamodb'
 import { IHelpers, IQueryInput, IQueryResult } from '../types'
-import DynamoClient from './dynamo-client'
 
 export class Query {
-  private dynamoClient: DynamoClient
-  private helpers: IHelpers
-
   private DEFAULT_PAGINATION_ITEMS = 1000
 
-  public constructor(dynamoClient: DynamoClient, helpers: IHelpers) {
-    this.dynamoClient = dynamoClient
-    this.helpers = helpers
-  }
+  public constructor(
+    private dynamoClient: DynamoDB, private helpers: IHelpers
+  ) { }
 
   public async execute(input: IQueryInput<any, any>):
     Promise<IQueryResult<any, any>> {
@@ -28,7 +23,7 @@ export class Query {
 
       const {
         Items, LastEvaluatedKey,
-      } = await this.dynamoClient.query(dynamoQueryInput)
+      } = await this.dynamoClient.query(dynamoQueryInput).promise()
 
       if (Items) {
         result.data = [...result.data, ...Items.map(this.toModel)]

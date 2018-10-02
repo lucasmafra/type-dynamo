@@ -1,15 +1,10 @@
 import { AWSError, DynamoDB } from 'aws-sdk'
 import { IBatchGetInput, IBatchGetResult, IHelpers } from '../types'
-import DynamoClient from './dynamo-client'
 
 export class BatchGet {
-  private dynamoClient: DynamoClient
-  private helpers: IHelpers
-
-  public constructor(dynamoClient: DynamoClient, helpers: IHelpers) {
-    this.dynamoClient = dynamoClient
-    this.helpers = helpers
-  }
+  public constructor(
+    private dynamoClient: DynamoDB, private helpers: IHelpers,
+  ) { }
 
   public async execute(
     input: IBatchGetInput<any>,
@@ -42,7 +37,7 @@ export class BatchGet {
     const dynamoBatchGetInput = this.buildDynamoBatchGetInput(input)
     let {
       Responses, UnprocessedKeys,
-    } = await this.dynamoClient.batchGet(dynamoBatchGetInput)
+    } = await this.dynamoClient.batchGetItem(dynamoBatchGetInput).promise()
     if (Responses) {
       data.push(...Responses[input.tableName].map(
         (item) => DynamoDB.Converter.unmarshall(item),
@@ -50,7 +45,7 @@ export class BatchGet {
     }
     while (UnprocessedKeys) {
       const nextInput = {RequestItems: UnprocessedKeys}
-      const nextCall = await this.dynamoClient.batchGet(nextInput)
+      const nextCall = await this.dynamoClient.batchGetItem(nextInput).promise()
       Responses = nextCall.Responses
       UnprocessedKeys = nextCall.UnprocessedKeys
       if (Responses) {

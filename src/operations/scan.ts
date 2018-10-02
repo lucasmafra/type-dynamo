@@ -1,19 +1,12 @@
 import { DynamoDB } from 'aws-sdk'
 import { IHelpers, IScanInput, IScanResult } from '../types'
-import DynamoClient from './dynamo-client'
 
 export class Scan {
-  private dynamoClient: DynamoClient
-  private helpers: IHelpers
   private DEFAULT_PAGINATION_ITEMS = 100
 
   public constructor(
-    dynamoClient: DynamoClient,
-    helpers: IHelpers,
-  ) {
-    this.dynamoClient = dynamoClient
-    this.helpers = helpers
-  }
+    private dynamoClient: DynamoDB, private helpers: IHelpers,
+  ) { }
 
   public async execute(
     input: IScanInput<any>,
@@ -34,7 +27,7 @@ export class Scan {
       const {
         Items,
         LastEvaluatedKey,
-      } = await this.dynamoClient.scan(dynamoScanInput)
+      } = await this.dynamoClient.scan(dynamoScanInput).promise()
 
       if (Items) {
         result.data = [...result.data, ...Items.map(this.toModel)]

@@ -24,13 +24,15 @@ describe('Scan', () => {
     jest.clearAllMocks()
 
     dynamoClient.scan.mockImplementationOnce(() => ({
-      Items: [{
-        id: {S: '1'},
-        email: {S: 'fausto@gmail.com'},
-      }, {
-        id: {S: '2'},
-        email: {S: 'silva@gmail.com'},
-      }],
+      promise: async () => ({
+        Items: [{
+          id: {S: '1'},
+          email: {S: 'fausto@gmail.com'},
+        }, {
+          id: {S: '2'},
+          email: {S: 'silva@gmail.com'},
+        }],
+      }),
     }))
   })
 
@@ -55,7 +57,10 @@ describe('Scan', () => {
   context('when dynamoClient returns no items in response', async () => {
     beforeEach(() => {
       dynamoClient.scan.mockReset()
-      dynamoClient.scan.mockImplementationOnce(() => ({Items: undefined}))
+      dynamoClient.scan.mockImplementationOnce(() => ({
+        promise: async () => ({
+          Items: undefined,
+        })}))
     })
 
     it('returns empty data', async () => {
@@ -122,7 +127,9 @@ describe('Scan', () => {
         dynamoClient.scan.mockReset()
 
         dynamoClient.scan.mockImplementationOnce(() => ({
-          LastEvaluatedKey: {id: {S: '1'}},
+          promise: async () => ({
+            LastEvaluatedKey: {id: {S: '1'}},
+          }),
         }))
       })
 
@@ -158,16 +165,22 @@ describe('Scan', () => {
 
         dynamoClient.scan
           .mockImplementationOnce(() => ({
-            Items: [{ id: { S: '1' }, email: { S: 'fausto@gmail.com' }}],
-            LastEvaluatedKey: {id: {S: '1'}},
+            promise: async () => ({
+              Items: [{ id: { S: '1' }, email: { S: 'fausto@gmail.com' }}],
+              LastEvaluatedKey: {id: {S: '1'}},
+            }),
           }))
           .mockImplementationOnce(() => ({
-            Items: [{ id: { S: '2' }, email: { S: 'silva@gmail.com' }}],
-            LastEvaluatedKey: {id: {S: '2'}},
+            promise: async () => ({
+              Items: [{ id: { S: '2' }, email: { S: 'silva@gmail.com' }}],
+              LastEvaluatedKey: {id: {S: '2'}},
+            }),
           }))
           .mockImplementationOnce(() => ({
-            Items: [{ id: { S: '3' }, email: { S: 'faustao@hot.com' }}],
-            LastEvaluatedKey: undefined,
+            promise: async () => ({
+              Items: [{ id: { S: '3' }, email: { S: 'faustao@hot.com' }}],
+              LastEvaluatedKey: undefined,
+            }),
           }))
       })
 
