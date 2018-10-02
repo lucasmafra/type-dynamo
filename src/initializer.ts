@@ -29,8 +29,7 @@ import { IHelpers, IOperations, ISdkOptions } from './types'
 const AmazonDaxClient = require('amazon-dax-client')
 
 export class Initializer {
-  public static initializeOperations(sdkOptions: ISdkOptions): IOperations {
-    const dynamoClient = this.initializeDynamoClient(sdkOptions)
+  public static initializeOperations(dynamoClient: DynamoClient): IOperations {
     const helpers = this.initializeHelpers()
     const operations: IOperations = {
       scan: new Scan(dynamoClient, helpers),
@@ -41,7 +40,7 @@ export class Initializer {
     return operations
   }
 
-  private static initializeDynamoClient(sdkOptions: ISdkOptions) {
+  public static initializeDynamoClient(sdkOptions: ISdkOptions) {
     return new DynamoClient(new DynamoDB.DocumentClient({
       ...sdkOptions as any,
       service: sdkOptions.daxEndpoints &&

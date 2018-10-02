@@ -1,4 +1,5 @@
 import { Initializer } from './initializer'
+import DynamoClient from './operations/dynamo-client'
 import {
   DefineTableWithCompositeKey,
 } from './schema/define-table/define-table-with-composite-key'
@@ -10,10 +11,12 @@ import {
 } from './types'
 
 export class TypeDynamo {
+  public dynamoClient: DynamoClient
   private operations: IOperations
 
   constructor(sdkOptions: ISdkOptions) {
-    this.operations = Initializer.initializeOperations(sdkOptions)
+    this.dynamoClient = Initializer.initializeDynamoClient(sdkOptions)
+    this.operations = Initializer.initializeOperations(this.dynamoClient)
   }
 
   public define<Model, PartitionKey extends keyof Model>(
