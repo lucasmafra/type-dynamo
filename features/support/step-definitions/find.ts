@@ -1,6 +1,7 @@
 import { DynamoDB } from 'aws-sdk'
 import { Given, Then, When } from 'cucumber'
 import * as expect from 'expect'
+import { orderBy } from 'lodash'
 import { typeDynamo } from '../utils/type-dynamo'
 import { User } from '../utils/User'
 
@@ -45,7 +46,14 @@ When(/I call User\.find\(ids\)\.execute\(\) with the following ids:/,
     )
   })
 
-Then('I should get the following items:', function(dataTable) {
+Then('I should get the following items in any order:', function(dataTable) {
   const items = dataTable.hashes()
-  expect(this.result).toEqual({data: items})
+  expect(orderBy(this.result.data, 'id')).toEqual(orderBy(items, 'id'))
 })
+
+When(/I call User\.find\(\)\.allResults\(\)\.execute\(\)/,
+  async function() {
+    this.set(
+      await User.find().allResults().execute(),
+    )
+  })

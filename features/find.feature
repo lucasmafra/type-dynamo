@@ -8,8 +8,6 @@ Feature: Find
       | 1  | Rick   |
       | 2  | Morty  |
       | 3  | Jerry  |
-      | 4  | Beth   |
-      | 5  | Summer |
 
   Scenario: Getting one specific user
     When I call User.find({ id: 1 }).execute()
@@ -22,10 +20,15 @@ Feature: Find
       | id |
       | 1  |
       | 2  |
-      | 3  |
-    Then I should get the following items:
+    Then I should get the following items in any order:
       | id | name  |
       | 1  | Rick  |
       | 2  | Morty |
-      | 3  | Jerry |
 
+  Scenario: Getting users without specifying any key
+    When I call User.find().allResults().execute()
+    Then I should get the following items in any order:
+      | id | name   |
+      | 1  | Rick   |
+      | 2  | Morty  |
+      | 3  | Jerry  |
