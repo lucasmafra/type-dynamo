@@ -1,6 +1,8 @@
 import { TypeDynamo } from '../../../src'
 
 export const typeDynamo = new TypeDynamo({
-  region: 'localhost',
-  endpoint: 'http://localhost:8000',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.REGION!,
+  endpoint: process.env.ENDPOINT,
 })
