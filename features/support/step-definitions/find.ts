@@ -2,8 +2,8 @@ import { DynamoDB } from 'aws-sdk'
 import { Given, Then, When } from 'cucumber'
 import * as expect from 'expect'
 import { orderBy } from 'lodash'
+import { Order, User } from '../utils/models'
 import { typeDynamo } from '../utils/type-dynamo'
-import { User } from '../utils/User'
 
 Given('a table {string} with partition key {string}',
   async (tableName, partitionKey) => {
@@ -13,6 +13,22 @@ Given('a table {string} with partition key {string}',
       AttributeDefinitions: [{AttributeName: partitionKey, AttributeType: 'S'}],
       ProvisionedThroughput: {ReadCapacityUnits: 1, WriteCapacityUnits: 1},
     }).promise()
+  })
+
+Given('a table {string} with partition key {string} and sort key {string}',
+  async function(tableName, partitionKey, sortKey) {
+    await typeDynamo.dynamoClient.createTable({
+      TableName: tableName,
+      KeySchema: [
+        {AttributeName: partitionKey, KeyType: 'HASH'},
+        {AttributeName: sortKey, KeyType: 'RANGE'},
+      ],
+      AttributeDefinitions: [
+        {AttributeName: partitionKey, AttributeType: 'S'},
+        {AttributeName: sortKey, AttributeType: 'S'},
+      ],
+      ProvisionedThroughput: {ReadCapacityUnits: 1, WriteCapacityUnits: 1},
+    }, undefined).promise()
   })
 
 Given('the following items are saved on table {string}:',
@@ -27,7 +43,7 @@ Given('the following items are saved on table {string}:',
     }).promise()
   })
 
-When(/I call User\.find\({ id: (1) }\)\.execute\(\)/, async function(id) {
+When(/I call User\.find\({ id: '(.*)' }\)\.execute\(\)/, async function(id) {
   this.set(
     await User.find({id}).execute(),
   )
@@ -57,3 +73,15 @@ When(/I call User\.find\(\)\.allResults\(\)\.execute\(\)/,
       await User.find().allResults().execute(),
     )
   })
+
+When(/I call Order.find\({ userId: '(.*)' }\)\.paginate\(\)\.execute\(\)/,
+  async function(userId) {
+  this.set(
+    await Order.find({ userId }).paginate().execute(),
+  )
+})
+
+Then('I should get the following items:', function(dataTable) {
+  const items = dataTable.hashes()
+  expect(this.result.data).toEqual(items)
+})
