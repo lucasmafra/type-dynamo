@@ -9,7 +9,10 @@ Then('I should get the following item:', function(dataTable) {
 
 Then('I should get the following items in any order:', function(dataTable) {
   const items = dataTable.hashes()
-  expect(orderBy(this.result.data, 'id')).toEqual(orderBy(items, 'id'))
+  // @ts-ignore
+  expect(this.result.data).toEqual(expect.arrayContaining(items))
+  // @ts-ignore
+  expect(items).toEqual(expect.arrayContaining(this.result.data))
 })
 
 Then('I should get the following items:', function(dataTable) {
