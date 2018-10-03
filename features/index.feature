@@ -15,7 +15,7 @@ Feature: Index
     Then I should get the <students> from that class:
 
     Examples:
-      | class   | students   |
-      | Science | Rick       |
+      | class   | students    |
+      | Science | Rick        |
       | Math    | Morty, Rick |
-      | Physics | Morty      |
+      | Physics | Morty       |
