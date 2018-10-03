@@ -40,3 +40,61 @@ Given('the following items are saved on table {string}:',
     }).promise()
   })
 
+Given('a table {string} with partition key {string} and sort key {string}' +
+  ' and an index {string} on table {string} with partition key {string} ' +
+  'and sort key {string}',
+  async function(tableName, partitionKey, sortKey, indexName, _, indexPartitionKey, indexSortKey) {
+    await typeDynamo.dynamoClient.createTable({
+      TableName: tableName,
+      KeySchema: [
+        {AttributeName: partitionKey, KeyType: 'HASH'},
+        {AttributeName: sortKey, KeyType: 'RANGE'},
+      ],
+      AttributeDefinitions: [
+        {AttributeName: partitionKey, AttributeType: 'S'},
+        {AttributeName: sortKey, AttributeType: 'S'},
+      ],
+      GlobalSecondaryIndexes: [{
+        IndexName: indexName,
+        Projection: { ProjectionType: 'KEYS_ONLY' },
+        ProvisionedThroughput: { ReadCapacityUnits: 1, WriteCapacityUnits: 1 },
+        KeySchema: [{
+          AttributeName: indexPartitionKey,
+          KeyType: 'HASH',
+        }, {
+          AttributeName: indexSortKey,
+          KeyType: 'RANGE',
+        }],
+      }],
+      ProvisionedThroughput: {ReadCapacityUnits: 1, WriteCapacityUnits: 1},
+    }, undefined).promise()
+  })
+
+Given('an index {string} on table {string} with partition key {string} ' +
+  'and sort key {string}',
+  async function(indexName, tableName, partitionKey, sortKey) {
+    await typeDynamo.dynamoClient.updateTable({
+      AttributeDefinitions: [{
+        AttributeType: 'S',
+        AttributeName: partitionKey,
+      }, {
+        AttributeType: 'S',
+        AttributeName: sortKey,
+      }],
+      TableName: tableName,
+      GlobalSecondaryIndexUpdates: [{
+        Create: {
+          IndexName: indexName,
+          Projection: {ProjectionType: 'KEYS_ONLY'},
+          KeySchema: [{
+            AttributeName: partitionKey,
+            KeyType: 'HASH',
+          }, {
+            AttributeName: sortKey,
+            KeyType: 'RANGE',
+          }],
+          ProvisionedThroughput: {ReadCapacityUnits: 1, WriteCapacityUnits: 1},
+        },
+      }],
+    }).promise()
+  })
