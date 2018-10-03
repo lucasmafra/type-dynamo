@@ -35,4 +35,4 @@ jobs:
 
     # run tests!
     - run: yarn test
-    - run: yarn test:acceptance
+    - run: yarn test:acceptance features

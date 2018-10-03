@@ -15,7 +15,7 @@
     "playground": "ts-node playground/index.ts",
     "test": "jest --collectCoverage --coverageReporters=text-lcov | coveralls",
     "test:watch": "jest --watch",
-    "test:acceptance": "cucumber-js --require 'features/support/**/*.ts' --require-module ts-node/register features"
+    "test:acceptance": "cucumber-js --require 'features/support/**/*.ts' --require-module ts-node/register"
   },
   "jest": {
     "testRegex": "(spec/.*|(\\.|/)(test|spec))\\.ts$",
