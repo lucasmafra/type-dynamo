@@ -58,6 +58,15 @@ export interface IScanResult<Model, KeySchema> {
   lastKey?: KeySchema
 }
 
+export interface IPutInput<Model> {
+  tableName: string
+  item: Model
+}
+
+export interface IPutOutput<Model> {
+  data: Model,
+}
+
 export interface IOperations {
   get: Get
   batchGet: BatchGet
