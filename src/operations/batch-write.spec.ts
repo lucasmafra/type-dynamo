@@ -4,6 +4,7 @@ describe('BatchWrite', () => {
   let dynamoClient: any
   let batchWrite: BatchWrite
   let input: IBatchWriteInput<any>
+  let helpers: any
 
   beforeEach(() => {
     input = {
@@ -18,7 +19,10 @@ describe('BatchWrite', () => {
         promise: async () => ({}),
       })),
     }
-    batchWrite = new BatchWrite(dynamoClient as any)
+    helpers = {
+      timeout: {wait: jest.fn()},
+    }
+    batchWrite = new BatchWrite(dynamoClient as any, helpers as any)
   })
 
   it('calls dynamoClient correctly', async () => {
@@ -147,6 +151,31 @@ describe('BatchWrite', () => {
           ],
         },
       }))
+    })
+  })
+
+  // @ts-ignore
+  context('when provisioned throughput is exceeded', () => {
+    beforeEach(() => {
+      dynamoClient.batchWriteItem.mockReset()
+      dynamoClient.batchWriteItem
+        .mockImplementationOnce(() => ({
+          promise: async () => {
+            throw {
+              code: 'ProvisionedThroughputExceededException',
+              message: 'Provisioned throughput was exceeded',
+              statusCode: 400,
+            }
+          },
+        }))
+        .mockImplementationOnce(() => ({
+          promise: async () => ({}),
+        }))
+    })
+
+    it('tries again using a exponential back-off algorithm', async () => {
+      await batchWrite.execute(input)
+      expect(dynamoClient.batchWriteItem).toHaveBeenCalledTimes(2)
     })
   })
 })
