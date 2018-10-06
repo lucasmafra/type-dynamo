@@ -37,7 +37,16 @@ export class BatchWrite {
   }
 
   private async batchWriteItem(input: BatchWriteItemInput) {
-    await this.dynamoClient.batchWriteItem(input).promise()
+    let unprocessedItems: DynamoDB.BatchWriteItemRequestMap = {}
+    do {
+      if (Object.keys(unprocessedItems).length) {
+        input = { ...input, RequestItems: unprocessedItems }
+      }
+      const {
+        UnprocessedItems,
+      } = await this.dynamoClient.batchWriteItem(input).promise()
+      unprocessedItems = UnprocessedItems || {}
+    } while (Object.keys(unprocessedItems).length)
   }
 
   private splitInputIntoChunks(
