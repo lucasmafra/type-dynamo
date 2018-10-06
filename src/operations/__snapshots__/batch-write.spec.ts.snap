@@ -1,0 +1,962 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BatchWrite when more than 25 items are requested splits requests into chunks of max of 25 items each 1`] = `
+Array [
+  Array [
+    Object {
+      "RequestItems": Object {
+        "DummyTable": Array [
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "0@email.com",
+                },
+                "id": Object {
+                  "S": "0",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "1@email.com",
+                },
+                "id": Object {
+                  "S": "1",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "2@email.com",
+                },
+                "id": Object {
+                  "S": "2",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "3@email.com",
+                },
+                "id": Object {
+                  "S": "3",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "4@email.com",
+                },
+                "id": Object {
+                  "S": "4",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "5@email.com",
+                },
+                "id": Object {
+                  "S": "5",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "6@email.com",
+                },
+                "id": Object {
+                  "S": "6",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "7@email.com",
+                },
+                "id": Object {
+                  "S": "7",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "8@email.com",
+                },
+                "id": Object {
+                  "S": "8",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "9@email.com",
+                },
+                "id": Object {
+                  "S": "9",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "10@email.com",
+                },
+                "id": Object {
+                  "S": "10",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "11@email.com",
+                },
+                "id": Object {
+                  "S": "11",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "12@email.com",
+                },
+                "id": Object {
+                  "S": "12",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "13@email.com",
+                },
+                "id": Object {
+                  "S": "13",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "14@email.com",
+                },
+                "id": Object {
+                  "S": "14",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "15@email.com",
+                },
+                "id": Object {
+                  "S": "15",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "16@email.com",
+                },
+                "id": Object {
+                  "S": "16",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "17@email.com",
+                },
+                "id": Object {
+                  "S": "17",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "18@email.com",
+                },
+                "id": Object {
+                  "S": "18",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "19@email.com",
+                },
+                "id": Object {
+                  "S": "19",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "20@email.com",
+                },
+                "id": Object {
+                  "S": "20",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "21@email.com",
+                },
+                "id": Object {
+                  "S": "21",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "22@email.com",
+                },
+                "id": Object {
+                  "S": "22",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "23@email.com",
+                },
+                "id": Object {
+                  "S": "23",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "24@email.com",
+                },
+                "id": Object {
+                  "S": "24",
+                },
+              },
+            },
+          },
+        ],
+      },
+    },
+  ],
+  Array [
+    Object {
+      "RequestItems": Object {
+        "DummyTable": Array [
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "25@email.com",
+                },
+                "id": Object {
+                  "S": "25",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "26@email.com",
+                },
+                "id": Object {
+                  "S": "26",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "27@email.com",
+                },
+                "id": Object {
+                  "S": "27",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "28@email.com",
+                },
+                "id": Object {
+                  "S": "28",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "29@email.com",
+                },
+                "id": Object {
+                  "S": "29",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "30@email.com",
+                },
+                "id": Object {
+                  "S": "30",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "31@email.com",
+                },
+                "id": Object {
+                  "S": "31",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "32@email.com",
+                },
+                "id": Object {
+                  "S": "32",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "33@email.com",
+                },
+                "id": Object {
+                  "S": "33",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "34@email.com",
+                },
+                "id": Object {
+                  "S": "34",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "35@email.com",
+                },
+                "id": Object {
+                  "S": "35",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "36@email.com",
+                },
+                "id": Object {
+                  "S": "36",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "37@email.com",
+                },
+                "id": Object {
+                  "S": "37",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "38@email.com",
+                },
+                "id": Object {
+                  "S": "38",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "39@email.com",
+                },
+                "id": Object {
+                  "S": "39",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "40@email.com",
+                },
+                "id": Object {
+                  "S": "40",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "41@email.com",
+                },
+                "id": Object {
+                  "S": "41",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "42@email.com",
+                },
+                "id": Object {
+                  "S": "42",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "43@email.com",
+                },
+                "id": Object {
+                  "S": "43",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "44@email.com",
+                },
+                "id": Object {
+                  "S": "44",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "45@email.com",
+                },
+                "id": Object {
+                  "S": "45",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "46@email.com",
+                },
+                "id": Object {
+                  "S": "46",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "47@email.com",
+                },
+                "id": Object {
+                  "S": "47",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "48@email.com",
+                },
+                "id": Object {
+                  "S": "48",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "49@email.com",
+                },
+                "id": Object {
+                  "S": "49",
+                },
+              },
+            },
+          },
+        ],
+      },
+    },
+  ],
+  Array [
+    Object {
+      "RequestItems": Object {
+        "DummyTable": Array [
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "50@email.com",
+                },
+                "id": Object {
+                  "S": "50",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "51@email.com",
+                },
+                "id": Object {
+                  "S": "51",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "52@email.com",
+                },
+                "id": Object {
+                  "S": "52",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "53@email.com",
+                },
+                "id": Object {
+                  "S": "53",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "54@email.com",
+                },
+                "id": Object {
+                  "S": "54",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "55@email.com",
+                },
+                "id": Object {
+                  "S": "55",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "56@email.com",
+                },
+                "id": Object {
+                  "S": "56",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "57@email.com",
+                },
+                "id": Object {
+                  "S": "57",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "58@email.com",
+                },
+                "id": Object {
+                  "S": "58",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "59@email.com",
+                },
+                "id": Object {
+                  "S": "59",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "60@email.com",
+                },
+                "id": Object {
+                  "S": "60",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "61@email.com",
+                },
+                "id": Object {
+                  "S": "61",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "62@email.com",
+                },
+                "id": Object {
+                  "S": "62",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "63@email.com",
+                },
+                "id": Object {
+                  "S": "63",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "64@email.com",
+                },
+                "id": Object {
+                  "S": "64",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "65@email.com",
+                },
+                "id": Object {
+                  "S": "65",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "66@email.com",
+                },
+                "id": Object {
+                  "S": "66",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "67@email.com",
+                },
+                "id": Object {
+                  "S": "67",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "68@email.com",
+                },
+                "id": Object {
+                  "S": "68",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "69@email.com",
+                },
+                "id": Object {
+                  "S": "69",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "70@email.com",
+                },
+                "id": Object {
+                  "S": "70",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "71@email.com",
+                },
+                "id": Object {
+                  "S": "71",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "72@email.com",
+                },
+                "id": Object {
+                  "S": "72",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "73@email.com",
+                },
+                "id": Object {
+                  "S": "73",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "74@email.com",
+                },
+                "id": Object {
+                  "S": "74",
+                },
+              },
+            },
+          },
+        ],
+      },
+    },
+  ],
+  Array [
+    Object {
+      "RequestItems": Object {
+        "DummyTable": Array [
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "75@email.com",
+                },
+                "id": Object {
+                  "S": "75",
+                },
+              },
+            },
+          },
+          Object {
+            "PutRequest": Object {
+              "Item": Object {
+                "email": Object {
+                  "S": "76@email.com",
+                },
+                "id": Object {
+                  "S": "76",
+                },
+              },
+            },
+          },
+        ],
+      },
+    },
+  ],
+]
+`;

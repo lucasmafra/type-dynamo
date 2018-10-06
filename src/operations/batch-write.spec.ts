@@ -46,4 +46,29 @@ describe('BatchWrite', () => {
       ],
     })
   })
+
+  // @ts-ignore
+  context('when more than 25 items are requested', () => {
+    const generateFakeItems = (total: number) => {
+      const items = []
+      for (let i = 0; i < total; i++) {
+        items.push({ id: i.toString(), email: `${i}@email.com`})
+      }
+      return items
+    }
+
+    beforeEach(() => {
+      input.items = generateFakeItems(77)
+    })
+
+    it('splits requests into chunks of max of 25 items each', async () => {
+      await batchWrite.execute(input)
+      expect(dynamoClient.batchWriteItem.mock.calls).toMatchSnapshot()
+    })
+
+    it('calls dynamoClient for each chunk', async () => {
+      await batchWrite.execute(input)
+      expect(dynamoClient.batchWriteItem).toHaveBeenCalledTimes(4)
+    })
+  })
 })
