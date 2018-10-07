@@ -1,15 +1,6 @@
 import { DynamoDB } from 'aws-sdk'
 import { BatchWriteItemInput } from 'aws-sdk/clients/dynamodb'
-import { IHelpers } from '../types'
-
-export interface IBatchWriteInput<Model> {
-  tableName: string
-  items: Model[]
-}
-
-export interface IBatchWriteResult<Model> {
-  data: Model[]
-}
+import { IBatchWriteInput, IBatchWriteResult, IHelpers } from '../types'
 
 export class BatchWrite {
   private MAX_ITEMS_PER_BATCH = 25
@@ -18,8 +9,7 @@ export class BatchWrite {
 
   constructor(
     private dynamoClient: DynamoDB, private helpers: IHelpers,
-  ) {
-  }
+  ) { }
 
   public async execute(
     input: IBatchWriteInput<any>,

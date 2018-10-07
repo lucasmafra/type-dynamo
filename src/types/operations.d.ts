@@ -73,3 +73,12 @@ export interface IOperations {
   query: Query
   scan: Scan
 }
+
+export interface IBatchWriteInput<Model> {
+  tableName: string
+  items: Model[]
+}
+
+export interface IBatchWriteResult<Model> {
+  data: Model[]
+}
