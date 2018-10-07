@@ -1,5 +1,7 @@
 import { BatchGetChaining } from '../../chaining/batch-get-chaining'
+import { BatchWriteChaining } from '../../chaining/batch-write-chaining'
 import { GetChaining } from '../../chaining/get-chaining'
+import { PutChaining } from '../../chaining/put-chaining'
 import { QueryChaining } from '../../chaining/query-chaining'
 import { ScanChaining } from '../../chaining/scan-chaining'
 import { DynamoTableWithCompositeKey } from './dynamo-table-with-composite-key'
@@ -54,6 +56,30 @@ describe('DynamoTableWithSimpleKey', () => {
       it('calls Query', () => {
         expect(dynamoTableWithCompositeKey.find(key))
           .toBeInstanceOf(QueryChaining)
+      })
+    })
+  })
+
+  describe('save', () => {
+    // @ts-ignore
+    context('when one item is passed', () => {
+      const item: IFeedModel = { userId: '1', content: 'bla', createdAt: 1234 }
+
+      it('returns PutChaining', () => {
+        expect(dynamoTableWithCompositeKey.save(item))
+          .toBeInstanceOf(PutChaining)
+      })
+    })
+
+    // @ts-ignore
+    context('when more than 1 item is passed', () => {
+      const items: IFeedModel[] = [
+        { userId: '1', content: 'bla', createdAt: 1234 },
+        { userId: '2', content: 'blabla', createdAt: 1234 },
+      ]
+      it('returns BatchWriteChaining', () => {
+        expect(dynamoTableWithCompositeKey.save(items))
+          .toBeInstanceOf(BatchWriteChaining)
       })
     })
   })
