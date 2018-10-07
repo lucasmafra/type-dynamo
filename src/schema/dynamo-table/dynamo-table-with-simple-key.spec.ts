@@ -1,5 +1,7 @@
 import { BatchGetChaining } from '../../chaining/batch-get-chaining'
+import { BatchWriteChaining } from '../../chaining/batch-write-chaining'
 import { GetChaining } from '../../chaining/get-chaining'
+import { PutChaining } from '../../chaining/put-chaining'
 import { ScanChaining } from '../../chaining/scan-chaining'
 import { DynamoTableWithSimpleKey } from './dynamo-table-with-simple-key'
 
@@ -41,6 +43,28 @@ describe('DynamoTableWithSimpleKey', () => {
       it('calls Get', () => {
         expect(dynamoTableWithSimpleKey.find(key))
           .toBeInstanceOf(GetChaining)
+      })
+    })
+  })
+
+  describe('save', () => {
+    // @ts-ignore
+    context('when only one item is passed', () => {
+      const item = { id: '1', name: 'Fausto' }
+
+      it('returns PutChaining', () => {
+        expect(dynamoTableWithSimpleKey.save(item))
+          .toBeInstanceOf(PutChaining)
+      })
+    })
+
+    // @ts-ignore
+    context('when multiple items are passed', () => {
+      const items = [{ id: '1', name: 'Fausto' }, { id: '2', name: 'Silva' }]
+
+      it('returns BatchWriteChaining', () => {
+        expect(dynamoTableWithSimpleKey.save(items))
+          .toBeInstanceOf(BatchWriteChaining)
       })
     })
   })

@@ -1,5 +1,7 @@
 import { BatchGet } from '../operations/batch-get'
+import { BatchWrite } from '../operations/batch-write'
 import { Get } from '../operations/get'
+import { Put } from '../operations/put'
 import { Query } from '../operations/query'
 import { Scan } from '../operations/scan'
 
@@ -72,6 +74,8 @@ export interface IOperations {
   batchGet: BatchGet
   query: Query
   scan: Scan
+  batchWrite: BatchWrite
+  put: Put
 }
 
 export interface IBatchWriteInput<Model> {
