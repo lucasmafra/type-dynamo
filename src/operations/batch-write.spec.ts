@@ -1,4 +1,5 @@
-import { BatchWrite, IBatchWriteInput } from './batch-write'
+import { IBatchWriteInput } from '../types'
+import { BatchWrite } from './batch-write'
 
 describe('BatchWrite', () => {
   let dynamoClient: any
