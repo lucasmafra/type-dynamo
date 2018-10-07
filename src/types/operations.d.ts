@@ -63,7 +63,7 @@ export interface IPutInput<Model> {
   item: Model
 }
 
-export interface IPutOutput<Model> {
+export interface IPutResult<Model> {
   data: Model,
 }
 

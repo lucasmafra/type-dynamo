@@ -1,6 +1,6 @@
 import { DynamoDB } from 'aws-sdk'
 import { PutItemInput, PutItemOutput } from 'aws-sdk/clients/dynamodb'
-import { IPutInput, IPutOutput } from '../types'
+import { IPutInput, IPutResult } from '../types'
 
 export class Put {
   public constructor(
@@ -22,7 +22,7 @@ export class Put {
     }
   }
 
-  private parseResponse(response: PutItemOutput): IPutOutput<any> {
+  private parseResponse(response: PutItemOutput): IPutResult<any> {
     return {
       data: DynamoDB.Converter.unmarshall(response.Attributes!),
     }
