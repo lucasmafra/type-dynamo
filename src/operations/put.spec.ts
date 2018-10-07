@@ -25,7 +25,6 @@ describe('Put', () => {
     expect(dynamoClient.putItem).toHaveBeenCalledWith({
       TableName: 'DummyTable',
       Item: { id: { S: '1' }, email: { S: 'john@email.com'} },
-      ReturnValues: 'ALL_NEW',
     })
   })
 
