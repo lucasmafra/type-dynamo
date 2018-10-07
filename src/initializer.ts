@@ -1,13 +1,15 @@
 import { DynamoDB } from 'aws-sdk'
-import { ExpressionAttributeNamesGenerator, } from './helpers/expression-attribute-names-generator'
-import { ExpressionAttributeValuesGenerator, } from './helpers/expression-attribute-values-generator'
-import { KeyConditionExpressionGenerator, } from './helpers/key-condition-expression-generator'
-import { ProjectionExpressionGenerator, } from './helpers/projection-expression-generator'
+import { ExpressionAttributeNamesGenerator } from './helpers/expression-attribute-names-generator'
+import { ExpressionAttributeValuesGenerator } from './helpers/expression-attribute-values-generator'
+import { KeyConditionExpressionGenerator } from './helpers/key-condition-expression-generator'
+import { ProjectionExpressionGenerator } from './helpers/projection-expression-generator'
 import { RandomGenerator } from './helpers/random-generator'
-import { Timeout, } from './helpers/timeout'
-import { WithAttributesGenerator, } from './helpers/with-attributes-generator'
+import { Timeout } from './helpers/timeout'
+import { WithAttributesGenerator } from './helpers/with-attributes-generator'
 import { BatchGet } from './operations/batch-get'
+import { BatchWrite } from './operations/batch-write'
 import { Get } from './operations/get'
+import { Put } from './operations/put'
 import { Query } from './operations/query'
 import { Scan } from './operations/scan'
 import { IHelpers, IOperations, ISdkOptions } from './types'
@@ -20,6 +22,8 @@ export class Initializer {
       query: new Query(dynamoClient, helpers),
       batchGet: new BatchGet(dynamoClient, helpers),
       get: new Get(dynamoClient, helpers),
+      batchWrite: new BatchWrite(dynamoClient, helpers),
+      put: new Put(dynamoClient),
     }
   }
 
