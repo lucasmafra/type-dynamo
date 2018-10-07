@@ -9,7 +9,7 @@
 <p align="center">
 <a href="https://badge.fury.io/js/type-dynamo"><img src="https://badge.fury.io/js/type-dynamo.svg"/></a>
 <a href="https://circleci.com/gh/lucasmafra/type-dynamo/tree/master"><img src="https://circleci.com/gh/lucasmafra/type-dynamo/tree/master.svg?style=shield"/></a>
-<a href="https://coveralls.io/github/lucasmafra/type-dynamo"><img src="https://coveralls.io/repos/github/lucasmafra/type-dynamo/badge.svg"/></a>
+<a href='https://coveralls.io/github/lucasmafra/type-dynamo?branch=master'><img src='https://coveralls.io/repos/github/lucasmafra/type-dynamo/badge.svg?branch=master' alt='Coverage Status' /></a>
 <a href="https://github.com/lucasmafra/type-dynamo/blob/master/LICENSE"><img src="https://img.shields.io/github/license/lucasmafra/type-dynamo.svg"/></a>
 </p>
 
