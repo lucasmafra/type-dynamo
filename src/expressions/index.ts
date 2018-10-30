@@ -73,7 +73,7 @@ export function size(attribute: string, operator: ComparisonOperator): MatchExpr
 export function beginsWith(subString: string): BeginsWith {
     const randomId = ':' + randomGenerator()
     return {
-        value: 'beginsWith',
+        value: 'begins_with',
         functionOperand: randomId,
         type: 'function',
         expressionAttributeValues: {
