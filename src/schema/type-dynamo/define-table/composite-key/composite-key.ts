@@ -162,6 +162,7 @@ export class TypeDynamoDefineTableCompositeKey<
         const tableSchema: TableSchema = {
             tableName: schema.tableName,
             partitionKey: schema.partitionKey,
+            sortKey: schema.sortKey,
             writeCapacity: schema.writeCapacity || 1,
             readCapacity: schema.readCapacity || 1,
         }
