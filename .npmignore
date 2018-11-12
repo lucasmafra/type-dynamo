@@ -1,3 +1,10 @@
 src/
 test/
 playground/
+coverage/
+.env
+docker-compose.yml
+logo.svg
+tsconfig.json
+tslint.json
+yarn-error.log
