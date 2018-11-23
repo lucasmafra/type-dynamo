@@ -9,38 +9,42 @@ import { IOperations } from '../../types'
 export class DynamoTableWithCompositeKey<Model, PartitionKey, SortKey> {
   constructor(
     private tableName: string, private operations: IOperations,
-  ) { }
-
+  ) {
+  }
+  
   public find(): ScanChaining<Model, PartitionKey & SortKey>
-  public find(keys: Array<PartitionKey & SortKey>): BatchGetChaining<
-    Model, PartitionKey & SortKey>
-  public find(key: PartitionKey & SortKey): GetChaining<
-    Model, PartitionKey & SortKey>
-  public find(partitionKey: PartitionKey): QueryChaining<
-    Model, PartitionKey, SortKey, PartitionKey & SortKey>
+  public find(keys: Array<PartitionKey & SortKey>): BatchGetChaining<Model, PartitionKey & SortKey>
+  public find(key: PartitionKey & SortKey): GetChaining<Model, PartitionKey & SortKey>
+  public find(partitionKey: PartitionKey): QueryChaining<Model, PartitionKey, SortKey, PartitionKey & SortKey>
   public find(args?: any): any {
-    const { tableName } = this
-    const { scan, batchGet, get, query } = this.operations
-
+    const {tableName} = this
+    const {scan, batchGet, get, query} = this.operations
+    
     if (!args) {
-      return new ScanChaining(scan, { tableName })
+      return new ScanChaining(scan, {tableName})
     }
     if (args.constructor === Array) {
-      return new BatchGetChaining(batchGet, { tableName, keys: args  })
+      return new BatchGetChaining(batchGet, {tableName, keys: args})
     }
     if (Object.keys(args).length === 2) {
-      return new GetChaining(get, { tableName, key: args })
+      return new GetChaining(get, {tableName, key: args})
     }
-    return new QueryChaining(query, { tableName, partitionKey: args })
+    return new QueryChaining(query, {tableName, partitionKey: args})
   }
-
+  
   public save(item: Model): PutChaining<Model>
   public save(items: Model[]): BatchWriteChaining<Model>
   public save(args: any) {
-    const { tableName, operations: { put, batchWrite } } = this
+    const {tableName, operations: {put, batchWrite}} = this
     if (args.constructor === Array) {
-      return new BatchWriteChaining(batchWrite, { tableName, items: args })
+      return new BatchWriteChaining(batchWrite, {tableName, items: args})
     }
-    return new PutChaining(put, { tableName, item: args })
+    return new PutChaining(put, {tableName, item: args})
+  }
+  
+  public update(item: Partial<Model>): null
+  public update(id: PartitionKey, attributes: Partial<Model>): null
+  public update(...args: any[]) {
+    return null
   }
 }
