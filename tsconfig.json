@@ -27,6 +27,7 @@
     "node_modules",
     "test",
     "dist",
-    "playground"
+    "playground",
+    "features"
   ]
 }
